@@ -3,38 +3,113 @@
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackground.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/RectangleArena.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/kuka/youbot/protos/Youbot.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/living_room_furniture/protos/Sofa.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/apartment_structure/protos/Radiator.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/plants/protos/PottedTree.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/tables/protos/Table.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/chairs/protos/Chair.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/television/protos/Television.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/factory/containers/protos/WoodenBox.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/rocks/protos/Rock.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/school_furniture/protos/Book.proto"
 
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.2405526182255807 -0.10468184008291215 -0.9649746889020839 3.9738002178175877
-  position 0.6924309251467102 -0.8406335830063905 0.5942354078382219
+  orientation 0.6009827009295976 -0.518280889288992 -0.6084445027947719 4.280725820097967
+  position -0.8265663402771246 -1.4857178088761303 11.497305956451752
 }
 TexturedBackground {
 }
 TexturedBackgroundLight {
 }
 RectangleArena {
-  translation 0 -0.02 0
+  floorSize 7 5
+  floorTileSize 1 1
+  wallHeight 1.5
 }
-Youbot {
-  hidden position_0_0 1.9344918633946427e-14
-  hidden position_0_1 1.9645897056852468e-14
-  hidden position_0_2 2.2955416811964813e-14
-  hidden position_0_3 2.3290161102668275e-14
-  hidden position_1_0 -4.268826106556216e-10
-  hidden position_2_0 1.5700030232284339
-  hidden rotation_3 0 -1 0 1.5700030232284337
-  hidden position_3_0 -2.6350014784505684
-  hidden rotation_4 0 1 0 2.6350014784505684
-  hidden position_4_0 1.7800004222464194
-  hidden rotation_5 0 -1 0 1.7800004222464192
-  hidden position_5_0 -5.636698864962393e-14
-  hidden position_6_0 2.4074377693193568e-11
-  hidden position_6_1 -2.4074394835341496e-11
-  hidden translation_7 0 2.4074377693193568e-11 0.09
-  hidden translation_8 0 2.4074394835341496e-11 0.09
-  translation 0.000423983 -0.06999 0.0988986
-  rotation -0.025638135772038797 0.9992847143637626 0.027798302701204366 0.003189638318174153
+Rock {
+  translation 2.32 0 0.89
+  name "rock(5)"
+  scale 5
+}
+Rock {
+  translation -0.812029 -1.49784 0
+  rotation 0 0 1 -0.261795307179586
+  scale 9.5
+}
+Rock {
+  translation -0.812029 -1.49784 0
+  rotation 0 0 1 -0.261795307179586
+  name "rock(2)"
+  scale 9.5
+}
+Rock {
+  translation 0.0926594 -1.5766 0.119708
+  rotation 0.11734399914643977 0.8913159935165675 0.43793399681446815 0.584055
+  name "rock(3)"
+  scale 6
+}
+Rock {
+  translation 0.0926594 -1.5766 0.119708
+  rotation 0.11734399914643977 0.8913159935165675 0.43793399681446815 0.584055
+  name "rock(4)"
+  scale 6
+}
+Rock {
+  translation -0.16426 0.492322 0.398729
+  rotation 0.12731093338444424 0.967040493995227 -0.22050988461801257 1.07646
+  name "rock(1)"
+  scale 8.8
+}
+WoodenBox {
+  translation -1.02 2.3 0.3
+  size 1.9 0.5 0.6
+}
+Television {
+  translation -1.05 2.23 1.02
+  rotation 0 0 1 -1.5707953071795862
+}
+Table {
+  translation 2.21 0 0
+  size 0.9 1.5 0.74
+}
+Chair {
+  translation 2.59 -4.64391e-06 0
+  rotation 0 0 1 3.14159
+}
+Chair {
+  translation 1.85 -2.68022e-06 0
+  rotation 0 0 1 -5.307179586466759e-06
+  name "chair(1)"
+}
+Radiator {
+  translation -3.27 0.26 0.36
+}
+Sofa {
+  translation -1.01 0.51 -0.11
+  rotation 0 0 1 1.5708
+}
+PottedTree {
+  translation 3.31626 2.21 0.135229
+  rotation 0 -1 0 1.309
+}
+Book {
+  translation 2.24 -1.34 0.00999995
+  rotation 0 1 0 -1.5707953071795862
+}
+Book {
+  translation 2.24 -1.16 0.00999995
+  rotation 0 1 0 -1.5707953071795862
+  name "book(1)"
+}
+Book {
+  translation 2.24 -1.25 0.0499999
+  rotation 0 1 0 -1.5707953071795862
+  name "book(2)"
+}
+Book {
+  translation 2.36 -1.25 0.0499999
+  rotation 0 -1 0 1.0472
+  name "book(3)"
 }
