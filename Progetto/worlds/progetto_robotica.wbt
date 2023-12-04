@@ -3,18 +3,20 @@
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackground.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/RectangleArena.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/kuka/youbot/protos/Youbot.proto"
 
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.2652169196049451 0.2855371125156139 0.9209389463648009 1.579344463891853
-  position -0.13805607760301777 -1.6756814389037702 0.9470415170573871
+  orientation 0.18468435909691577 -0.1265355979779225 -0.9746180944089491 4.319088560311373
+  position 0.7882985837129655 -2.3806969212763964 1.0108354539275777
 }
 TexturedBackground {
 }
 TexturedBackgroundLight {
 }
 RectangleArena {
+  translation 0 -0.02 0
 }
 Shape {
   appearance PBRAppearance {
@@ -22,4 +24,7 @@ Shape {
   geometry Box {
     size 0.3 0.3 0.3
   }
+}
+Youbot {
+  translation -0.05 0.22 0.12
 }
