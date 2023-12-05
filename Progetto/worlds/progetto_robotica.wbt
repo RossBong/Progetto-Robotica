@@ -15,8 +15,8 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/project
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.571401091302648 0.5360880515720875 0.6213778188990864 2.0859817455953547
-  position 3.7922206998850925 -2.9079529949559424 16.018197816296173
+  orientation -0.5923245296240871 0.6001882429810979 0.5375181155950624 2.132142318713136
+  position -0.06573403442744373 0.9802350430889758 13.87830170877121
 }
 TexturedBackground {
 }
@@ -86,4 +86,6 @@ PottedTree {
   rotation 0 -1 0 1.309
 }
 Pioneer3dx {
+  rotation 0 0 1 1.5708
+  controller "rescue_controller"
 }
