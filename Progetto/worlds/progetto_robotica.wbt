@@ -4,112 +4,86 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/project
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/RectangleArena.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/living_room_furniture/protos/Sofa.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/apartment_structure/protos/Radiator.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/plants/protos/PottedTree.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/tables/protos/Table.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/chairs/protos/Chair.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/television/protos/Television.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/factory/containers/protos/WoodenBox.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/rocks/protos/Rock.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/school_furniture/protos/Book.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/adept/pioneer3/protos/Pioneer3dx.proto"
 
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.6009827009295976 -0.518280889288992 -0.6084445027947719 4.280725820097967
-  position -0.8265663402771246 -1.4857178088761303 11.497305956451752
+  orientation -0.571401091302648 0.5360880515720875 0.6213778188990864 2.0859817455953547
+  position 3.7922206998850925 -2.9079529949559424 16.018197816296173
 }
 TexturedBackground {
 }
 TexturedBackgroundLight {
 }
 RectangleArena {
+  translation 3 2 0
   floorSize 7 5
-  floorTileSize 1 1
+  floorTileSize 2 2
   wallHeight 1.5
 }
 Rock {
-  translation 2.32 0 0.89
+  translation 4.97 1.5 0.85
   name "rock(5)"
   scale 5
 }
 Rock {
-  translation -0.812029 -1.49784 0
+  translation 1.12739 1.02626 0
   rotation 0 0 1 -0.261795307179586
   scale 9.5
 }
 Rock {
-  translation -0.812029 -1.49784 0
-  rotation 0 0 1 -0.261795307179586
-  name "rock(2)"
-  scale 9.5
-}
-Rock {
-  translation 0.0926594 -1.5766 0.119708
+  translation 0.0144157 3.9381 0.164856
   rotation 0.11734399914643977 0.8913159935165675 0.43793399681446815 0.584055
   name "rock(3)"
   scale 6
 }
 Rock {
-  translation 0.0926594 -1.5766 0.119708
+  translation 2.02279 0.957621 0.0792311
   rotation 0.11734399914643977 0.8913159935165675 0.43793399681446815 0.584055
   name "rock(4)"
   scale 6
 }
 Rock {
-  translation -0.16426 0.492322 0.398729
+  translation 2.92263 2.03608 0.746395
   rotation 0.12731093338444424 0.967040493995227 -0.22050988461801257 1.07646
   name "rock(1)"
   scale 8.8
 }
 WoodenBox {
-  translation -1.02 2.3 0.3
+  translation 2.5 3.95 0.3
   size 1.9 0.5 0.6
 }
 Television {
-  translation -1.05 2.23 1.02
+  translation 2.61 3.88 1.02
   rotation 0 0 1 -1.5707953071795862
 }
 Table {
-  translation 2.21 0 0
-  size 0.9 1.5 0.74
+  translation 5 1.5 0
+  size 0.7 1.5 0.74
 }
 Chair {
-  translation 2.59 -4.64391e-06 0
+  translation 5.17 1.04999 0
   rotation 0 0 1 3.14159
 }
 Chair {
-  translation 1.85 -2.68022e-06 0
+  translation 4.83 1.87998 0
   rotation 0 0 1 -5.307179586466759e-06
   name "chair(1)"
 }
-Radiator {
-  translation -3.27 0.26 0.36
-}
 Sofa {
-  translation -1.01 0.51 -0.11
+  translation 2.52 1.99 -0.11
   rotation 0 0 1 1.5708
 }
 PottedTree {
-  translation 3.31626 2.21 0.135229
+  translation 6.02878 4.01 0.0192573
   rotation 0 -1 0 1.309
 }
-Book {
-  translation 2.24 -1.34 0.00999995
-  rotation 0 1 0 -1.5707953071795862
-}
-Book {
-  translation 2.24 -1.16 0.00999995
-  rotation 0 1 0 -1.5707953071795862
-  name "book(1)"
-}
-Book {
-  translation 2.24 -1.25 0.0499999
-  rotation 0 1 0 -1.5707953071795862
-  name "book(2)"
-}
-Book {
-  translation 2.36 -1.25 0.0499999
-  rotation 0 -1 0 1.0472
-  name "book(3)"
+Pioneer3dx {
 }
