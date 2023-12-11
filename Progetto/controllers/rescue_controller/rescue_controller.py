@@ -6,7 +6,7 @@ from controller import Robot, DistanceSensor, Motor
 import math
 
 TIME_STEP = 64
-MAX_SPEED = 6.28
+MAX_SPEED = 6.29
 
 # create the Robot instance.
 robot = Robot()
@@ -34,25 +34,22 @@ ps_values=[0, 0]
 dist_values=[0,0]
 
 raggio_ruota=0.195/2
-dist_ruote=0.267
+dist_ruote=0.192
 
-circonf_ruota=raggio_ruota*2*3.14
+circonf_ruota=raggio_ruota*2*3.14  #0.61 m
 enc_unit=circonf_ruota/6.29
 
 robot_pose=[0,0,0]
 last_ps_values=[0,0]
 
-
-
-while robot.step(timestep) != -1:
-    #read values from position sensor
+def robot_position():
     ps_values[0]=left_ps.getValue()
     ps_values[1]=right_ps.getValue()
     
     print('-----------------------')
     print("position sensor value:"+str(ps_values[0])+" "+str(ps_values[1]))
     
-    for i in range(2):
+    """for i in range(2):
         diff=ps_values[i]-last_ps_values[i]
         if diff<0.001:
             diff=0
@@ -71,23 +68,47 @@ while robot.step(timestep) != -1:
     
     robot_pose[0] +=(vx*dt)
     robot_pose[1] +=(vy*dt)
+    print("posizione robot:"+str(robot_pose))"""
     
-    print("posizione robot:"+str(robot_pose))
+    dist_values[0]=ps_values[0]*enc_unit
+    dist_values[1]=ps_values[1]*enc_unit
+    print("distance value:"+str(dist_values[0])+" "+str(dist_values[1]))
     
     
- 
-    leftMotor.setVelocity(0.2*MAX_SPEED)
-    rightMotor.setVelocity(-0.2*MAX_SPEED)
     
-    if(robot_pose[2]>=1.57):
+def get_time(distance, speed):
+    rad=distance/circonf_ruota
+    return rad/speed
     
-        leftMotor.setVelocity(0.0)
-        rightMotor.setVelocity(0.0)
+def stop_motors():
+    leftMotor.setVelocity(0)
+    rightMotor.setVelocity(0)
+    print("Motors stopped.")
+    
+def move(dist):
+    seconds = get_time(dist, MAX_SPEED)
+    end_time = seconds + robot.getTime()
+    
+    while robot.step(TIME_STEP) != -1:
+       
+        print(robot.getTime())
+        robot_position()
+        print(f"Moving {dist} m forward...")
         
-    for i in range(2):
-        last_ps_values[i]=ps_values[i]
-    
-    
-    pass
+        if robot.getTime() < end_time:
+            leftMotor.setVelocity(MAX_SPEED)
+            rightMotor.setVelocity(MAX_SPEED)
+            
+        else:
+            stop_motors()
+            break
+            
+def main():
+    move(1.0)
 
-# Enter here exit cleanup code.
+    
+if __name__ == "__main__":
+    main()
+
+
+
