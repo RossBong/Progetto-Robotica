@@ -36,8 +36,8 @@ imu = robot.getDevice('inertial unit')
 imu.enable(timestep)
 
 
-ps_values=[0, 0]
-dist_values=[0,0]
+ps_values=[0, 0] #radianti relativi all'odometria
+dist_values=[0,0] #distanza percorsa misurata con l'odometria
 
 raggio_ruota=0.19/2
 
@@ -45,10 +45,11 @@ dist_ruote=0.33205
 d_mid=dist_ruote/2
 
 circonf_ruota=raggio_ruota*2*3.14  #0.61 m
-enc_unit=circonf_ruota/6.29
+enc_unit=circonf_ruota/6.29 #porzione di circonferenza per radiante
 
-robot_pose=[0,0,0]
+robot_pose=[0,0," "]
 last_ps_values=[0,0]
+
 
 def robot_position():
     ps_values[0]=left_ps.getValue()
@@ -57,32 +58,43 @@ def robot_position():
     print('-----------------------')
     print("position sensor value:"+str(ps_values[0])+" "+str(ps_values[1]))
     
-    """for i in range(2):
-        diff=ps_values[i]-last_ps_values[i]
-        if diff<0.001:
-            diff=0
-            ps_values[i]=last_ps_values[i]
-        dist_values[i]=diff*enc_unit
-    #print("distance value:"+str(dist_values[0])+" "+str(dist_values[1]))
- 
-    v=(dist_values[0]+dist_values[1])/2.0
-    w=(dist_values[0]-dist_values[1])/dist_ruote
-    
-    dt=1
-    robot_pose[2]+=(w*dt)
-    
-    vx=v*math.cos(robot_pose[2])
-    vy=v*math.sin(robot_pose[2])
-    
-    robot_pose[0] +=(vx*dt)
-    robot_pose[1] +=(vy*dt)
-    print("posizione robot:"+str(robot_pose))"""
-    
     dist_values[0]=ps_values[0]*enc_unit
     dist_values[1]=ps_values[1]*enc_unit
     print("distance value:"+str(dist_values[0])+" "+str(dist_values[1]))
     q=(imu.getRollPitchYaw()[2] * 180) / 3.14159
     print(f"imu:{q}")
+    
+def direction():
+    q=(imu.getRollPitchYaw()[2] * 180) / 3.14159
+    if (q<= -135 and q >= -180) or (135 <= q <= 180):
+        return "West"
+    elif q <= -45 and q > -135:
+        return "South"
+    elif 45 <= q <= 135:
+        return "North"
+    elif (-45 < q <= 0) or (0 <= q < 45):
+        return "East" 
+    
+def robot_update(dist):
+    
+    
+    global robot_pose
+    dir=direction()
+    if (dist==0):  #il robot ha ruotato
+    
+        robot_pose[2]=dir
+    else:  #il robot si muove di una casella nella precedente direzione
+        if(dir=="North"):
+            robot_pose[0]+=dist
+        elif(dir=="West"):
+            robot_pose[1]-=dist
+        elif(dir=="East"):
+            robot_pose[1]+= dist
+        elif(dir=="South"):
+            robot_pose[0]-=dist
+    print(f"posizione:({robot_pose[0]},{robot_pose[1]}), direzione:{robot_pose[2]}")
+
+    
     
     
 def get_time(distance, speed):
@@ -97,13 +109,10 @@ def stop_motors():
 def move(dist):
     seconds = get_time(dist, MAX_SPEED)
     end_time = seconds + robot.getTime()
-    print(f"end time:{end_time}")
+    print(f"Moving {dist} m forward...")
     
     while robot.step(TIME_STEP) != -1:
-       
-        print(robot.getTime())
-        robot_position()
-        print(f"Moving {dist} m forward...")
+        
         
         if robot.getTime() < end_time:
             leftMotor.setVelocity(MAX_SPEED)
@@ -112,6 +121,7 @@ def move(dist):
         else:
             stop_motors()
             break
+    robot_update(dist)
             
             
 def get_rot_speed_rad(degrees, seconds, raggio_ruota, d_mid):
@@ -129,25 +139,35 @@ def rotate(degrees, seconds, direction):
     # get the left and right rotaional speeds to turn x degrees in y seconds
     left, right = get_rot_speed_rad(degrees, seconds, raggio_ruota, d_mid)
     end_time = seconds + robot.getTime()
-    
+    print(f"Rotating {direction}...")
     while robot.step(TIME_STEP) != -1:
-        
-        robot_position()
-        
-     
-        print(f"Rotating {direction}...")
+       
         if robot.getTime() < end_time:
             leftMotor.setVelocity(left)
             rightMotor.setVelocity(right)
         else:
             stop_motors()
             break    
-
+    robot_update(0)
             
             
 def main():
+    move(3.0)
+    
+    rotate(90, 1.5, "right")
+    move(1.0)
     rotate(-90, 1.5, "right")
-     #move(1.0)
+    
+    move(1.0)
+    
+    rotate(180, 1.5, "right")
+    move(2.0)
+    rotate(90, 1.5, "right")
+    
+    move(1.0)
+    rotate(-90, 1.5, "right")
+    move(2.0)
+    rotate(180, 1.5, "right")
 
     
 if __name__ == "__main__":
