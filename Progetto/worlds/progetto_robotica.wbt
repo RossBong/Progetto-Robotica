@@ -3,20 +3,22 @@
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackground.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/RectangleArena.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/living_room_furniture/protos/Sofa.proto"
+EXTERNPROTO "../protos/Sofa.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/plants/protos/PottedTree.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/tables/protos/Table.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/chairs/protos/Chair.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/television/protos/Television.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/factory/containers/protos/WoodenBox.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/rocks/protos/Rock.proto"
+EXTERNPROTO "../protos/Rock.proto"
 EXTERNPROTO "../protos/Pioneer3dx.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/kitchen/fridge/protos/Fridge.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/softbank/nao/protos/Shelves.proto"
 
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.5811609303305458 0.5696524451721237 0.5811609628723831 2.105985239440126
-  position 1.587520743529216 1.9892060079559684 9.188925395566926
+  orientation -0.5773502691896258 0.5773502691896258 0.5773502691896258 2.0944
+  position 3.0333281620546977 1.5164331469198844 16.88814843581584
 }
 TexturedBackground {
 }
@@ -29,50 +31,42 @@ RectangleArena {
   wallHeight 1.5
 }
 Rock {
-  translation 4.949089170332319 1.5413462744251878 0.8955996596065823
-  rotation -0.9028492119043436 -0.4299572543725757 0.0002449001871614533 0.21979583105531228
+  translation 4.933870539546745 1.5518851981989152 0.9121369421021802
+  rotation -0.809447375327417 -0.5866071475033829 -0.026210705322447375 0.3253769200102618
   name "rock(5)"
   scale 5
   physics Physics {
+    centerOfMass [
+      0 0 0
+    ]
   }
 }
 Rock {
-  translation 1.1826325765855652 1.0891548994710392 0.25590040178129136
-  rotation -0.490285461022867 0.33663497476313736 -0.8039260292314315 0.32369138790989194
+  translation 1.1766093352183487 1.090887578466757 0.22647569580097338
+  rotation -0.5809968426435886 0.3642152737437566 -0.7278666795574185 0.36989471465364054
   scale 9.5
   physics Physics {
   }
 }
 Rock {
-  translation -0.03499033600561884 4.014267835637705 0.18857844656969233
-  rotation -0.3568175998069211 0.7835803770772082 0.5086088803074206 0.5535206774729425
-  name "rock(3)"
-  scale 6
-  physics Physics {
-    damping Damping {
-      linear 1
-      angular 1
-    }
-  }
-}
-Rock {
-  translation 2.103336097296157 1.0214743655102603 0.22349233433045546
-  rotation -0.10352913057659618 0.9543999831559553 0.28000427009952233 0.7912125910843567
+  translation 2.1021427125577303 1.0295705581075436 0.20739758230253683
+  rotation -0.3124881832855428 0.9058025180760573 0.28613446760915545 0.7240511237979264
   name "rock(4)"
   scale 6
   physics Physics {
   }
 }
 Rock {
-  translation 2.9483653985928253 2.052689702456437 0.7235268168320624
-  rotation 0.11749429707852126 0.9624756206767247 -0.24461351098616246 1.072795592838043
+  translation 2.942118682154832 2.059671504555808 0.6879967704020264
+  rotation 0.10767249466569416 0.9553911718941526 -0.2750169859466571 0.9368279920767066
   name "rock(1)"
   scale 8.8
   physics Physics {
   }
 }
 WoodenBox {
-  translation 2.5 3.95 0.3
+  translation 2.499999970872157 3.9499998918911685 0.29960789095983786
+  rotation 0.9660470244690071 -0.25556523974995354 -0.03794146473353811 3.845197877880621e-07
   size 1.9 0.5 0.6
   mass 1
 }
@@ -85,41 +79,41 @@ Table {
   size 0.7 1.5 0.74
 }
 Chair {
-  translation 5.170270992515285 1.0526599426367997 0.009702574944574271
-  rotation 0.007050005738973265 0.041990907417158344 0.9990931193404168 -3.1408763197574716
+  translation 5.170370644682287 1.0529279159312976 0.009574716585006748
+  rotation 0.0069025659632852105 0.04276959474104105 0.9990611174241592 -3.1403650006239734
   physics Physics {
   }
 }
 Chair {
-  translation 4.8299999687982265 1.8799800159166788 -0.0043358993723817685
-  rotation 0.0008718760120082995 -0.9999993555467978 -0.0007271438707781863 0.0072490134818057935
+  translation 4.829999968680556 1.8799800159206994 -0.004488927587772862
+  rotation -2.305237233913758e-06 -0.9999997479010792 -0.0007100651126305962 0.007423366927033945
   name "chair(1)"
   physics Physics {
   }
 }
 Sofa {
-  translation 2.516771871678574 1.991805274358242 -0.11734396867018784
-  rotation 0.00866921090510247 0.017956350219494408 0.9998011873713082 1.5715416768055916
+  translation 2.517359273297953 1.9968393720522457 -0.11931293650976518
+  rotation 0.008517089884589284 0.007707769404159557 0.9999340225588437 1.567004557496738
   physics Physics {
   }
 }
 PottedTree {
-  translation 5.971392075433654 4.01 0.1532143397571311
-  rotation 0 -1 0 1.618044721770756
+  translation 5.975272496058638 4.01 0.15371968167063593
+  rotation 0 -1 0 1.6016488020042945
   physics Physics {
   }
 }
 Pioneer3dx {
-  hidden translation_1 -0.1918 0 0
-  hidden rotation_1 0.5773547501908404 -0.5773480286761755 -0.5773480286757775 2.0943882785114187
-  hidden translation_2 0 -0.0521014 0.012843
-  hidden rotation_2 -1 0 0 3.670976268425085
-  hidden translation_4 0 0.165 0
-  hidden rotation_4 -0.0452918530882686 0.04529191476112176 -0.9979465368951896 1.5728518432646057
-  hidden translation_9 0 -0.165 0
-  hidden rotation_9 -0.04529183905844891 0.04529190073130148 -0.9979465381686785 1.5728518419884985
-  translation 0.000209581 0 0.0949151
-  rotation 0.019052670247520328 -0.01908602253865981 0.9996362936088771 1.5699932853176974
+  hidden position_0_0 0.9094728283578122
+  hidden position_0_1 32.03048039103912
+  hidden position_0_2 30.859811737672594
+  hidden rotation_1 0.8996018656887879 -0.30880131542770783 -0.30880128050150485 1.6764023855668775
+  hidden position_1_0 -81.31376960877321
+  hidden rotation_2 -1 0 0 5.915545922618176
+  hidden rotation_4 -0.41798951798533335 0.4179894950131946 0.8065789142501825 4.499071983819242
+  hidden rotation_9 -0.6580949483411299 0.6580949656196514 0.3658169695270511 3.8429839402213215
+  translation 0 0 0.0948856
+  rotation 0 0 1 1.5708
   controller "rescue_controller"
   extensionSlot [
     DistanceSensor {
@@ -134,4 +128,15 @@ Pioneer3dx {
     InertialUnit {
     }
   ]
+}
+Fridge {
+  hidden position_0_0 -4.390548339799612e-05
+  hidden position_0_1 4.3905502892701075e-05
+  hidden rotation_1 0 0 -1 4.3905486947003926e-05
+  hidden rotation_2 0 0 1 4.3905507176325515e-05
+  translation 0 3.96 0
+  rotation 0 0 1 -1.5707953071795862
+}
+Shelves {
+  translation 2 3 0
 }
