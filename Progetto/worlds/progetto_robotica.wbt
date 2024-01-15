@@ -10,13 +10,13 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/project
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/television/protos/Television.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/factory/containers/protos/WoodenBox.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/rocks/protos/Rock.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/adept/pioneer3/protos/Pioneer3dx.proto"
+EXTERNPROTO "../protos/Pioneer3dx.proto"
 
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.5800866753512669 0.5757971930352698 0.5761571327100085 2.090347943049086
-  position 2.3152563850556755 2.011090149417764 12.891789466465628
+  orientation -0.5811609303305458 0.5696524451721237 0.5811609628723831 2.105985239440126
+  position 1.587520743529216 1.9892060079559684 9.188925395566926
 }
 TexturedBackground {
 }
@@ -29,36 +29,52 @@ RectangleArena {
   wallHeight 1.5
 }
 Rock {
-  translation 4.97 1.5 0.85
+  translation 4.949089170332319 1.5413462744251878 0.8955996596065823
+  rotation -0.9028492119043436 -0.4299572543725757 0.0002449001871614533 0.21979583105531228
   name "rock(5)"
   scale 5
+  physics Physics {
+  }
 }
 Rock {
-  translation 1.12739 1.02626 0
-  rotation 0 0 1 -0.261795307179586
+  translation 1.1826325765855652 1.0891548994710392 0.25590040178129136
+  rotation -0.490285461022867 0.33663497476313736 -0.8039260292314315 0.32369138790989194
   scale 9.5
+  physics Physics {
+  }
 }
 Rock {
-  translation 0.0144157 3.9381 0.164856
-  rotation 0.11734399914643977 0.8913159935165675 0.43793399681446815 0.584055
+  translation -0.03499033600561884 4.014267835637705 0.18857844656969233
+  rotation -0.3568175998069211 0.7835803770772082 0.5086088803074206 0.5535206774729425
   name "rock(3)"
   scale 6
+  physics Physics {
+    damping Damping {
+      linear 1
+      angular 1
+    }
+  }
 }
 Rock {
-  translation 2.02279 0.957621 0.0792311
-  rotation 0.11734399914643977 0.8913159935165675 0.43793399681446815 0.584055
+  translation 2.103336097296157 1.0214743655102603 0.22349233433045546
+  rotation -0.10352913057659618 0.9543999831559553 0.28000427009952233 0.7912125910843567
   name "rock(4)"
   scale 6
+  physics Physics {
+  }
 }
 Rock {
-  translation 2.92263 2.03608 0.746395
-  rotation 0.12731093338444424 0.967040493995227 -0.22050988461801257 1.07646
+  translation 2.9483653985928253 2.052689702456437 0.7235268168320624
+  rotation 0.11749429707852126 0.9624756206767247 -0.24461351098616246 1.072795592838043
   name "rock(1)"
   scale 8.8
+  physics Physics {
+  }
 }
 WoodenBox {
   translation 2.5 3.95 0.3
   size 1.9 0.5 0.6
+  mass 1
 }
 Television {
   translation 2.61 3.88 1.02
@@ -69,28 +85,51 @@ Table {
   size 0.7 1.5 0.74
 }
 Chair {
-  translation 5.17 1.04999 0
-  rotation 0 0 1 3.14159
+  translation 5.170270992515285 1.0526599426367997 0.009702574944574271
+  rotation 0.007050005738973265 0.041990907417158344 0.9990931193404168 -3.1408763197574716
+  physics Physics {
+  }
 }
 Chair {
-  translation 4.83 1.87998 0
-  rotation 0 0 1 -5.307179586466759e-06
+  translation 4.8299999687982265 1.8799800159166788 -0.0043358993723817685
+  rotation 0.0008718760120082995 -0.9999993555467978 -0.0007271438707781863 0.0072490134818057935
   name "chair(1)"
+  physics Physics {
+  }
 }
 Sofa {
-  translation 2.52 1.99 -0.11
-  rotation 0 0 1 1.5708
+  translation 2.516771871678574 1.991805274358242 -0.11734396867018784
+  rotation 0.00866921090510247 0.017956350219494408 0.9998011873713082 1.5715416768055916
+  physics Physics {
+  }
 }
 PottedTree {
-  translation 6.02878 4.01 0.0192573
-  rotation 0 -1 0 1.309
+  translation 5.971392075433654 4.01 0.1532143397571311
+  rotation 0 -1 0 1.618044721770756
+  physics Physics {
+  }
 }
 Pioneer3dx {
-  rotation 0 0 1 1.5708
+  hidden translation_1 -0.1918 0 0
+  hidden rotation_1 0.5773547501908404 -0.5773480286761755 -0.5773480286757775 2.0943882785114187
+  hidden translation_2 0 -0.0521014 0.012843
+  hidden rotation_2 -1 0 0 3.670976268425085
+  hidden translation_4 0 0.165 0
+  hidden rotation_4 -0.0452918530882686 0.04529191476112176 -0.9979465368951896 1.5728518432646057
+  hidden translation_9 0 -0.165 0
+  hidden rotation_9 -0.04529183905844891 0.04529190073130148 -0.9979465381686785 1.5728518419884985
+  translation 0.000209581 0 0.0949151
+  rotation 0.019052670247520328 -0.01908602253865981 0.9996362936088771 1.5699932853176974
   controller "rescue_controller"
   extensionSlot [
     DistanceSensor {
+      translation 0.13 0 0
       name "ds1"
+      lookupTable [
+        0 0 0
+        2 2 0
+      ]
+      aperture 1.5712
     }
     InertialUnit {
     }

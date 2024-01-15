@@ -40,8 +40,7 @@ backdx= robot.getDevice('so11')
 backsx= robot.getDevice('so12')
 backsx.enable(timestep)
 backdx.enable(timestep)
-ds1=robot.getDevice('ds1')
-ds1.enable(timestep)
+
 #enable imu
 imu = robot.getDevice('inertial unit')
 imu.enable(timestep)
@@ -55,7 +54,7 @@ raggio_ruota=0.19/2
 dist_ruote=0.33205
 d_mid=dist_ruote/2
 
-dist_value=[0,0,0,0,0]
+dist_value=[0,0,0,0]
 
 circonf_ruota=raggio_ruota*2*math.pi #0.61 m
 enc_unit=circonf_ruota/6.29 #porzione di circonferenza per radiante
@@ -131,15 +130,30 @@ def raddrizza():
            print(f"Ci siamo mossi di {0.257-dist_value[3]} in avanti")
        
  """          
-     
+def sonar_to_m(val):
+    # Punti dati
+    x1, y1 = 0, 1024  # (distanza in metri, valore del sensore)
+    x2, y2 = 5, 0     # (distanza in metri, valore del sensore)
+
+    # Calcola il coefficiente angolare (m) e l'intercetta (b)
+    m = (y2 - y1) / (x2 - x1)
+    b = y1 - m * x1
+
+    # Calcola la distanza in metri utilizzando l'equazione della retta
+    distanza_metri = (val - b) / m
+
+    return distanza_metri
+
+
+  
 def distancesensor():
   
        global dist_value
-       dist_value[0]=frontdx.getValue()
-       dist_value[1]=frontsx.getValue()
-       dist_value[2]=backdx.getValue()
-       dist_value[3]=backsx.getValue()
-       dist_value[4]=backsx.getValue()
+       dist_value[0]=sonar_to_m(frontdx.getValue())
+       dist_value[1]=sonar_to_m(frontsx.getValue())
+       dist_value[2]=sonar_to_m(backdx.getValue())
+       dist_value[3]=sonar_to_m(backsx.getValue())
+     
        print(dist_value)
     
 def get_time(distance, speed):
