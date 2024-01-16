@@ -12,12 +12,13 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/project
 EXTERNPROTO "../protos/Rock.proto"
 EXTERNPROTO "../protos/Pioneer3dx.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/kitchen/fridge/protos/Fridge.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/adept/pioneer3/protos/Pioneer3Gripper.proto"
 
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.5773502691896258 -0.5773502691896258 -0.5773502691896258 4.188785307179587
-  position 0.22635214905346593 0.17492126159340673 3.3087218096942106
+  orientation -0.5713344886259327 0.5946574202021684 0.5656495864977237 2.077399042662906
+  position 1.2491988039953692 1.4795634500336459 7.732490268614789
 }
 TexturedBackground {
 }
@@ -34,11 +35,6 @@ Rock {
   rotation -0.8048054420367661 -0.5915684104670536 -0.04832200539598066 0.31625857691916104
   name "rock(5)"
   scale 5
-  physics Physics {
-    centerOfMass [
-      0 0 0
-    ]
-  }
 }
 Rock {
   translation 1.14691 0.98611 0.233467
@@ -95,6 +91,9 @@ Pioneer3dx {
   rotation 0 0 1 1.5708
   controller "rescue_controller"
   extensionSlot [
+    DEF GRIPPER_BASE Pioneer3Gripper {
+      translation 0.09 0 0.03
+    }
     InertialUnit {
     }
   ]
@@ -104,7 +103,7 @@ Fridge {
   rotation 0 0 1 -1.5707953071795862
 }
 Solid {
-  translation 1.48 0.99 0.46
+  translation 1.48 0.98 0.46
   boundingObject Box {
     size 1.9 0.95 0.95
   }

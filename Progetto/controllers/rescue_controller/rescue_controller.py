@@ -12,8 +12,8 @@ MAX_SPEED = 4
 robot = Robot()
 
 # get the time step of the current world.
-
-timestep = int(robot.getBasicTimeStep())
+timestep=TIME_STEP
+#timestep = int(robot.getBasicTimeStep())
 
 leftMotor = robot.getDevice('left wheel')
 rightMotor = robot.getDevice('right wheel')
@@ -106,43 +106,25 @@ def robot_update(dist):
             robot_pose[0]-=dist
     print(f"posizione:({robot_pose[0]},{robot_pose[1]}), direzione:{robot_pose[2]}")
 
-def raddrizza():
+def layer_reattivo():
     
        global dist_value
        dist_value[0]=sonar_to_m(frontdx.getValue())
        dist_value[1]=sonar_to_m(frontsx.getValue())
        dist_value[2]=sonar_to_m(backdx.getValue())
        dist_value[3]=sonar_to_m(backsx.getValue())
-       max=0.500
-       min=0.252
        
-       if(dist_value[0]<min):
-           move(min-dist_value[0],False)
-           print(f"Ci siamo mossi di {min-dist_value[0]} indietro")
-       elif(dist_value[1]<min):
-           move(min-dist_value[1],False)
-           print(f"Ci siamo mossi di {min-dist_value[1]} indietro")
-       elif(dist_value[2]<min):
-           move(min-dist_value[2],True)
-           print(f"Ci siamo mossi di {min-dist_value[2]} in avanti")    
-  
-       elif(dist_value[3]<min):
-           move(min-dist_value[3],True)
-           print(f"Ci siamo mossi di {min-dist_value[3]} in avanti")
+       delta=0.300
+       
+       
+       if(dist_value[0]<delta or dist_value[1]<delta):
+           print(f"Ogetto rilevato a distanza {dist_value[0]}m")
+           return False
            
-       if(dist_value[0]>max and dist_value[0]<1):
-           move(dist_value[0]-max,False)
-           print(f"Ci siamo mossi di {dist_value[0]-max} indietro")
-       elif(dist_value[1]>max and dist_value[1]<1):
-           move(dist_value[1]-max,False)
-           print(f"Ci siamo mossi di {dist_value[1]-max} indietro")
-       elif(dist_value[2]>max and dist_value[2]<1):
-           move(dist_value[2]-max,True)
-           print(f"Ci siamo mossi di {dist_value[2]-max} in avanti")    
+       else:
+           return True
+        
   
-       elif(dist_value[3]>max and dist_value[3]<1):
-           move(dist_value[3]-max,True)
-           print(f"Ci siamo mossi di {dist_value[3]-max} in avanti")
            
        
        
@@ -191,7 +173,8 @@ def move(dist,forward):
         maxspeed=-MAX_SPEED
     while robot.step(TIME_STEP) != -1:
         
-        if robot.getTime() < end_time:
+        if robot.getTime() < end_time and layer_reattivo():
+            
             leftMotor.setVelocity(maxspeed)
             rightMotor.setVelocity(maxspeed)
             
@@ -204,65 +187,79 @@ def move(dist,forward):
   
             
             
-def get_rot_speed_rad(degrees, seconds, raggio_ruota, d_mid):
-    circle = d_mid * 2 * math.pi
-    dist = (degrees / 360) * circle
-    linear_vel = dist / seconds
-    left_wheel_speed = linear_vel / raggio_ruota
-    right_wheel_speed = -1 * linear_vel /raggio_ruota
-    return left_wheel_speed, right_wheel_speed
-    
-               
-def rotate(degrees, seconds, direction):
 
     
-    # get the left and right rotaional speeds to turn x degrees in y seconds
-    left, right = get_rot_speed_rad(degrees, seconds, raggio_ruota, d_mid)
-    end_time = seconds + robot.getTime()
-    print(f"Rotating {direction}...")
+def rotate(dir):
+    last_dir=direction()
+    left_speed=0.5
+    right_speed=-0.5
+    if(dir=="North"):
+        if(last_dir=="East"):
+            left_speed=-0.5
+            right_speed=0.5
+        degree=90
+    elif(dir=="South"):
+        if(last_dir=="West"):
+                left_speed=-0.5
+                right_speed=0.5
     
+        degree=-90
+    elif(dir=="East"):
+        if(last_dir=="South"):
+                left_speed=-0.5
+                right_speed=0.5
+        degree=0
+    elif(dir=="West"):
+        if(last_dir=="North"):
+                left_speed=-0.5
+                right_speed=0.5
+        degree=180
+    print(f"Rotating {dir}...")
+   
     while robot.step(TIME_STEP) != -1:
-        print((imu.getRollPitchYaw()[2] * 180) / 3.14159)
-        if robot.getTime() < end_time:
-            leftMotor.setVelocity(left)
-            rightMotor.setVelocity(right)
+        
+        new_degree=round((imu.getRollPitchYaw()[2] * 180) / 3.14159)
+        
+        if(degree!=new_degree):
+            
+            leftMotor.setVelocity(left_speed)
+            rightMotor.setVelocity(right_speed)
         else:
             stop_motors()
             break
-    raddrizza()      
+         
     robot_update(0)
+    
     
             
 def raggiungi():
+
     move(3.0,True)
-    
-    rotate(90, 1.5, "right")
-    
-    
+    rotate("East")
     move(6.0,True)
     
-    rotate(90, 1.5, "right")
+    rotate("South")
     
     move(3.0,True)
     
-    rotate(90, 1.5, "right")
+    rotate("West")
     
     
     move(2.0,True)
     
-    rotate(90, 1.5, "right")
+    rotate("North")
     
     move(1.0,True)
     
-    rotate(-90, 1.5, "right")
+    rotate("West")
     
     move(1.0,True)
     
-    rotate(-90, 1.5, "right")
+    rotate("South")
     move(1.0,True)
-    rotate(90, 1.5, "right")
+    rotate("West")
     move(3.0,True)
-    rotate(90, 1.5, "right")
+    rotate("North")
     
                   
 def main():
@@ -270,7 +267,9 @@ def main():
     while robot.step(TIME_STEP) != -1:
       
           raggiungi()
-          #rotate(90, 1.5, "right")
+          #rotate2("West")
+          
+          
           
           
            
