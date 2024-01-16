@@ -51,7 +51,7 @@ dist_values=[0,0] #distanza percorsa misurata con l'odometria
 
 raggio_ruota=0.19/2
 
-dist_ruote=0.33205
+dist_ruote=0.34215
 d_mid=dist_ruote/2
 
 dist_value=[0,0,0,0]
@@ -105,31 +105,48 @@ def robot_update(dist):
         elif(dir=="South"):
             robot_pose[0]-=dist
     print(f"posizione:({robot_pose[0]},{robot_pose[1]}), direzione:{robot_pose[2]}")
-"""
+
 def raddrizza():
     
        global dist_value
-       dist_value[0]=frontdx.getValue()/1000
-       dist_value[1]=frontsx.getValue()/1000
-       dist_value[2]=backdx.getValue()/1000
-       dist_value[3]=backsx.getValue()/1000
-      
-       print(dist_value)
-       if(dist_value[0]<0.257):
-           move(0.257-dist_value[0],False)
-           print(f"Ci siamo mossi di {0.257-dist_value[0]} in dietro")
-       elif(dist_value[1]<0.257):
-           move(0.257-dist_value[1],False)
-           print(f"Ci siamo mossi di {0.257-dist_value[1]} in dietro")
-       elif(dist_value[2]<0.257):
-           move(0.257-dist_value[2],True)
-           print(f"Ci siamo mossi di {0.257-dist_value[2]} in avanti")    
-  
-       elif(dist_value[3]<0.257):
-           move(0.257-dist_value[3],True)
-           print(f"Ci siamo mossi di {0.257-dist_value[3]} in avanti")
+       dist_value[0]=sonar_to_m(frontdx.getValue())
+       dist_value[1]=sonar_to_m(frontsx.getValue())
+       dist_value[2]=sonar_to_m(backdx.getValue())
+       dist_value[3]=sonar_to_m(backsx.getValue())
+       max=0.500
+       min=0.252
        
- """          
+       if(dist_value[0]<min):
+           move(min-dist_value[0],False)
+           print(f"Ci siamo mossi di {min-dist_value[0]} indietro")
+       elif(dist_value[1]<min):
+           move(min-dist_value[1],False)
+           print(f"Ci siamo mossi di {min-dist_value[1]} indietro")
+       elif(dist_value[2]<min):
+           move(min-dist_value[2],True)
+           print(f"Ci siamo mossi di {min-dist_value[2]} in avanti")    
+  
+       elif(dist_value[3]<min):
+           move(min-dist_value[3],True)
+           print(f"Ci siamo mossi di {min-dist_value[3]} in avanti")
+           
+       if(dist_value[0]>max and dist_value[0]<1):
+           move(dist_value[0]-max,False)
+           print(f"Ci siamo mossi di {dist_value[0]-max} indietro")
+       elif(dist_value[1]>max and dist_value[1]<1):
+           move(dist_value[1]-max,False)
+           print(f"Ci siamo mossi di {dist_value[1]-max} indietro")
+       elif(dist_value[2]>max and dist_value[2]<1):
+           move(dist_value[2]-max,True)
+           print(f"Ci siamo mossi di {dist_value[2]-max} in avanti")    
+  
+       elif(dist_value[3]>max and dist_value[3]<1):
+           move(dist_value[3]-max,True)
+           print(f"Ci siamo mossi di {dist_value[3]-max} in avanti")
+           
+       
+       
+          
 def sonar_to_m(val):
     # Punti dati
     x1, y1 = 0, 1024  # (distanza in metri, valore del sensore)
@@ -145,7 +162,7 @@ def sonar_to_m(val):
     return distanza_metri
 
 
-  
+"""  
 def distancesensor():
   
        global dist_value
@@ -155,7 +172,7 @@ def distancesensor():
        dist_value[3]=sonar_to_m(backsx.getValue())
      
        print(dist_value)
-    
+"""    
 def get_time(distance, speed):
     rad=(distance*2*3.14)/(circonf_ruota)
     return rad/speed
@@ -173,7 +190,7 @@ def move(dist,forward):
     if(forward==False):
         maxspeed=-MAX_SPEED
     while robot.step(TIME_STEP) != -1:
-        distancesensor()
+        
         if robot.getTime() < end_time:
             leftMotor.setVelocity(maxspeed)
             rightMotor.setVelocity(maxspeed)
@@ -205,35 +222,47 @@ def rotate(degrees, seconds, direction):
     print(f"Rotating {direction}...")
     
     while robot.step(TIME_STEP) != -1:
-        
+        print((imu.getRollPitchYaw()[2] * 180) / 3.14159)
         if robot.getTime() < end_time:
             leftMotor.setVelocity(left)
             rightMotor.setVelocity(right)
         else:
             stop_motors()
             break
-            
+    raddrizza()      
     robot_update(0)
     
             
 def raggiungi():
     move(3.0,True)
-   
+    
     rotate(90, 1.5, "right")
+    
+    
+    move(6.0,True)
+    
+    rotate(90, 1.5, "right")
+    
+    move(3.0,True)
+    
+    rotate(90, 1.5, "right")
+    
+    
+    move(2.0,True)
+    
+    rotate(90, 1.5, "right")
+    
     move(1.0,True)
- 
+    
     rotate(-90, 1.5, "right")
     
     move(1.0,True)
     
-    rotate(180, 3, "right")
-    move(2.0,True)
-    rotate(90, 1.5, "right")
-    
-    move(1.0,True)
     rotate(-90, 1.5, "right")
-    move(2.0,True)
-    rotate(180, 3, "right")
+    move(1.0,True)
+    rotate(90, 1.5, "right")
+    move(3.0,True)
+    rotate(90, 1.5, "right")
     
                   
 def main():
@@ -242,6 +271,7 @@ def main():
       
           raggiungi()
           #rotate(90, 1.5, "right")
+          
           
            
 
