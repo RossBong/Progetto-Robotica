@@ -1,7 +1,7 @@
 
 from controller import Robot, DistanceSensor, Motor
 import math
-import Movement
+from Movement import Movement
 
 TIME_STEP = 32
 
@@ -12,21 +12,14 @@ robot = Robot()
 # get the time step of the current world.
 timestep=TIME_STEP
 #timestep = int(robot.getBasicTimeStep())
-
-
-
-
-
-            
-
     
                   
 def main():
     movement=Movement(robot,timestep)
-    print(movement.dist_ruote)
-    #while robot.step(TIME_STEP) != -1:
+   
+    while robot.step(TIME_STEP) != -1:
       
-          #raggiungi()
+          movement.raggiungi()
           #rotate2("West")
           
           

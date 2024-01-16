@@ -2,67 +2,67 @@ import math
 from controller import Robot, DistanceSensor, Motor
 class Movement:
 
-    MAX_SPEED = 4
     
-    ps_values=[0, 0] #radianti relativi all'odometria
-    dist_values=[0,0] #distanza percorsa misurata con l'odometria
-    
-    raggio_ruota=0.19/2
-    
-    dist_ruote=0.34215
-    d_mid=dist_ruote/2
-    
-    sd_value=[0,0,0,0]
-    
-    circonf_ruota=raggio_ruota*2*math.pi #0.61 m
-    enc_unit=circonf_ruota/6.29 #porzione di circonferenza per radiante
-    
-    robot_pose=[0,0," "]
     
     
     def __init__(self,robot,timestep):
         self.robot=robot
         self.timestep=timestep
-        leftMotor = robot.getDevice('left wheel')
-        rightMotor = robot.getDevice('right wheel')
+        self.leftMotor = robot.getDevice('left wheel')
+        self.rightMotor = robot.getDevice('right wheel')
     
     
-        leftMotor.setPosition(float('inf'))
-        rightMotor.setPosition(float('inf'))
+        self.leftMotor.setPosition(float('inf'))
+        self.rightMotor.setPosition(float('inf'))
     
-        leftMotor.setVelocity(0.0)
-        rightMotor.setVelocity(0.0)
+        self.leftMotor.setVelocity(0.0)
+        self.rightMotor.setVelocity(0.0)
     
         #position sensor instance
-        left_ps= robot.getDevice('left wheel sensor')
-        left_ps.enable(timestep)
-        right_ps= robot.getDevice('right wheel sensor')
-        right_ps.enable(timestep)
+        self.left_ps= robot.getDevice('left wheel sensor')
+        self.left_ps.enable(timestep)
+        self.right_ps= robot.getDevice('right wheel sensor')
+        self.right_ps.enable(timestep)
         
         #distance sensor instance
-        frontsx= robot.getDevice('so3')
-        frontdx= robot.getDevice('so4')
-        frontsx.enable(timestep)
-        frontdx.enable(timestep)
-        backdx= robot.getDevice('so11')
-        backsx= robot.getDevice('so12')
-        backsx.enable(timestep)
-        backdx.enable(timestep)
+        self.frontsx= robot.getDevice('so3')
+        self.frontdx= robot.getDevice('so4')
+        self.frontsx.enable(timestep)
+        self.frontdx.enable(timestep)
+        self.backdx= robot.getDevice('so11')
+        self.backsx= robot.getDevice('so12')
+        self.backsx.enable(timestep)
+        self.backdx.enable(timestep)
         
         #enable imu
-        imu = robot.getDevice('inertial unit')
-        imu.enable(timestep)
+        self.imu = robot.getDevice('inertial unit')
+        self.imu.enable(timestep)
+        self.MAX_SPEED = 4
+    
+        self.ps_values=[0, 0] #radianti relativi all'odometria
+        self.dist_values=[0,0] #distanza percorsa misurata con l'odometria
+        
+        self.raggio_ruota=0.19/2
+        
+        self.dist_ruote=0.34215
+        self.d_mid=self.dist_ruote/2
+        
+        self.sd_value=[0,0,0,0]
+        
+        self.circonf_ruota=self.raggio_ruota*2*math.pi #0.61 m
+        self.enc_unit=self.circonf_ruota/6.29 #porzione di circonferenza per radiante
+        
+        self.robot_pose=[0,0," "]
         
    
         
         
     
 
-    
-    
+
        
-    def direction():
-        q=(imu.getRollPitchYaw()[2] * 180) / 3.14159
+    def direction(self):
+        q=(self.imu.getRollPitchYaw()[2] * 180) / 3.14159
         if (q<= -135 and q >= -180) or (135 <= q <= 180):
             return "West"
         elif q <= -45 and q > -135:
@@ -72,38 +72,37 @@ class Movement:
         elif (-45 < q <= 0) or (0 <= q < 45):
             return "East" 
         
-    def robot_update(dist):
-        
-        
-        global robot_pose
-        dir=direction()
+    def robot_update(self,dist):
+ 
+    
+        dir=self.direction()
         if (dist==0):  #il robot ha ruotato
         
-            robot_pose[2]=dir
+            self.robot_pose[2]=dir
         else:  #il robot si muove di una casella nella precedente direzione
             if(dir=="North"):
-                robot_pose[0]+=dist
+                self.robot_pose[0]+=dist
             elif(dir=="West"):
-                robot_pose[1]-=dist
+                self.robot_pose[1]-=dist
             elif(dir=="East"):
-                robot_pose[1]+= dist
+                self.robot_pose[1]+= dist
             elif(dir=="South"):
-                robot_pose[0]-=dist
-        print(f"posizione:({robot_pose[0]},{robot_pose[1]}), direzione:{robot_pose[2]}")
+                self.robot_pose[0]-=dist
+        print(f"posizione:({self.robot_pose[0]},{self.robot_pose[1]}), direzione:{self.robot_pose[2]}")
     
-    def layer_reattivo():
+    def layer_reattivo(self):
         
-           global sd_value
-           sd_value[0]=sonar_to_m(frontdx.getValue())
-           sd_value[1]=sonar_to_m(frontsx.getValue())
-           sd_value[2]=sonar_to_m(backdx.getValue())
-           sd_value[3]=sonar_to_m(backsx.getValue())
+           
+           self.sd_value[0]=self.sonar_to_m(self.frontdx.getValue())
+           self.sd_value[1]=self.sonar_to_m(self.frontsx.getValue())
+           self.sd_value[2]=self.sonar_to_m(self.backdx.getValue())
+           self.sd_value[3]=self.sonar_to_m(self.backsx.getValue())
            
            delta=0.300
            
            
-           if(sd_value[0]<delta or sd_value[1]<delta):
-               print(f"Oggetto rilevato a distanza {sd_value[0]}m")
+           if(self.sd_value[0]<delta or self.sd_value[1]<delta):
+               print(f"Oggetto rilevato a distanza {self.sd_value[0]}m")
                return False
                
            else:
@@ -114,7 +113,7 @@ class Movement:
            
            
               
-    def sonar_to_m(val):
+    def sonar_to_m(self,val):
         # Punti dati
         x1, y1 = 0, 1024  # (distanza in metri, valore del sensore)
         x2, y2 = 5, 0     # (distanza in metri, valore del sensore)
@@ -129,42 +128,41 @@ class Movement:
         return distanza_metri
     
       
-    def get_time(distance, speed):
-        rad=(distance*2*3.14)/(circonf_ruota)
+    def get_time(self,distance, speed):
+        rad=(distance*2*3.14)/(self.circonf_ruota)
         return rad/speed
         
-    def stop_motors():
-        leftMotor.setVelocity(0)
-        rightMotor.setVelocity(0)
+    def stop_motors(self):
+        self.leftMotor.setVelocity(0)
+        self.rightMotor.setVelocity(0)
         print("Motors stopped.")
         
-    def move(dist,forward):
-        maxspeed=MAX_SPEED
-        seconds = get_time(dist, MAX_SPEED)
-        end_time = seconds + robot.getTime()
+    def move(self,dist):
+        maxspeed=self.MAX_SPEED
+        seconds = self.get_time(dist, maxspeed)
+        end_time = seconds + self.robot.getTime()
         print(f"Moving {dist} m forward...")
-        if(forward==False):
-            maxspeed=-MAX_SPEED
-        while robot.step(timestep) != -1:
+        
+        while self.robot.step(self.timestep) != -1:
             
-            if robot.getTime() < end_time and layer_reattivo():
+            if self.robot.getTime() < end_time and self.layer_reattivo():
                 
-                leftMotor.setVelocity(maxspeed)
-                rightMotor.setVelocity(maxspeed)
+                self.leftMotor.setVelocity(maxspeed)
+                self.rightMotor.setVelocity(maxspeed)
                 
             else:
-                stop_motors()
+                self.stop_motors()
                 break
         if(dist>0.257):        
-            robot_update(dist)
+            self.robot_update(dist)
         
       
                 
                 
     
         
-    def rotate(dir):
-        last_dir=direction()
+    def rotate(self,dir):
+        last_dir=self.direction()
         left_speed=0.5
         right_speed=-0.5
         if(dir=="North"):
@@ -190,48 +188,48 @@ class Movement:
             degree=180
         print(f"Rotating {dir}...")
        
-        while robot.step(timestep) != -1:
+        while self.robot.step(self.timestep) != -1:
             
-            new_degree=round((imu.getRollPitchYaw()[2] * 180) / 3.14159)
+            new_degree=round((self.imu.getRollPitchYaw()[2] * 180) / 3.14159)
             
             if(degree!=new_degree):
                 
-                leftMotor.setVelocity(left_speed)
-                rightMotor.setVelocity(right_speed)
+                self.leftMotor.setVelocity(left_speed)
+                self.rightMotor.setVelocity(right_speed)
             else:
-                stop_motors()
+                self.stop_motors()
                 break
              
-        robot_update(0)
+        self.robot_update(0)
         
-    def raggiungi():
+    def raggiungi(self):
     
-        move(3.0,True)
-        rotate("East")
-        move(6.0,True)
+        self.move(3.0)
+        self.rotate("East")
+        self.move(6.0)
         
-        rotate("South")
+        self.rotate("South")
         
-        move(3.0,True)
+        self.move(3.0)
         
-        rotate("West")
+        self.rotate("West")
         
         
-        move(2.0,True)
+        self.move(2.0)
         
-        rotate("North")
+        self.rotate("North")
         
-        move(1.0,True)
+        self.move(1.0)
         
-        rotate("West")
+        self.rotate("West")
         
-        move(1.0,True)
+        self.move(1.0)
         
-        rotate("South")
-        move(1.0,True)
-        rotate("West")
-        move(3.0,True)
-        rotate("North")
+        self.rotate("South")
+        self.move(1.0)
+        self.rotate("West")
+        self.move(3.0)
+        self.rotate("North")
         
         
         
