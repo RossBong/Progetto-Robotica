@@ -5,7 +5,7 @@ class Movement:
     
     
     
-    def __init__(self,robot,timestep):
+    def __init__(self,robot,timestep,x_start,y_start):
         self.robot=robot
         self.timestep=timestep
         self.leftMotor = robot.getDevice('left wheel')
@@ -33,6 +33,10 @@ class Movement:
         self.backsx= robot.getDevice('so12')
         self.backsx.enable(timestep)
         self.backdx.enable(timestep)
+        self.left= robot.getDevice('so0')
+        self.left.enable(timestep)
+        self.right= robot.getDevice('so7')
+        self.right.enable(timestep)
         
         #enable imu
         self.imu = robot.getDevice('inertial unit')
@@ -47,16 +51,23 @@ class Movement:
         self.dist_ruote=0.34215
         self.d_mid=self.dist_ruote/2
         
-        self.sd_value=[0,0,0,0]
+        self.sd_value=[0,0,0,0,0,0]#[frontdx,frontsx,bacdx,backsx,left,right]
         
         self.circonf_ruota=self.raggio_ruota*2*math.pi #0.61 m
         self.enc_unit=self.circonf_ruota/6.29 #porzione di circonferenza per radiante
         
-        self.robot_pose=[0,0," "]
+        self.robot_pose=[x_start,y_start,"North"]
         
    
         
-        
+    def sensordistance(self):
+       self.sd_value[0]=self.sonar_to_m(self.frontdx.getValue())
+       self.sd_value[1]=self.sonar_to_m(self.frontsx.getValue())
+       self.sd_value[2]=self.sonar_to_m(self.backdx.getValue())
+       self.sd_value[3]=self.sonar_to_m(self.backsx.getValue()) 
+       self.sd_value[4]=self.sonar_to_m(self.left.getValue())
+       self.sd_value[5]=self.sonar_to_m(self.right.getValue()) 
+           
     
 
 
@@ -81,22 +92,19 @@ class Movement:
             self.robot_pose[2]=dir
         else:  #il robot si muove di una casella nella precedente direzione
             if(dir=="North"):
-                self.robot_pose[0]+=dist
+                self.robot_pose[0]-=dist
             elif(dir=="West"):
                 self.robot_pose[1]-=dist
             elif(dir=="East"):
                 self.robot_pose[1]+= dist
             elif(dir=="South"):
-                self.robot_pose[0]-=dist
+                self.robot_pose[0]+=dist
         print(f"posizione:({self.robot_pose[0]},{self.robot_pose[1]}), direzione:{self.robot_pose[2]}")
     
     def layer_reattivo(self):
         
            
-           self.sd_value[0]=self.sonar_to_m(self.frontdx.getValue())
-           self.sd_value[1]=self.sonar_to_m(self.frontsx.getValue())
-           self.sd_value[2]=self.sonar_to_m(self.backdx.getValue())
-           self.sd_value[3]=self.sonar_to_m(self.backsx.getValue())
+           self.sensordistance()
            
            delta=0.300
            
@@ -153,8 +161,8 @@ class Movement:
             else:
                 self.stop_motors()
                 break
-        if(dist>0.257):        
-            self.robot_update(dist)
+           
+        self.robot_update(dist)
         
       
                 
@@ -200,7 +208,7 @@ class Movement:
                 self.stop_motors()
                 break
              
-        self.robot_update(0)
+        self.robot_update(0)#aggiornamernto direzione
         
     def raggiungi(self):
     
@@ -230,7 +238,22 @@ class Movement:
         self.rotate("West")
         self.move(3.0)
         self.rotate("North")
+    
+    def follow_path(self,path):
         
+        for x,y in path[1:]:
+          if((x-self.robot_pose[0])==0 and y>self.robot_pose[1] ):
+              self.rotate("East")
+              self.move(1)
+          elif((x-self.robot_pose[0])==0 and y<self.robot_pose[1] ):
+              self.rotate("West")
+              self.move(1)
+          elif((y-self.robot_pose[1])==0 and x<self.robot_pose[0] ):
+              self.rotate("North")
+              self.move(1)
+          elif((y-self.robot_pose[1])==0 and x>self.robot_pose[0] ):
+              self.rotate("South")
+              self.move(1)
         
         
         

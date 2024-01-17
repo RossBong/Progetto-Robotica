@@ -11,14 +11,15 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/project
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/factory/containers/protos/WoodenBox.proto"
 EXTERNPROTO "../protos/Rock.proto"
 EXTERNPROTO "../protos/Pioneer3dx.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/kitchen/fridge/protos/Fridge.proto"
+EXTERNPROTO "../protos/Fridge.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/adept/pioneer3/protos/Pioneer3Gripper.proto"
+EXTERNPROTO "../protos/Pedestrian.proto"
 
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.5773502691896258 0.5773502691896258 0.5773502691896258 2.0944
-  position 2.961248359341235 1.9614482419668497 11.285981609860029
+  orientation -0.5560950594771008 0.5787960245036027 0.5964507078074306 2.0304522979109665
+  position 2.42975180602293 1.5173295283206591 11.337352667456614
 }
 TexturedBackground {
 }
@@ -31,10 +32,10 @@ RectangleArena {
   wallHeight 1.5
 }
 Rock {
-  translation 4.939760774391732 1.545189181260791 0.9146581511526739
+  translation 4.93643 1.20491 0.194082
   rotation -0.8048054420367661 -0.5915684104670536 -0.04832200539598066 0.31625857691916104
   name "rock(5)"
-  scale 5
+  scale 8
 }
 Rock {
   translation 1.14691 0.98611 0.233467
@@ -54,8 +55,8 @@ Rock {
   scale 8.8
 }
 WoodenBox {
-  translation 2.500000000353098 3.9500000033303286 0.2998037998183487
-  rotation 2.2300843403210928e-05 -6.443069243815818e-06 -0.9999999997305796 1.4589261614098514e-08
+  translation 2.500000000353125 3.9500000033304214 0.2996161909771288
+  rotation 9.764207837629492e-07 -2.8299688184610285e-07 -0.9999999999994833 1.458926161045154e-08
   size 1.9 0.5 0.6
   mass 1
 }
@@ -64,18 +65,13 @@ Television {
   rotation 0 0 1 -1.5707953071795862
 }
 Table {
-  translation 5 1.5 0
+  translation 4.54 1.5 0.36
+  rotation 0 1 0 1.5708
   size 0.7 1.5 0.74
 }
 Chair {
-  translation 5.170800116146324 1.0534632453363917 0.01480858170957644
-  rotation 0.005317725597818716 0.04213370788931211 0.9990978292709702 -3.1387741015356743
-  physics Physics {
-  }
-}
-Chair {
-  translation 4.829999968680556 1.8799800159206994 -0.004488927587772862
-  rotation -2.305237233913758e-06 -0.9999997479010792 -0.0007100651126305962 0.007423366927033945
+  translation 4.85 1.82998 -0.00434051
+  rotation -2.305237233913758e-06 -0.999999747901079 -0.0007100651126305962 0.007423366927063008
   name "chair(1)"
 }
 Sofa {
@@ -87,10 +83,20 @@ PottedTree {
   rotation 0 -1 0 1.6016488020042945
 }
 Pioneer3dx {
-  translation 0 0 0.1
-  rotation 0 0 1 1.5708
+  translation 0 0 0.0938679
+  rotation 0.013227009069627947 -0.013226995551673643 0.9998250311028165 1.5709751252789053
   controller "rescue_controller"
   extensionSlot [
+    Camera {
+      translation 0.17 0 0.12
+      rotation 0 1 0 4.07987e-06
+      fieldOfView 0.9
+      width 500
+      height 500
+      recognition Recognition {
+        segmentation TRUE
+      }
+    }
     DEF GRIPPER_BASE Pioneer3Gripper {
       translation 0.09 0 0.03
     }
@@ -121,4 +127,8 @@ Solid {
   boundingObject Box {
     size 2 1 0.95
   }
+}
+Pedestrian {
+  translation 5.90626 2.97849 1.27
+  rotation 0 0 1 -2.8797953071795863
 }
