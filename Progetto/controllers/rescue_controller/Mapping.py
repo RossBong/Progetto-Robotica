@@ -35,38 +35,42 @@ class Mapping:
             self.visited[x,y]=True 
             if(self.movement.direction()!="North"):
                 self.movement.rotate("North")
-            self.movement.sensordistance()
-            sd=self.movement.sd_value
+            #self.movement.sensordistance()
+            self.movement.lidarsensor()
+            sd=self.movement.lidar_value
             
+            
+            print("lidar")
+            print(sd)
             print("Cam")
             self.cam.recognition()
             print("___________")
             #North
-            if(sd[0]>1 or sd[1]>1):
+            if(sd[0]>1):
                 self.map[x-1,y]=0
                 
-            elif(sd[0]<1 or sd[1]<1):
+            elif(sd[0]<1):
                 self.map[x-1,y]=1
                 
             
             #East
-            if(sd[5]>1):
+            if(sd[2]>1):
                 self.map[x,y+1]=0
-            elif(sd[5]<1):
+            elif(sd[2]<1):
                 self.map[x,y+1]=1
                 
             
             #South
-            if(sd[2]>1 or sd[3]>1):
+            if(sd[1]>1):
                 self.map[x+1,y]=0
-            elif(sd[2]<1 or sd[3]<1):
+            elif(sd[1]<1):
                 self.map[x+1,y]=1
                 
             
             #West
-            if(sd[4]>1):
+            if(sd[3]>1):
                 self.map[x,y-1]=0
-            elif(sd[4]<1):
+            elif(sd[3]<1):
                 self.map[x,y-1]=1
                 
                 
@@ -90,14 +94,19 @@ class Mapping:
                 self.movement.move(1)
             else:
                 free_cells=self.find_free_novisited()
-                path=self.find_path_min(free_cells,x,y)
-                print(path)
-                self.movement.follow_path(path)
+                if(len(free_cells)==0):
+                   print("Imposto i punti non raggiungibili a 1")
+                   self.map=abs(self.map) 
+                else:
+                    path=self.find_path_min(free_cells,x,y)
+                    print(path)
+                    self.movement.follow_path(path)
                 
         path=self.find_path_min([(self.x_start,self.y_start)],x,y)
         print(path)
         self.movement.follow_path(path) 
-        self.movement.rotate("North")      
+        self.movement.rotate("North")
+              
             
     def find_free_novisited(self):
         #funzione che restuisce una lista di coordinate delle celle

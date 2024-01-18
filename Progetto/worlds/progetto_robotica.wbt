@@ -2,7 +2,6 @@
 
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackground.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/RectangleArena.proto"
 EXTERNPROTO "../protos/Sofa.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/plants/protos/PottedTree.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/tables/protos/Table.proto"
@@ -14,28 +13,141 @@ EXTERNPROTO "../protos/Pioneer3dx.proto"
 EXTERNPROTO "../protos/Fridge.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/adept/pioneer3/protos/Pioneer3Gripper.proto"
 EXTERNPROTO "../protos/Pedestrian.proto"
+EXTERNPROTO "../protos/Door.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/Floor.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/apartment_structure/protos/Wall.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/apartment_structure/protos/Window.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/appearances/protos/Roughcast.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/kitchen/oven/protos/Oven.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/kitchen/components/protos/Worktop.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/kitchen/components/protos/HotPlate.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/kitchen/components/protos/Sink.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/bathroom/protos/WashingMachine.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/cabinet/protos/Cabinet.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/appearances/protos/PaintedWood.proto"
+EXTERNPROTO "../protos/Armchair.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/paintings/protos/PortraitPainting.proto"
 
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.5560950594771008 0.5787960245036027 0.5964507078074306 2.0304522979109665
-  position 2.42975180602293 1.5173295283206591 11.337352667456614
+  orientation -0.5773502691896258 0.5773502691896258 0.5773502691896258 2.0944
+  position 7.028750932295229 3.525669873322756 21.904090380733564
 }
 TexturedBackground {
 }
 TexturedBackgroundLight {
 }
-RectangleArena {
-  translation 3 2 0
-  floorSize 7 5
-  floorTileSize 2 2
-  wallHeight 1.5
+Floor {
+  translation 7 2 0
+  size 15 5
+  tileSize 2 2
 }
 Rock {
-  translation 4.93643 1.20491 0.194082
-  rotation -0.8048054420367661 -0.5915684104670536 -0.04832200539598066 0.31625857691916104
+  translation 11.15 4.05 1.21
+  name "rock(6)"
+  scale 5
+}
+Cabinet {
+  translation 14.41 0.10748 0.373828
+  rotation 6.633972319816142e-07 0.5000001748437317 0.8660253028380855 3.14159
+  primaryAppearance PaintedWood {
+    colorOverride 0.509804 0.34902 0.254902
+    textureTransform TextureTransform {
+    }
+  }
+  secondaryAppearance PaintedWood {
+    colorOverride 0.509804 0.34902 0.254902
+  }
+}
+WashingMachine {
+  translation 11.98 -0.119995 0.53
+  rotation 0 0 1 1.5708
+}
+Sink {
+  translation 9.13 4.23 1
+  rotation 0 0 1 -1.5707953071795862
+}
+Wall {
+  translation -0.6 3.5 0
+  size 0.2 2 2.4
+}
+Window {
+  translation -0.6 2 0
+  size 0.2 1 2.4
+}
+Window {
+  translation 11.01 -0.59 0
+  rotation 0 0 1 1.5708
+  name "window(1)"
+  size 0.2 1 2.4
+  wallAppearance Roughcast {
+    textureTransform TextureTransform {
+      scale 2.4 1
+    }
+  }
+}
+Wall {
+  translation 14.59 2.02 0
+  name "wall(4)"
+  size 0.2 5 2.4
+}
+Wall {
+  translation 7 0.46 0
+  name "wall(5)"
+  size 0.4 2 2.4
+}
+Wall {
+  translation 7 3.55 0
+  name "wall(6)"
+  size 0.4 2 2.4
+}
+Wall {
+  translation -0.6 0.51 0
+  name "wall(2)"
+  size 0.2 2 2.4
+}
+Wall {
+  translation 7 4.61 0
+  rotation 0 0 1 -1.5707953071795862
+  name "wall(1)"
+  size 0.2 15 2.4
+}
+Wall {
+  translation 5.01 -0.59 0
+  rotation 0 0 1 -1.5707953071795862
+  name "wall(3)"
+  size 0.2 11 2.4
+}
+Wall {
+  translation 13 -0.589998 0
+  rotation 0 0 1 -1.5707953071795862
+  name "wall(7)"
+  size 0.2 3 2.4
+}
+Door {
+  translation 7 2 0
+  rotation 0 0 -1 5.307156870259904e-06
+  size 0.4 1.1 2.4
+  position 2
+}
+Rock {
+  translation 10.9226 1.17044 0.240999
+  rotation 0.8338569361824295 -0.43665896658118064 0.33765597415817633 1.28359
   name "rock(5)"
   scale 8
+}
+Rock {
+  translation 10.9226 1.17044 0.240999
+  rotation 0.8338569361824295 -0.43665896658118064 0.33765597415817633 1.28359
+  name "rock(2)"
+  scale 8
+}
+Rock {
+  translation 14.19 1.01863 0.150352
+  rotation -0.1294279597735375 0.1294279597735375 -0.9831056944488314 -1.5878353071795859
+  name "rock(3)"
+  scale 7
 }
 Rock {
   translation 1.14691 0.98611 0.233467
@@ -55,8 +167,8 @@ Rock {
   scale 8.8
 }
 WoodenBox {
-  translation 2.500000000353125 3.9500000033304214 0.2996161909771288
-  rotation 9.764207837629492e-07 -2.8299688184610285e-07 -0.9999999999994833 1.458926161045154e-08
+  translation 2.5000000003531255 3.9500000033304254 0.2996076000590783
+  rotation -2.2235098821978692e-10 -7.238280839731875e-10 -1 1.4589261596910422e-08
   size 1.9 0.5 0.6
   mass 1
 }
@@ -65,14 +177,19 @@ Television {
   rotation 0 0 1 -1.5707953071795862
 }
 Table {
-  translation 4.54 1.5 0.36
+  translation 10.61 1.5 0.359991
   rotation 0 1 0 1.5708
   size 0.7 1.5 0.74
 }
 Chair {
-  translation 4.85 1.82998 -0.00434051
-  rotation -2.305237233913758e-06 -0.999999747901079 -0.0007100651126305962 0.007423366927063008
+  translation 10.5697 1.7817 0.291644
+  rotation 0.2488199945248405 0.9355469794137566 0.2506799944839121 -1.6447853071795864
   name "chair(1)"
+}
+Chair {
+  translation 12.5425 1.7694 0.306278
+  rotation -0.6920708778059004 -0.18682296701397938 -0.6972338768943058 2.77488
+  name "chair(2)"
 }
 Sofa {
   translation 2.517359273297953 1.9968393720522457 -0.11931293650976518
@@ -83,10 +200,38 @@ PottedTree {
   rotation 0 -1 0 1.6016488020042945
 }
 Pioneer3dx {
-  translation 0 0 0.0938679
-  rotation 0.013227009069627947 -0.013226995551673643 0.9998250311028165 1.5709751252789053
+  translation 0 0 0.0938139
+  rotation 0 0 1 1.5708
   controller "rescue_controller"
   extensionSlot [
+    Lidar {
+      translation 0.16 0 0.08
+      rotation 0 1 0 0
+      name "lidar_front"
+      fieldOfView 0.6
+      maxRange 1.2
+    }
+    Lidar {
+      translation -0.26 1.11453e-06 0.08
+      rotation 0 0 1 3.14159
+      name "lidar_back"
+      fieldOfView 0.6
+      maxRange 1.2
+    }
+    Lidar {
+      translation 1.42746e-07 -0.14 0.11
+      rotation 0 0 1 -1.5707953071795862
+      name "lidar_dx"
+      fieldOfView 0.6
+      maxRange 1.2
+    }
+    Lidar {
+      translation -9.22484e-07 0.15 0.11
+      rotation 0 0 1 1.5708
+      name "lidar_sx"
+      fieldOfView 0.6
+      maxRange 1.2
+    }
     Camera {
       translation 0.17 0 0.12
       rotation 0 1 0 4.07987e-06
@@ -105,30 +250,48 @@ Pioneer3dx {
   ]
 }
 Fridge {
-  translation 0 3.96 0
+  translation 8 4.06 0
   rotation 0 0 1 -1.5707953071795862
 }
-Solid {
-  translation 1.48 0.98 0.46
-  boundingObject Box {
-    size 1.9 0.95 0.95
-  }
-}
-Solid {
-  translation 5.48 4 0.46
-  name "solid(1)"
-  boundingObject Box {
-    size 1.9 0.95 0.95
-  }
-}
-Solid {
-  translation 2.5 2 0.46
-  name "solid(2)"
-  boundingObject Box {
-    size 2 1 0.95
-  }
-}
 Pedestrian {
-  translation 5.90626 2.97849 1.27
-  rotation 0 0 1 -2.8797953071795863
+  translation 5.13382 0.0050028 0.12
+  rotation 1.8390099999937804e-06 0.999999999996618 1.8390099999937804e-06 -1.5707953071795862
+  enableBoundingObject TRUE
+}
+Solid {
+  translation 10.79 4.17 0.5
+  children [
+    Shape {
+      appearance PBRAppearance {
+        metalness 0
+      }
+      geometry Box {
+        size 4.4 0.6 0.85
+      }
+    }
+  ]
+  name "cucina"
+  boundingObject Box {
+    size 0.1 0.1 0.1
+  }
+}
+PortraitPainting {
+  translation 7.90333 -0.119293 0.489958
+  rotation -0.19803599029465244 0.25808398735182025 -0.9456079536576466 -0.8257353071795865
+}
+HotPlate {
+  translation 10.03 4.22 0.93
+  rotation 2.653589999981315e-06 -2.653589999981315e-06 0.9999999999929585 -1.5707953071795862
+}
+Oven {
+  translation 13.21 4.09 0.23
+  rotation 0 0 1 -1.5707953071795862
+}
+Worktop {
+  translation 11.04 4.15 0.92
+  size 4.9 0.8 0.06
+}
+Armchair {
+  translation 4.96 1.05 0
+  rotation 0 0 1 1.5708
 }

@@ -1,5 +1,5 @@
 import math
-from controller import Robot, DistanceSensor, Motor
+from controller import Robot, DistanceSensor, Motor, Lidar
 class Movement:
 
     
@@ -24,6 +24,7 @@ class Movement:
         self.right_ps= robot.getDevice('right wheel sensor')
         self.right_ps.enable(timestep)
         
+        """
         #distance sensor instance
         self.frontsx= robot.getDevice('so3')
         self.frontdx= robot.getDevice('so4')
@@ -37,6 +38,17 @@ class Movement:
         self.left.enable(timestep)
         self.right= robot.getDevice('so7')
         self.right.enable(timestep)
+        """
+        
+        #lidar
+        self.lidar_front= robot.getDevice('lidar_front')
+        self.lidar_front.enable(timestep)
+        self.lidar_back= robot.getDevice('lidar_back')
+        self.lidar_back.enable(timestep)
+        self.lidar_dx= robot.getDevice('lidar_dx')
+        self.lidar_dx.enable(timestep)
+        self.lidar_sx= robot.getDevice('lidar_sx')
+        self.lidar_sx.enable(timestep)
         
         #enable imu
         self.imu = robot.getDevice('inertial unit')
@@ -46,7 +58,7 @@ class Movement:
         self.ps_values=[0, 0] #radianti relativi all'odometria
         self.dist_values=[0,0] #distanza percorsa misurata con l'odometria
         
-        self.raggio_ruota=0.19/2
+        self.raggio_ruota=0.195/2
         
         self.dist_ruote=0.34215
         self.d_mid=self.dist_ruote/2
@@ -58,6 +70,8 @@ class Movement:
         
         self.robot_pose=[x_start,y_start,"North"]
         
+        self.lidar_value=[[],[],[],[]]
+        
    
         
     def sensordistance(self):
@@ -67,6 +81,23 @@ class Movement:
        self.sd_value[3]=self.sonar_to_m(self.backsx.getValue()) 
        self.sd_value[4]=self.sonar_to_m(self.left.getValue())
        self.sd_value[5]=self.sonar_to_m(self.right.getValue()) 
+       
+    def lidarsensor(self):
+       self.lidar_value[0]=min(self.lidar_front.getRangeImage())
+       self.lidar_value[1]=min(self.lidar_back.getRangeImage())
+       self.lidar_value[2]=min(self.lidar_dx.getRangeImage())
+       self.lidar_value[3]=min(self.lidar_sx.getRangeImage())
+       
+    def odo(self):
+   
+       self.ps_values[0]=self.left_ps.getValue()
+       self.ps_values[1]=self.right_ps.getValue()
+        
+       self.dist_values[0]=self.ps_values[0]*self.enc_unit
+       self.dist_values[1]=self.ps_values[1]*self.enc_unit
+       
+       
+       
            
     
 
@@ -104,13 +135,13 @@ class Movement:
     def layer_reattivo(self):
         
            
-           self.sensordistance()
+           self.lidarsensor()
            
            delta=0.300
            
            
-           if(self.sd_value[0]<delta or self.sd_value[1]<delta):
-               print(f"Oggetto rilevato a distanza {self.sd_value[0]}m")
+           if(self.lidar_value[0]<delta):
+               print(f"Oggetto rilevato a distanza {self.lidar_value[0]}m")
                return False
                
            else:
@@ -120,7 +151,7 @@ class Movement:
                
            
            
-              
+    """          
     def sonar_to_m(self,val):
         # Punti dati
         x1, y1 = 0, 1024  # (distanza in metri, valore del sensore)
@@ -133,7 +164,7 @@ class Movement:
         # Calcola la distanza in metri utilizzando l'equazione della retta
         distanza_metri = (val - b) / m
     
-        return distanza_metri
+        return distanza_metri"""
     
       
     def get_time(self,distance, speed):
@@ -141,11 +172,12 @@ class Movement:
         return rad/speed
         
     def stop_motors(self):
+        
         self.leftMotor.setVelocity(0)
         self.rightMotor.setVelocity(0)
         print("Motors stopped.")
         
-    def move(self,dist):
+    def move2(self,dist):
         maxspeed=self.MAX_SPEED
         seconds = self.get_time(dist, maxspeed)
         end_time = seconds + self.robot.getTime()
@@ -164,6 +196,26 @@ class Movement:
            
         self.robot_update(dist)
         
+    def move(self,dist):
+        maxspeed=self.MAX_SPEED
+        self.odo()
+        start_dist=self.dist_values.copy()
+        
+        
+        print(f"Moving {dist} m forward...")
+        
+        while self.robot.step(self.timestep) != -1:
+            self.odo()
+            if self.dist_values[0]-start_dist[0]<=dist  and self.layer_reattivo():
+                
+                self.leftMotor.setVelocity(maxspeed)
+                self.rightMotor.setVelocity(maxspeed)
+                
+            else:
+                self.stop_motors()
+                break
+        print(f"odo: {self.dist_values[0]-start_dist[0]}")  
+        self.robot_update(dist)
       
                 
                 
@@ -243,16 +295,20 @@ class Movement:
         
         for x,y in path[1:]:
           if((x-self.robot_pose[0])==0 and y>self.robot_pose[1] ):
-              self.rotate("East")
+              if(self.robot_pose[2]!="East"):
+                  self.rotate("East")
               self.move(1)
           elif((x-self.robot_pose[0])==0 and y<self.robot_pose[1] ):
-              self.rotate("West")
+              if(self.robot_pose[2]!="West"):
+                  self.rotate("West")
               self.move(1)
           elif((y-self.robot_pose[1])==0 and x<self.robot_pose[0] ):
-              self.rotate("North")
+              if(self.robot_pose[2]!="North"):
+                  self.rotate("North")
               self.move(1)
           elif((y-self.robot_pose[1])==0 and x>self.robot_pose[0] ):
-              self.rotate("South")
+              if(self.robot_pose[2]!="South"):
+                  self.rotate("South")
               self.move(1)
         
         

@@ -37,7 +37,7 @@ PROTO Pedestrian [
   field       MFNode     bodySlot              []
   field       MFNode     leftHandSlot          []
   field       MFNode     rightHandSlot         []
-  hiddenField SFFloat    rightLegAngle         0.0
+  hiddenField SFFloat    rightLegAngle         90
   hiddenField SFFloat    rightLowerLegAngle    0.0
   hiddenField SFFloat    rightFootAngle        0.0
   hiddenField SFFloat    leftLegAngle          0.0
@@ -61,7 +61,6 @@ Robot {
       children IS bodySlot
     }
     Solid {
-      recognitionColors [ 1 1 1 ]
       children [
         DEF TORSO Shape {
           appearance DEF SHIRT_APP PBRAppearance {

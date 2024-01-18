@@ -13,8 +13,8 @@ robot = Robot()
 # get the time step of the current world.
 timestep=TIME_STEP
 #timestep = int(robot.getBasicTimeStep())
-pos_start=[5,1]#posizione iniziale
-dim_map=[5,7]  #dimensioni mappa
+pos_start=[5,1]#posizione iniziale 5.1
+dim_map=[5,15]  #dimensioni mappa
                   
 def main():
     movement=Movement(robot,timestep,pos_start[0],pos_start[1])
@@ -27,6 +27,7 @@ def main():
           #rotate2("West")
           mapping.mapping()
           #print(mapping.map)
+          
           break
           
           
