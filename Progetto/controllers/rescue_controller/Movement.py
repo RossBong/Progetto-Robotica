@@ -24,21 +24,7 @@ class Movement:
         self.right_ps= robot.getDevice('right wheel sensor')
         self.right_ps.enable(timestep)
         
-        """
-        #distance sensor instance
-        self.frontsx= robot.getDevice('so3')
-        self.frontdx= robot.getDevice('so4')
-        self.frontsx.enable(timestep)
-        self.frontdx.enable(timestep)
-        self.backdx= robot.getDevice('so11')
-        self.backsx= robot.getDevice('so12')
-        self.backsx.enable(timestep)
-        self.backdx.enable(timestep)
-        self.left= robot.getDevice('so0')
-        self.left.enable(timestep)
-        self.right= robot.getDevice('so7')
-        self.right.enable(timestep)
-        """
+        
         
         #lidar
         self.lidar_front= robot.getDevice('lidar_front')
@@ -63,7 +49,7 @@ class Movement:
         self.dist_ruote=0.34215
         self.d_mid=self.dist_ruote/2
         
-        self.sd_value=[0,0,0,0,0,0]#[frontdx,frontsx,bacdx,backsx,left,right]
+        
         
         self.circonf_ruota=self.raggio_ruota*2*math.pi #0.61 m
         self.enc_unit=self.circonf_ruota/6.29 #porzione di circonferenza per radiante
@@ -74,14 +60,7 @@ class Movement:
         
    
         
-    def sensordistance(self):
-       self.sd_value[0]=self.sonar_to_m(self.frontdx.getValue())
-       self.sd_value[1]=self.sonar_to_m(self.frontsx.getValue())
-       self.sd_value[2]=self.sonar_to_m(self.backdx.getValue())
-       self.sd_value[3]=self.sonar_to_m(self.backsx.getValue()) 
-       self.sd_value[4]=self.sonar_to_m(self.left.getValue())
-       self.sd_value[5]=self.sonar_to_m(self.right.getValue()) 
-       
+
     def lidarsensor(self):
        self.lidar_value[0]=min(self.lidar_front.getRangeImage())
        self.lidar_value[1]=min(self.lidar_back.getRangeImage())
@@ -96,12 +75,6 @@ class Movement:
        self.dist_values[0]=self.ps_values[0]*self.enc_unit
        self.dist_values[1]=self.ps_values[1]*self.enc_unit
        
-       
-       
-           
-    
-
-
        
     def direction(self):
         q=(self.imu.getRollPitchYaw()[2] * 180) / 3.14159
@@ -151,25 +124,10 @@ class Movement:
                
            
            
-    """          
-    def sonar_to_m(self,val):
-        # Punti dati
-        x1, y1 = 0, 1024  # (distanza in metri, valore del sensore)
-        x2, y2 = 5, 0     # (distanza in metri, valore del sensore)
-    
-        # Calcola il coefficiente angolare (m) e l'intercetta (b)
-        m = (y2 - y1) / (x2 - x1)
-        b = y1 - m * x1
-    
-        # Calcola la distanza in metri utilizzando l'equazione della retta
-        distanza_metri = (val - b) / m
-    
-        return distanza_metri"""
+   
     
       
-    def get_time(self,distance, speed):
-        rad=(distance*2*3.14)/(self.circonf_ruota)
-        return rad/speed
+    
         
     def stop_motors(self):
         
@@ -177,24 +135,7 @@ class Movement:
         self.rightMotor.setVelocity(0)
         print("Motors stopped.")
         
-    def move2(self,dist):
-        maxspeed=self.MAX_SPEED
-        seconds = self.get_time(dist, maxspeed)
-        end_time = seconds + self.robot.getTime()
-        print(f"Moving {dist} m forward...")
-        
-        while self.robot.step(self.timestep) != -1:
-            
-            if self.robot.getTime() < end_time and self.layer_reattivo():
-                
-                self.leftMotor.setVelocity(maxspeed)
-                self.rightMotor.setVelocity(maxspeed)
-                
-            else:
-                self.stop_motors()
-                break
-           
-        self.robot_update(dist)
+
         
     def move(self,dist):
         maxspeed=self.MAX_SPEED
@@ -262,34 +203,6 @@ class Movement:
              
         self.robot_update(0)#aggiornamernto direzione
         
-    def raggiungi(self):
-    
-        self.move(3.0)
-        self.rotate("East")
-        self.move(6.0)
-        
-        self.rotate("South")
-        
-        self.move(3.0)
-        
-        self.rotate("West")
-        
-        
-        self.move(2.0)
-        
-        self.rotate("North")
-        
-        self.move(1.0)
-        
-        self.rotate("West")
-        
-        self.move(1.0)
-        
-        self.rotate("South")
-        self.move(1.0)
-        self.rotate("West")
-        self.move(3.0)
-        self.rotate("North")
     
     def follow_path(self,path):
         
@@ -312,28 +225,4 @@ class Movement:
               self.move(1)
         
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-      
-    #last_ps_values=[0,0]
-    
-    """
-    def robot_position():
-        ps_values[0]=left_ps.getValue()
-        ps_values[1]=right_ps.getValue()
-        
-        print('-----------------------')
-        print("position sensor value:"+str(ps_values[0])+" "+str(ps_values[1]))
-        
-        dist_values[0]=ps_values[0]*enc_unit
-        dist_values[1]=ps_values[1]*enc_unit
-        print("distance value:"+str(dist_values[0])+" "+str(dist_values[1]))
-        q=(imu.getRollPitchYaw()[2] * 180) / 3.14159
-        print(f"imu:{q}")"""
+  

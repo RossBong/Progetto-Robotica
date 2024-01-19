@@ -73,7 +73,7 @@ class Mapping:
             elif(sd[3]<1):
                 self.map[x,y-1]=1
                 
-                
+                 
             print(self.map)
             #print(self.visited)
             

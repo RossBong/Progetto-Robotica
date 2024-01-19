@@ -37,6 +37,7 @@ PROTO Pedestrian [
   field       MFNode     bodySlot              []
   field       MFNode     leftHandSlot          []
   field       MFNode     rightHandSlot         []
+  field       MFColor    recognitionColors     []
   hiddenField SFFloat    rightLegAngle         90
   hiddenField SFFloat    rightLowerLegAngle    0.0
   hiddenField SFFloat    rightFootAngle        0.0
@@ -61,6 +62,7 @@ Robot {
       children IS bodySlot
     }
     Solid {
+      recognitionColors IS recognitionColors
       children [
         DEF TORSO Shape {
           appearance DEF SHIRT_APP PBRAppearance {
@@ -585,10 +587,7 @@ Robot {
   name IS name
   model "pedestrian"
   radarCrossSection 1
-  recognitionColors [
-    %<= fields.shirtColor.value.r >% %<= fields.shirtColor.value.g >% %<= fields.shirtColor.value.b >%
-    %<= fields.pantsColor.value.r >% %<= fields.pantsColor.value.g >% %<= fields.pantsColor.value.b >%
-  ]
+  
   %< if (!rigid) { >%
     controller IS controller
   %< } else { >%
