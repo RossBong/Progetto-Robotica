@@ -18,9 +18,11 @@ PROTO Pioneer3dx [
   field SFBool     supervisor      FALSE                            # Is `Robot.supervisor`.
   field SFBool     synchronization TRUE                             # Is `Robot.synchronization`.
   field MFNode     extensionSlot   []                               # Extends the robot with new nodes in the extension slot.
+
 ]
 {
   Robot {
+    
     translation IS translation
     rotation IS rotation
     children [
@@ -1003,6 +1005,8 @@ PROTO Pioneer3dx [
       }
       Group {
         children IS extensionSlot
+       
+        
       }
     ]
     name IS name
@@ -1127,6 +1131,8 @@ PROTO Pioneer3dx [
     window IS window
     customData IS customData
     supervisor IS supervisor
+
     synchronization IS synchronization
+    
   }
 }

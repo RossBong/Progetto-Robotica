@@ -71,7 +71,7 @@ class Movement:
    
        self.ps_values[0]=self.left_ps.getValue()
        self.ps_values[1]=self.right_ps.getValue()
-        
+       
        self.dist_values[0]=self.ps_values[0]*self.enc_unit
        self.dist_values[1]=self.ps_values[1]*self.enc_unit
        
