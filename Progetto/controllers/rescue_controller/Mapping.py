@@ -29,7 +29,16 @@ class Mapping:
         self.map[:, -1] = 4 #muro est
         self.map[0, :] = 4 #muro nord
         self.map[-1, :] = 4 #muro sud
+        self.map= np.array([[4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+                   [4, 3, 0, 4, 4, 0, 4, 1, 4, 4, 4, 4, 4, 4, 4, 0, 4],
+                   [4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4],
+                   [4, 4, 3, 4, 4, 0, 0, 0, 0, 0, 0, 4, 4, 0, 4, 3, 4],
+                   [4, 0, 4, 4, 0, 0, 4, 0, 4, 4, 0, 0, 4, 0, 0, 4, 4],
+                   [4, 0, 0, 0, 0, 0, 0, 0, 4, 4, 3, 0, 0, 4, 0, 4, 4],
+                   [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4]])
+        self.visited=np.full((7, 17), True)
         
+       
         
         while(-1 in self.map):
             
@@ -107,14 +116,31 @@ class Mapping:
                    self.map=np.where(self.map == -1, 4, self.map) 
                 else:
                     path=self.find_path_min(free_cells,x,y)
-                    print(path)
                     self.movement.follow_path(path)
+                    
+        lost_cells=self.trova_coordinate_punti_zero(self.map)
+        print(lost_cells)        
+        if(len(lost_cells)>0):
+            print(f"Ops! Quando ero felice mi sono fatto prendere dall'euforia e non ho scansionato {len(lost_cells)} celle")
+            self.stato="Normale"
+            for cell in lost_cells:
+                path=self.find_path_min([(cell[0],cell[1])],self.movement.robot_pose[0],self.movement.robot_pose[1])
+                print(self.movement.robot_pose[0],self.movement.robot_pose[1])
                 
-        path=self.find_path_min([(self.x_start,self.y_start)],x,y)
-        print(path)
-        self.movement.follow_path(path) 
-        self.movement.rotate("North")
+                print(path)
+                self.movement.follow_path(path)
+                self.ricerca_ogg(self.movement.robot_pose[0],self.movement.robot_pose[1])
+            
         
+        print("Ho trovato tutti gli oggetti e tutti gli umani sono salvi!!") 
+        print(self.map) 
+        
+    def trova_coordinate_punti_zero(self, matrice):
+            coordinate_uni = np.argwhere(matrice == 1)
+            coordinate_punti_zero = [tuple(np.argwhere(matrice[row] == 0).flatten()) for row, _ in coordinate_uni]
+        
+            return coordinate_punti_zero
+          
     def scansione(self,x,y):
         trovato=False
         oggetto,dist=self.cam.recognition()
@@ -172,7 +198,8 @@ class Mapping:
         s1,s2,s3,s4 =False,False,False,False
         if self.stato=="Normale":
             print("Mi sento bene, effettuo la scansione degli ogetti che ho rilevato in questa casella")
-            if(self.map[x-1,y]==1):#North    
+            if(self.map[x-1,y]==1):#North 
+                 self.movement.rotate("North")
                  s1=self.scansione(x-1,y)  
                  
             if(self.map[x,y+1]==1):#East
@@ -237,7 +264,7 @@ class Mapping:
         paths=[]
         for cell in free_cells:
             grid = Grid(matrix=~abs(self.map).astype(bool))
-            
+            print(np.array(~abs(self.map).astype(bool)))
             start = grid.node(y,x)
             end = grid.node(cell[1],cell[0])
             
@@ -246,6 +273,7 @@ class Mapping:
             path, runs = finder.find_path(start, end, grid)
             path = [(nodo.y, nodo.x) for nodo in path]
             paths.append(path)
+            print(f"path:{path}")
             #grid.cleanup()
         
         #calcolo percorso minimo

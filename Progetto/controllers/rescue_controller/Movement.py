@@ -169,6 +169,7 @@ class Movement:
         last_dir=self.direction()
         left_speed=0.5
         right_speed=-0.5
+        
         if(dir=="North"):
             if(last_dir=="East"):
                 left_speed=-0.5
