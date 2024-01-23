@@ -6,7 +6,7 @@ import random
 from pathfinding.core.grid import Grid
 from pathfinding.finder.a_star import AStarFinder
 
-
+#sssss
 class Mapping:
 
     def __init__(self,movement,cam,width,length,x_start,y_start):
