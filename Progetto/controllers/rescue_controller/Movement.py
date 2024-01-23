@@ -1,5 +1,5 @@
 import math
-import random
+
 from controller import Robot, DistanceSensor, Motor, Lidar
 class Movement:
 
