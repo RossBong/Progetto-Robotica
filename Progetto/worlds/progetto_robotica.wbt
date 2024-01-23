@@ -8,11 +8,10 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/project
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/chairs/protos/Chair.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/television/protos/Television.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/factory/containers/protos/WoodenBox.proto"
-EXTERNPROTO "../protos/Rock.proto"
+IMPORTABLE EXTERNPROTO "../protos/Rock.proto"
 EXTERNPROTO "../protos/Pioneer3dx.proto"
 EXTERNPROTO "../protos/Fridge.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/adept/pioneer3/protos/Pioneer3Gripper.proto"
-EXTERNPROTO "../protos/Pedestrian.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/Floor.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/apartment_structure/protos/Wall.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/apartment_structure/protos/Window.proto"
@@ -28,12 +27,13 @@ EXTERNPROTO "../protos/Armchair.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/paintings/protos/PortraitPainting.proto"
 EXTERNPROTO "../protos/SolidBox.proto"
 EXTERNPROTO "../protos/Door.proto"
+IMPORTABLE EXTERNPROTO "../protos/Pedestrian_new.proto"
 
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.5444893318063956 0.5438094109316429 0.6385943095042457 2.006100476145907
-  position 1.7806588643740306 0.16595274048994613 16.50945385517657
+  orientation -0.5785501695174826 0.5400168288356283 0.6112785992700904 2.104607136450401
+  position -0.26180351167903715 2.3758432018619136 22.280985377730193
 }
 TexturedBackground {
 }
@@ -168,6 +168,12 @@ Rock {
   scale 6
 }
 Rock {
+  translation 0.0226323 2.08015 0.383083
+  rotation 0.48987998926477 -0.4119079909734484 -0.768341983162554 -0.33086530717958595
+  name "rock(9)"
+  scale 6
+}
+Rock {
   translation 2.85118 2.08295 0.613213
   rotation 0.10767249466569416 0.9553911718941526 -0.2750169859466571 0.9368279920767066
   name "rock(1)"
@@ -243,7 +249,7 @@ DEF rescuer Pioneer3dx {
     Camera {
       translation 0.17 0 0.12
       rotation 0 1 0 4.07987e-06
-      fieldOfView 0.65
+      fieldOfView 2
       width 224
       height 224
       recognition Recognition {
@@ -265,23 +271,6 @@ Robot {
 Fridge {
   translation 8 4.06 0
   rotation 0 0 1 -1.5707953071795862
-}
-DEF umano1 Pedestrian {
-  translation 4.17383 -0.09497 0.120003
-  rotation 1.8390099999937804e-06 0.999999999996618 1.8390099999937804e-06 -1.5707953071795862
-  enableBoundingObject TRUE
-  recognitionColors [
-    1 0 0
-  ]
-}
-DEF umano2 Pedestrian {
-  translation 11.9138 1.19499 0.220004
-  rotation 0.5773502691890485 -0.5773512691895147 0.5773492691885823 2.09439
-  name "pedestrian(1)"
-  enableBoundingObject TRUE
-  recognitionColors [
-    1 0 0
-  ]
 }
 Solid {
   translation 10.79 4.17 0.5
@@ -321,7 +310,7 @@ Armchair {
   rotation 0 0 1 1.5708
 }
 SolidBox {
-  translation -0.19 2.01 0.11
+  translation 1.04 2.01 0.11
   size 0.2 0.2 0.2
   appearance PBRAppearance {
     baseColorMap ImageTexture {
@@ -371,7 +360,7 @@ SolidBox {
   ]
 }
 SolidBox {
-  translation 9.04 -0.03 0.11
+  translation 8.99 0.02 0.11
   name "box(3)"
   size 0.2 0.2 0.2
   appearance PBRAppearance {

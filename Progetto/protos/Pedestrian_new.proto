@@ -23,7 +23,7 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/project
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/humans/pedestrian/protos/PedestrianRightFoot.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/humans/pedestrian/protos/PedestrianHead.proto"
 
-PROTO Pedestrian [
+PROTO Pedestrian_new [
   field       SFVec3f    translation           0 0 1.27
   field       SFRotation rotation              0 0 1 0
   field       SFString   name                  "pedestrian"
@@ -33,11 +33,11 @@ PROTO Pedestrian [
   field       SFColor    pantsColor            0.24 0.25 0.5
   field       SFColor    shoesColor            0.28 0.15 0.06
   field       SFColor    skinColor             1.0 0.75 0.7
-  field       SFBool     enableBoundingObject  FALSE
+  field       SFBool     enableBoundingObject  TRUE
   field       MFNode     bodySlot              []
   field       MFNode     leftHandSlot          []
   field       MFNode     rightHandSlot         []
-  field       MFColor    recognitionColors     []
+  field       MFColor    recognitionColors     [1 0 0]
   hiddenField SFFloat    rightLegAngle         90
   hiddenField SFFloat    rightLowerLegAngle    0.0
   hiddenField SFFloat    rightFootAngle        0.0

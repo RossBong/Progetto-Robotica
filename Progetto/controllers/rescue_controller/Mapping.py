@@ -2,6 +2,7 @@ import math
 from Movement import Movement
 from Cam import Cam
 import numpy as np
+import random
 from pathfinding.core.grid import Grid
 from pathfinding.finder.a_star import AStarFinder
 
@@ -16,7 +17,9 @@ class Mapping:
         self.visited= False * np.ones((width+2, length+2))#True quando la cella è libera ed è stata visitata
         self.x_start=x_start
         self.y_start=y_start
-        self.stato="Normale"
+        self.stato="Triste"
+        self.counter_state=0#numero di celle senza aver trovato ogetti
+        self.far_human=[0," "]#distanza e direzione
 
     
     def mapping(self):
@@ -78,8 +81,11 @@ class Mapping:
             #print(self.visited)
             self.ricerca_ogg(x,y)
             print(self.map)
-            
-            if(self.map[x-1,y]==0 and self.visited[x-1,y]==False):
+            if(self.far_human[0]>0):
+                self.movement.rotate(self.far_human[1])
+                self.movement.move(self.far_human[0])
+                self.far_human=[0," "]
+            elif(self.map[x-1,y]==0 and self.visited[x-1,y]==False):
                 self.movement.rotate("North")
                 self.movement.move(1)
                 
@@ -97,8 +103,8 @@ class Mapping:
             else:
                 free_cells=self.find_free_novisited()
                 if(len(free_cells)==0):
-                   print("Imposto i punti non raggiungibili a 1")
-                   self.map=abs(self.map) 
+                   print("Imposto i punti non raggiungibili a 4")
+                   self.map=np.where(self.map == -1, 4, self.map) 
                 else:
                     path=self.find_path_min(free_cells,x,y)
                     print(path)
@@ -109,63 +115,113 @@ class Mapping:
         self.movement.follow_path(path) 
         self.movement.rotate("North")
         
+    def scansione(self,x,y):
+        trovato=False
+        oggetto,dist=self.cam.recognition()
+         
+        if(self.stato=="Triste"):#permettiamo al robot di trovare ogetti più lontani
+             if(oggetto=="umano"and dist>2 and self.map[x,y]==0 ):
+                 print(f"Ho trovato un umano alla distanza di {dist}m")
+                 trovato=True
+                 self.far_human=[round(dist),self.movement.robot_pose[2]]
+                 return trovato
+                 
+        if(oggetto=="umano" and dist<=2):
+             print(f"Ho trovato un umano! Venite a recuperarlo.")
+             trovato=True
+             self.update_stato(trovato)
+             self.rimuovi_umano(x,y)
+             self.map[x,y]=0
+        elif((oggetto=="box_gioielli"or oggetto=="box_soldi" or oggetto=="box_foto")and dist<1):
+             self.map[x,y]=3
+             print(f"Ho trovato il seguente oggetto:{oggetto}")
+             trovato=True
+             self.update_stato(trovato)
+        elif(self.map[x,y]==1):
+             self.map[x,y]=4
+               
+             
+        return trovato
+             
+             
+    def update_stato(self,f):
+       
+       if(f==True and self.stato=="Triste"):
+           self.stato="Normale"
+           self.counter_state=0
+       elif(f==True and self.stato=="Normale"):
+           self.stato="Felice"
+           self.counter_state=0
+       elif(f==False and self.stato=="Felice"and self.counter_state<3):
+           self.counter_state+=1
+       elif(f==False and self.stato=="Felice"and self.counter_state>=3):  
+           self.stato='Normale'
+           self.counter_state=0
+       elif(f==False and self.stato=="Normale"and self.counter_state<3):
+           self.counter_state+=1
+       elif(f==False and self.stato=="Normale"and self.counter_state>=3):  
+           self.stato='Triste'
+           self.counter_state=0
+       elif(f==True and self.stato=="Felice"):
+           self.counter_state=0
+       
+           
+             
+                     
     def ricerca_ogg(self,x,y):
+        s1,s2,s3,s4 =False,False,False,False
         if self.stato=="Normale":
             print("Mi sento bene, effettuo la scansione degli ogetti che ho rilevato in questa casella")
             if(self.map[x-1,y]==1):#North    
-                 oggetto,dist=self.cam.recognition()
-                 if(oggetto=="umano" and dist<2):
-                     print(f"Ho trovato un umano! Venite a recuperarlo.")
-                     self.rimuovi_umano(x,y)
-                     self.map[x-1,y]=3#0
-                 elif((oggetto=="box_gioielli"or oggetto=="box_soldi" or oggetto=="box_foto")and dist<1):
-                     self.map[x-1,y]=3
-                     print(f"Ho trovato il seguente oggetto:{oggetto}")
-                 else:
-                     self.map[x-1,y]=4
+                 s1=self.scansione(x-1,y)  
                  
             if(self.map[x,y+1]==1):#East
                  self.movement.rotate("East")
-                 oggetto,dist=self.cam.recognition()
-                 if(oggetto=="umano" and dist<2):
-                     print(f"Ho trovato un umano! Venite a recuperarlo.")
-                     self.rimuovi_umano(x,y)
-                     self.map[x,y+1]=3#0
-                 elif((oggetto=="box_gioielli"or oggetto=="box_soldi" or oggetto=="box_foto")and dist<1):
-                     self.map[x,y+1]=3
-                     print(f"Ho trovato il seguente oggetto:{oggetto}")
-                 else:
-                     self.map[x,y+1]=4
-                 
-                     
+                 s2=self.scansione(x,y+1)
+                      
             if(self.map[x+1,y]==1):#South
                  self.movement.rotate("South")
-                 oggetto,dist=self.cam.recognition()
-                 if(oggetto=="umano" and dist<2):
-                     print(f"Ho trovato un umano! Venite a recuperarlo.")
-                     self.rimuovi_umano(x,y)
-                     self.map[x+1,y]=3#0
-                 elif((oggetto=="box_gioielli"or oggetto=="box_soldi" or oggetto=="box_foto")and dist<1):
-                     self.map[x+1,y]=3
-                     print(f"Ho trovato il seguente oggetto:{oggetto}")
-                 else:
-                     self.map[x+1,y]=4
-                 
+                 s3=self.scansione(x+1,y)
                                  
             if(self.map[x,y-1]==1):#West
                  self.movement.rotate("West")
-                 oggetto,dist=self.cam.recognition()
-                 if(oggetto=="umano" and dist<2):
-                     print(f"Ho trovato un umano! Venite a recuperarlo.")
-                     self.rimuovi_umano(x,y)
-                     self.map[x,y-1]=3#0
-                 elif((oggetto=="box_gioielli"or oggetto=="box_soldi" or oggetto=="box_foto")and dist<1):
-                     self.map[x,y-1]=3
-                     print(f"Ho trovato il seguente oggetto:{oggetto}")
-                 else:
-                     self.map[x,y-1]=4
+                 s4=self.scansione(x,y-1)
+            
+        elif self.stato=="Triste":
+                 print("Sono Triste, non ho trovato nessun oggetto, cercherò in tutte le direzioni")
+                 s1=self.scansione(x-1,y)
+                 self.movement.rotate("East")
+                 s2=self.scansione(x,y+1)
+                 self.movement.rotate("South")
+                 s3=self.scansione(x+1,y)
+                 self.movement.rotate("West")
+                 s4=self.scansione(x,y-1)
+                 
+        elif self.stato=="Felice":
+                print("Sono Felice, ho trovato molti oggetti quindi andrò più velocemente")
+                if(self.map[x-1,y]==1 and random.choice([0, 1])==1):#North    
+                     s1=self.scansione(x-1,y)  
+                     
+                if(self.map[x,y+1]==1 and random.choice([0, 1])==1):#East
+                     self.movement.rotate("East")
+                     s2=self.scansione(x,y+1)
+                          
+                if(self.map[x+1,y]==1 and random.choice([0, 1])==1):#South
+                     self.movement.rotate("South")
+                     s3=self.scansione(x+1,y)
+                                     
+                if(self.map[x,y-1]==1 and random.choice([0, 1])==1):#West
+                     self.movement.rotate("West")
+                     s4=self.scansione(x,y-1)
+                 
+        if(s1==False and s2==False and s3==False and s4==False):
+             self.update_stato(False)
+         
+                     
     def rimuovi_umano(self,x,y):
-        self.movement.robot.setCustomData("f{x,y}")
+        self.movement.robot.setCustomData(f"{x},{y}")
+        
+        
        
                  
     def find_free_novisited(self):

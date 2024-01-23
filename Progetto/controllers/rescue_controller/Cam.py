@@ -23,17 +23,19 @@ class Cam:
             for i in range(len(objs)):
                 if objs[i].getPosition()[0]<min:
                     min=objs[i].getPosition()[0]
+                    y=objs[i].getPosition()[1]
+                   
                     index=i
             color= objs[index].getColors()
-           
-            if(color[0]==1.0 and color[1]==1.0 and color[2]==0.0):
-                return"box_gioielli", min 
-            elif(color[0]==1.0 and color[1]==0.0 and color[2]==0.0):
-                return"umano",min
-            elif(color[0]==0.0 and color[1]==1.0 and color[2]==0.5):
-                return"box_soldi",min
-            elif(color[0]==0.0 and color[1]==1.0 and color[2]==0.0):
-                return"box_foto",min
+            if(y>-0.3 and y<0.3):#imponiamo di vedere esclusivamente l'oggetto davanti al robot
+                if(color[0]==1.0 and color[1]==1.0 and color[2]==0.0):
+                    return"box_gioielli", min 
+                elif(color[0]==1.0 and color[1]==0.0 and color[2]==0.0):
+                    return"umano",min
+                elif(color[0]==0.0 and color[1]==1.0 and color[2]==0.5):
+                    return"box_soldi",min
+                elif(color[0]==0.0 and color[1]==1.0 and color[2]==0.0):
+                    return"box_foto",min
         return " ",10        
         
     def VGG(self):

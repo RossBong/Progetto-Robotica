@@ -1,4 +1,5 @@
 import math
+import random
 from controller import Robot, DistanceSensor, Motor, Lidar
 class Movement:
 
@@ -114,7 +115,7 @@ class Movement:
            
            
            if(self.lidar_value[0]<delta):
-               print(f"Oggetto rilevato a distanza {self.lidar_value[0]}m")
+               
                return False
                
            else:
@@ -133,7 +134,7 @@ class Movement:
         
         self.leftMotor.setVelocity(0)
         self.rightMotor.setVelocity(0)
-        print("Motors stopped.")
+        
         
 
         
@@ -143,7 +144,7 @@ class Movement:
         start_dist=self.dist_values.copy()
         
         
-        print(f"Moving {dist} m forward...")
+        
         
         while self.robot.step(self.timestep) != -1:
             self.odo()
@@ -155,8 +156,10 @@ class Movement:
             else:
                 self.stop_motors()
                 break
-        print(f"odo: {self.dist_values[0]-start_dist[0]}")  
-        self.robot_update(dist)
+                
+       
+        
+        self.robot_update(round(self.dist_values[0]-start_dist[0]))
       
                 
                 
@@ -187,7 +190,7 @@ class Movement:
                     left_speed=-0.5
                     right_speed=0.5
             degree=180
-        print(f"Rotating {dir}...")
+        
        
         while self.robot.step(self.timestep) != -1:
             
