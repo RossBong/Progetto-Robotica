@@ -11,7 +11,6 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/project
 IMPORTABLE EXTERNPROTO "../protos/Rock.proto"
 EXTERNPROTO "../protos/Pioneer3dx.proto"
 EXTERNPROTO "../protos/Fridge.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/adept/pioneer3/protos/Pioneer3Gripper.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/Floor.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/apartment_structure/protos/Wall.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/apartment_structure/protos/Window.proto"
@@ -28,12 +27,13 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/project
 EXTERNPROTO "../protos/SolidBox.proto"
 EXTERNPROTO "../protos/Door.proto"
 IMPORTABLE EXTERNPROTO "../protos/Pedestrian_new.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/adept/pioneer3/protos/Pioneer3Gripper.proto"
 
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.34083745379391445 0.02251612742557084 0.9398525704050804 3.0175845864061666
-  position 20.435917476717936 -4.707678895817173 15.245592713571833
+  orientation -0.2077056370592809 -0.1046027662311956 0.972582453898167 4.052519606841496
+  position 0.5834123016933512 0.9295276006659914 0.5858765505385357
 }
 TexturedBackground {
 }
@@ -78,7 +78,7 @@ WashingMachine {
   rotation 0 0 1 1.5708
 }
 Sink {
-  translation 9.13 4.23 1
+  translation 9.13 4.03 1
   rotation 0 0 1 -1.5707953071795862
 }
 Wall {
@@ -180,8 +180,8 @@ Rock {
   scale 8.8
 }
 WoodenBox {
-  translation 2.500191192870329 3.9499728897656676 0.27840416526261946
-  rotation 0.13984464955039844 0.990172773440991 0.001163068485562669 0.001708116680265661
+  translation 2.5002177053267975 3.9499626117012667 0.2784129020863354
+  rotation 0.16822335685224413 0.9857474777669153 0.001676987038520421 0.001965612776004659
   size 1.9 0.5 0.6
   mass 1
 }
@@ -213,13 +213,16 @@ PottedTree {
   rotation 0 -1 0 1.6016488020042945
 }
 DEF rescuer Pioneer3dx {
-  translation 0 0 0.0937932
-  rotation 0.012714168204592062 -0.012714109086704593 0.9998383376111344 1.5709615959832066
+  translation 0 0 0.0948169
+  rotation 0 0 1 1.5708
   controller "rescue_controller"
   customData " "
   extensionSlot [
+    DEF GRIPPER_BASE Pioneer3Gripper {
+      translation 0.13 0 0.03
+    }
     Lidar {
-      translation 0.16 0 0.08
+      translation 0.17 0 0.08
       rotation 0 1 0 0
       name "lidar_front"
       fieldOfView 0.6
@@ -256,9 +259,6 @@ DEF rescuer Pioneer3dx {
         segmentation TRUE
       }
     }
-    DEF GRIPPER_BASE Pioneer3Gripper {
-      translation 0.09 0 0.03
-    }
     InertialUnit {
     }
   ]
@@ -273,7 +273,7 @@ Fridge {
   rotation 0 0 1 -1.5707953071795862
 }
 Solid {
-  translation 10.79 4.17 0.5
+  translation 10.79 3.82 0.5
   children [
     Shape {
       appearance PBRAppearance {
@@ -294,16 +294,16 @@ PortraitPainting {
   rotation -0.19803599029465244 0.25808398735182025 -0.9456079536576466 -0.8257353071795865
 }
 HotPlate {
-  translation 10.03 4.22 0.93
+  translation 10.03 4.11 0.93
   rotation 2.653589999981315e-06 -2.653589999981315e-06 0.9999999999929585 -1.5707953071795862
 }
 Oven {
-  translation 13.21 4.09 0.23
+  translation 13.21 3.72 0.23
   rotation 0 0 1 -1.5707953071795862
 }
 Worktop {
-  translation 11.04 4.15 0.92
-  size 4.9 0.8 0.06
+  translation 11.04 4.01 0.92
+  size 4.9 1 0.06
 }
 Armchair {
   translation 4.96 1.05 0
@@ -377,8 +377,7 @@ SolidBox {
   ]
 }
 Door {
-  hidden translation_5 0.8310017113837214 -0.5170620299076549 0
-  hidden rotation_5 0 0 -1 1.9999999999999996
   translation 7 2.01 0
   size 0.4 1.1 2.4
+  position -0.00018136501950026727
 }

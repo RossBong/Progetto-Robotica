@@ -4,6 +4,7 @@ import math
 from Movement import Movement
 from Mapping import Mapping
 from Cam import Cam
+from Collect import Collect
 TIME_STEP = 32
 
 
@@ -21,15 +22,26 @@ def main():
     movement=Movement(robot,timestep,pos_start[0],pos_start[1])
     cam=Cam(robot,timestep)
     mapping=Mapping(movement,cam,dim_map[0],dim_map[1],pos_start[0],pos_start[1])
-    
+    collect=Collect(movement,cam,robot,pos_start)
     while robot.step(TIME_STEP) != -1:
          
           
-          #movement.raggiungi()
-          #rotate2("West")
-          mapping.mapping()
-          #print(mapping.map)
           
+          #map=mapping.mapping()
+          #collect.map=map
+          #collect.start_collect()
+          #collect.lift(-0.05)
+          collect.esempio()
+          """
+          collect.lift(0)
+          robot.step(TIME_STEP)
+          collect.move_fingers(0)
+          robot.step(TIME_STEP)
+         
+          collect.lift(-0.05)
+          robot.step(TIME_STEP)
+          collect.move_fingers(0.1)
+          robot.step(TIME_STEP)"""
           break
           
           

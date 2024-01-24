@@ -1,6 +1,9 @@
 import math
-
+import numpy as np
 from controller import Robot, DistanceSensor, Motor, Lidar
+from pathfinding.core.grid import Grid
+from pathfinding.finder.a_star import AStarFinder
+
 class Movement:
 
     
@@ -110,10 +113,7 @@ class Movement:
         
            
            self.lidarsensor()
-           
            delta=0.300
-           
-           
            if(self.lidar_value[0]<delta):
                
                return False
@@ -227,6 +227,44 @@ class Movement:
               if(self.robot_pose[2]!="South"):
                   self.rotate("South")
               self.move(1)
+              
+              
+              
+    def obj_dir(self,x,y):
+         x_robot=self.robot_pose[0]
+         y_robot=self.robot_pose[1]
+         if(x<x_robot):
+             self.rotate("North")
+         elif(x>x_robot):
+             self.rotate("South")
+         elif(y<y_robot):
+             self.rotate("West")     
+         elif(y>y_robot):
+             self.rotate("East")
+             
+             
+                 
+    def find_path_obj(self,map,x,y):
+       
+        x_robot=self.robot_pose[0]
+        y_robot=self.robot_pose[1]
+        print(x_robot,y_robot)
+        map=map.copy()
+        map[x,y]=0
+        grid = Grid(matrix=~abs(map).astype(bool))
+        start = grid.node(y_robot,x_robot)
+        end = grid.node(y,x)
+        
+        # Usa l'algoritmo A* per trovare il percorso
+        finder = AStarFinder()
+        path, runs = finder.find_path(start, end, grid)
+        path = [(nodo.y, nodo.x) for nodo in path]
+        
+        print(f"path:{path}")
+        #grid.cleanup()
+        return path[:-1]
+        
+        
         
         
   

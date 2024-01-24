@@ -6,7 +6,7 @@ import random
 from pathfinding.core.grid import Grid
 from pathfinding.finder.a_star import AStarFinder
 
-#sssss
+
 class Mapping:
 
     def __init__(self,movement,cam,width,length,x_start,y_start):
@@ -30,7 +30,7 @@ class Mapping:
         self.map[0, :] = 4 #muro nord
         self.map[-1, :] = 4 #muro sud
         self.map= np.array([[4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-                   [4, 3, 0, 4, 4, 0, 4, 1, 4, 4, 4, 4, 4, 4, 4, 0, 4],
+                   [4, 3, 0, 4, 4, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 4],
                    [4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4],
                    [4, 4, 3, 4, 4, 0, 0, 0, 0, 0, 0, 4, 4, 0, 4, 3, 4],
                    [4, 0, 4, 4, 0, 0, 4, 0, 4, 4, 0, 0, 4, 0, 0, 4, 4],
@@ -109,6 +109,7 @@ class Mapping:
             elif(self.map[x,y-1]==0 and self.visited[x,y-1]==False):
                 self.movement.rotate("West")
                 self.movement.move(1)
+                
             else:
                 free_cells=self.find_free_novisited()
                 if(len(free_cells)==0):
@@ -118,28 +119,26 @@ class Mapping:
                     path=self.find_path_min(free_cells,x,y)
                     self.movement.follow_path(path)
                     
-        lost_cells=self.trova_coordinate_punti_zero(self.map)
-        print(lost_cells)        
+        lost_cells=np.argwhere(self.map == 1)          
         if(len(lost_cells)>0):
+            
             print(f"Ops! Quando ero felice mi sono fatto prendere dall'euforia e non ho scansionato {len(lost_cells)} celle")
             self.stato="Normale"
             for cell in lost_cells:
-                path=self.find_path_min([(cell[0],cell[1])],self.movement.robot_pose[0],self.movement.robot_pose[1])
-                print(self.movement.robot_pose[0],self.movement.robot_pose[1])
-                
-                print(path)
-                self.movement.follow_path(path)
-                self.ricerca_ogg(self.movement.robot_pose[0],self.movement.robot_pose[1])
             
+                path=self.movement.find_path_obj(self.map,cell[0],cell[1])
+               
+                self.movement.follow_path(path)
+                self.movement.obj_dir(cell[0],cell[1])
+                self.scansione(cell[0],cell[1])
+                
+           
         
         print("Ho trovato tutti gli oggetti e tutti gli umani sono salvi!!") 
         print(self.map) 
+        return self.map
         
-    def trova_coordinate_punti_zero(self, matrice):
-            coordinate_uni = np.argwhere(matrice == 1)
-            coordinate_punti_zero = [tuple(np.argwhere(matrice[row] == 0).flatten()) for row, _ in coordinate_uni]
-        
-            return coordinate_punti_zero
+
           
     def scansione(self,x,y):
         trovato=False
