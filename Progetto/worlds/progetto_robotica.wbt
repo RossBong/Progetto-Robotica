@@ -24,16 +24,17 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/project
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/appearances/protos/PaintedWood.proto"
 EXTERNPROTO "../protos/Armchair.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/paintings/protos/PortraitPainting.proto"
-EXTERNPROTO "../protos/SolidBox.proto"
-EXTERNPROTO "../protos/Door.proto"
 IMPORTABLE EXTERNPROTO "../protos/Pedestrian_new.proto"
 EXTERNPROTO "../protos/Pioneer3Gripper.proto"
+IMPORTABLE EXTERNPROTO "../protos/Box_foto.proto"
+IMPORTABLE EXTERNPROTO "../protos/Box_gioielli.proto"
+IMPORTABLE EXTERNPROTO "../protos/Box_soldi.proto"
 
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.5773502691896258 0.5773502691896258 0.5773502691896258 2.0944
-  position 7.019090359712743 2.828261415592429 24.894178214379476
+  orientation -0.45059563011303994 0.7596125987487727 0.4689907013419014 1.8036048953726218
+  position 10.526916527561815 1.632788619612793 13.679290559614245
 }
 TexturedBackground {
 }
@@ -56,7 +57,7 @@ Rock {
   scale 5
 }
 Rock {
-  translation 13.23 2.16912 0.182779
+  translation 12.18 2.17046 0.16046
   rotation 0.44721212362085194 -0.44721412362140484 -0.7745972141184518 -1.823475307179586
   name "rock(8)"
   scale 3
@@ -109,6 +110,11 @@ Wall {
   translation 7 0.46 0
   name "wall(5)"
   size 0.4 2 2.4
+}
+Wall {
+  translation 7 0.46 0
+  name "wall(8)"
+  size 0.4 1 0.4
 }
 Wall {
   translation 7 3.55 0
@@ -188,6 +194,7 @@ WoodenBox {
 Television {
   translation 2.61 4.21869 0.661749
   rotation 0.5199880554939083 0.5199870554938015 0.6776620723211167 -1.950445307179586
+  controller "<none>"
 }
 Table {
   translation 10.61 1.5 0.359991
@@ -195,13 +202,13 @@ Table {
   size 0.7 1.5 0.74
 }
 Chair {
-  translation 10.5697 1.7817 0.291644
-  rotation 0.2488199945248405 0.9355469794137566 0.2506799944839121 -1.6447853071795864
+  translation 10.3807 1.63678 0.290255
+  rotation 0.3550929787095134 0.8636709482164507 0.3577449785505061 -1.724185307179586
   name "chair(1)"
 }
 Chair {
-  translation 12.5425 1.7694 0.306278
-  rotation -0.6920708778059004 -0.18682296701397938 -0.6972338768943058 2.77488
+  translation 11.6292 1.66006 0.299491
+  rotation -0.6758736347350068 -0.2820438475739565 -0.6809156320101408 2.59566
   name "chair(2)"
 }
 Sofa {
@@ -343,94 +350,4 @@ Worktop {
 Armchair {
   translation 4.96 1.05 0
   rotation 0 0 1 1.5708
-}
-SolidBox {
-  translation 1 2 0.11
-  size 0.1 0.1 0.15
-  appearance PBRAppearance {
-    baseColorMap ImageTexture {
-      url [
-        "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/default/worlds/textures/marble.jpg"
-      ]
-    }
-    roughness 0.5
-    metalness 0
-  }
-  physics Physics {
-    density -1
-    mass 0.05
-    centerOfMass [
-      0 0 0
-    ]
-  }
-  recognitionColors [
-    0 1 0.5
-  ]
-}
-SolidBox {
-  translation 0 4 0.11
-  name "box(1)"
-  size 0.1 0.1 0.15
-  appearance PBRAppearance {
-    baseColorMap ImageTexture {
-      url [
-        "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/default/worlds/textures/marble.jpg"
-      ]
-    }
-    roughness 0.5
-    metalness 0
-  }
-  physics Physics {
-    density -1
-    mass 0.05
-  }
-  recognitionColors [
-    1 1 0
-  ]
-}
-SolidBox {
-  translation 14 2 0.11
-  name "box(2)"
-  size 0.1 0.1 0.15
-  appearance PBRAppearance {
-    baseColorMap ImageTexture {
-      url [
-        "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/default/worlds/textures/marble.jpg"
-      ]
-    }
-    roughness 0.5
-    metalness 0
-  }
-  physics Physics {
-    density -1
-    mass 0.05
-  }
-  recognitionColors [
-    0 1 0.5
-  ]
-}
-SolidBox {
-  translation 9 0 0.11
-  name "box(3)"
-  size 0.1 0.1 0.15
-  appearance PBRAppearance {
-    baseColorMap ImageTexture {
-      url [
-        "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/default/worlds/textures/marble.jpg"
-      ]
-    }
-    roughness 0.5
-    metalness 0
-  }
-  physics Physics {
-    density -1
-    mass 0.05
-  }
-  recognitionColors [
-    0 1 0
-  ]
-}
-Door {
-  translation 7 2.01 0
-  size 0.4 1.1 2.4
 }

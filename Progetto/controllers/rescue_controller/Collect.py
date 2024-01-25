@@ -55,12 +55,7 @@ class Collect:
        
         
        
-    def esempio(self):
-          self.lift(0.05)
-          self.move_fingers(0.1)
-          #self.movement.move(1)
-          self.lift(-0.05)
-          self.move_fingers(0)
+    
     
     def aggancia(self):
         self.movement.lidarsensor()
@@ -80,7 +75,6 @@ class Collect:
         
     def rilascia(self):
         
-        print("ril")
         self.movement.move(0.5)
         self.lift(0.02)
         self.move_fingers(0.1)
