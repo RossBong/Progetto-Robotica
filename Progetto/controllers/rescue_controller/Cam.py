@@ -42,7 +42,7 @@ class Cam:
 
         # Caricamento del modello pre-addestrato VGG16
         
-         #f3f3tfw4g34g
+        
         # Caricamento dell'immagine di input
         img=self.camera.getImageArray()
         

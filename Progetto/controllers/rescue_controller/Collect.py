@@ -1,7 +1,7 @@
 from Movement import Movement
 from Cam import Cam
 import numpy as np
-from controller import Robot, Motor
+from controller import Robot, Motor, Camera, CameraRecognitionObject
 import time
 class Collect:
     
@@ -16,16 +16,20 @@ class Collect:
         self.gripperMaxSpeed=0.1
         
     def start_collect(self):
-        print(self.map)
+        print("Inizio a raccogliere gli oggetti")
         objs_coord=np.argwhere(self.map == 3)
         for obj in objs_coord:
         
             path=self.movement.find_path_obj(self.map,obj[0],obj[1])
             self.movement.follow_path(path)
             self.movement.obj_dir(obj[0],obj[1])
-            #self.aggancia()
+            ogg, _=self.cam.recognition()
+            self.aggancia()
             path_reverse=self.movement.find_path_obj(self.map,self.pos_start[0],self.pos_start[1])
             self.movement.follow_path(path_reverse)
+            self.rilascia()
+            print(f"Ho consegnato un {ogg}")
+            
              
     def lift(self,position):
          end_time = 1 + self.robot.getTime()
@@ -41,7 +45,6 @@ class Collect:
     def move_fingers(self,position):
         end_time = 1 + self.robot.getTime()
         self.finger_motor.setPosition(position)
-        print(end_time)
         while self.robot.step(32) != -1:
             if self.robot.getTime() < end_time:
                 
@@ -49,7 +52,7 @@ class Collect:
             else:
                 break
             
-        print(end_time)
+       
         
        
     def esempio(self):
@@ -58,6 +61,34 @@ class Collect:
           #self.movement.move(1)
           self.lift(-0.05)
           self.move_fingers(0)
+    
+    def aggancia(self):
+        self.movement.lidarsensor()
+        dist=self.movement.lidar_value[0]-0.05
+        
+        objs = self.cam.camera.getRecognitionObjects()
+        size=objs[0].getSize()[0]
+        self.lift(0.02)
+        self.move_fingers(0.1)
+        self.movement.move(dist)
+        self.move_fingers((size-0.04)/2)
+        self.lift(-0.03)
+
+        self.movement.move_back(dist)
+ 
+        
+        
+    def rilascia(self):
+        
+        print("ril")
+        self.movement.move(0.5)
+        self.lift(0.02)
+        self.move_fingers(0.1)
+        self.movement.move_back(0.5)
+        self.move_fingers(0)
+       
+        
+        
           
           
           

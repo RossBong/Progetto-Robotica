@@ -107,7 +107,7 @@ class Movement:
                 self.robot_pose[1]+= dist
             elif(dir=="South"):
                 self.robot_pose[0]+=dist
-        print(f"posizione:({self.robot_pose[0]},{self.robot_pose[1]}), direzione:{self.robot_pose[2]}")
+        
     
     def layer_reattivo(self):
         
@@ -140,6 +140,7 @@ class Movement:
         
     def move(self,dist):
         maxspeed=self.MAX_SPEED
+       
         self.odo()
         start_dist=self.dist_values.copy()
         
@@ -160,7 +161,31 @@ class Movement:
        
         
         self.robot_update(round(self.dist_values[0]-start_dist[0]))
-      
+        
+    def move_back(self,dist):
+        maxspeed=-self.MAX_SPEED
+        
+        
+        self.odo()
+        start_dist=self.dist_values.copy()
+        
+        
+        
+        
+        while self.robot.step(self.timestep) != -1:
+            self.odo()
+            if start_dist[0]-self.dist_values[0]<=dist :
+                
+                self.leftMotor.setVelocity(maxspeed)
+                self.rightMotor.setVelocity(maxspeed)
+                
+            else:
+                self.stop_motors()
+                break
+                
+       
+        
+        self.robot_update(-round(start_dist[0]-self.dist_values[0])) 
                 
                 
     
@@ -248,7 +273,7 @@ class Movement:
        
         x_robot=self.robot_pose[0]
         y_robot=self.robot_pose[1]
-        print(x_robot,y_robot)
+        
         map=map.copy()
         map[x,y]=0
         grid = Grid(matrix=~abs(map).astype(bool))
@@ -260,9 +285,19 @@ class Movement:
         path, runs = finder.find_path(start, end, grid)
         path = [(nodo.y, nodo.x) for nodo in path]
         
-        print(f"path:{path}")
+       
         #grid.cleanup()
         return path[:-1]
+    
+    def get_opposite_dir(self, dir):
+        if(dir=="North"):
+            return"South"
+        elif(dir=="South"):
+            return"North"
+        elif(dir=="East"):
+            return "West"
+        elif(dir=="West"):
+            return"East"
         
         
         

@@ -3,6 +3,7 @@ from Movement import Movement
 from Cam import Cam
 import numpy as np
 import random
+import os
 from pathfinding.core.grid import Grid
 from pathfinding.finder.a_star import AStarFinder
 
@@ -89,7 +90,7 @@ class Mapping:
             
             #print(self.visited)
             self.ricerca_ogg(x,y)
-            print(self.map)
+            
             if(self.far_human[0]>0):
                 self.movement.rotate(self.far_human[1])
                 self.movement.move(self.far_human[0])
@@ -135,7 +136,7 @@ class Mapping:
            
         
         print("Ho trovato tutti gli oggetti e tutti gli umani sono salvi!!") 
-        print(self.map) 
+        self.print_info() 
         return self.map
         
 
@@ -172,23 +173,41 @@ class Mapping:
     def update_stato(self,f):
        
        if(f==True and self.stato=="Triste"):
+           print("Finalmente mi sento bene, effettuerò la scansione degli oggetti che rileverò in ogni casella")
+           self.print_info()  
            self.stato="Normale"
            self.counter_state=0
        elif(f==True and self.stato=="Normale"):
+           print("Sono Felice, ho trovato molti oggetti quindi andrò più velocemente")
+           self.print_info()  
            self.stato="Felice"
            self.counter_state=0
        elif(f==False and self.stato=="Felice"and self.counter_state<3):
+           print("Sono Felice")
+           self.print_info()  
            self.counter_state+=1
-       elif(f==False and self.stato=="Felice"and self.counter_state>=3):  
+       elif(f==False and self.stato=="Felice"and self.counter_state>=3): 
+           print("Non sono più Felice,starò più attento nella scansione degli oggetti")
+           self.print_info()  
            self.stato='Normale'
            self.counter_state=0
        elif(f==False and self.stato=="Normale"and self.counter_state<3):
+           print("Sto Bene")
+           self.print_info()  
            self.counter_state+=1
-       elif(f==False and self.stato=="Normale"and self.counter_state>=3):  
+       elif(f==False and self.stato=="Normale"and self.counter_state>=3):
+           print("Sono Triste, non ho trovato nessun oggetto, cercherò in tutte le direzioni")
+           self.print_info()    
            self.stato='Triste'
            self.counter_state=0
        elif(f==True and self.stato=="Felice"):
+           print("Mi sento ancora Felice, quindi continuerò ad andare veloce")
+           self.print_info()  
            self.counter_state=0
+       elif(f==False and self.stato=="Triste"):
+           self.counter_state+=1
+           print(f"Sono ancora Triste, non tovo oggetti o umani da {self.counter_state} celle")
+           self.print_info()  
        
            
              
@@ -196,7 +215,7 @@ class Mapping:
     def ricerca_ogg(self,x,y):
         s1,s2,s3,s4 =False,False,False,False
         if self.stato=="Normale":
-            print("Mi sento bene, effettuo la scansione degli ogetti che ho rilevato in questa casella")
+            
             if(self.map[x-1,y]==1):#North 
                  self.movement.rotate("North")
                  s1=self.scansione(x-1,y)  
@@ -214,7 +233,7 @@ class Mapping:
                  s4=self.scansione(x,y-1)
             
         elif self.stato=="Triste":
-                 print("Sono Triste, non ho trovato nessun oggetto, cercherò in tutte le direzioni")
+                 
                  s1=self.scansione(x-1,y)
                  self.movement.rotate("East")
                  s2=self.scansione(x,y+1)
@@ -224,7 +243,7 @@ class Mapping:
                  s4=self.scansione(x,y-1)
                  
         elif self.stato=="Felice":
-                print("Sono Felice, ho trovato molti oggetti quindi andrò più velocemente")
+                
                 if(self.map[x-1,y]==1 and random.choice([0, 1])==1):#North    
                      s1=self.scansione(x-1,y)  
                      
@@ -263,7 +282,6 @@ class Mapping:
         paths=[]
         for cell in free_cells:
             grid = Grid(matrix=~abs(self.map).astype(bool))
-            print(np.array(~abs(self.map).astype(bool)))
             start = grid.node(y,x)
             end = grid.node(cell[1],cell[0])
             
@@ -272,8 +290,7 @@ class Mapping:
             path, runs = finder.find_path(start, end, grid)
             path = [(nodo.y, nodo.x) for nodo in path]
             paths.append(path)
-            print(f"path:{path}")
-            #grid.cleanup()
+            
         
         #calcolo percorso minimo
         for path in paths:
@@ -284,5 +301,14 @@ class Mapping:
         return min_path
             
         
-            
+    def print_info(self):
+       
+       print(f"posizione:({self.movement.robot_pose[0]},{self.movement.robot_pose[1]}), direzione:{self.movement.robot_pose[2]}")
+       print("Mappa:")
+       print(self.map)
+       print(" ")
+       print(" ")
+       print(" ")
+       print(" ")
+      
         

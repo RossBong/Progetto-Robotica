@@ -27,21 +27,11 @@ def main():
          
           
           
-          #map=mapping.mapping()
-          #collect.map=map
-          #collect.start_collect()
+          map=mapping.mapping()
+          collect.map=map
+          collect.start_collect()
           #collect.lift(-0.05)
-          collect.esempio()
-          """
-          collect.lift(0)
-          robot.step(TIME_STEP)
-          collect.move_fingers(0)
-          robot.step(TIME_STEP)
-         
-          collect.lift(-0.05)
-          robot.step(TIME_STEP)
-          collect.move_fingers(0.1)
-          robot.step(TIME_STEP)"""
+          #collect.aggancia()
           break
           
           
