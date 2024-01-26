@@ -1,9 +1,6 @@
 from controller import  Camera, CameraRecognitionObject, LightSensor
 import numpy as np
 import argparse
-
-
-
  
 class Cam:
 
@@ -15,9 +12,7 @@ class Cam:
         #self.lumos.enable(timestep)
        
         #self.spotlight = robot.getDevice('light pioneer')
-        
-        
-        
+       
     def recognition(self):
         objs = self.camera.getRecognitionObjects()
         if(len(objs)>0):

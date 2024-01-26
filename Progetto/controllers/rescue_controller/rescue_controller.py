@@ -23,7 +23,7 @@ def main():
     cam=Cam(robot,timestep)
     movement=Movement(robot,timestep,pos_start[0],pos_start[1])
     mapping=Mapping(movement,cam,dim_map[0],dim_map[1],pos_start[0],pos_start[1],tts)
-    collect=Collect(movement,cam,robot,pos_start)
+    collect=Collect(movement,cam,robot,pos_start,tts)
     while robot.step(TIME_STEP) != -1:
          
           

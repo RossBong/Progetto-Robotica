@@ -9,7 +9,3 @@ class TTS:
 
     def text_to_speech(self,testo):
         self.speaker.speak(f"<prosody volume=100>{testo}</prosody>",1.0)
-        
-        
-    
-

@@ -6,9 +6,6 @@ from pathfinding.finder.a_star import AStarFinder
 
 
 class Movement:
-
-    
-    
     
     def __init__(self,robot,timestep,x_start,y_start):
         self.robot=robot
@@ -28,9 +25,7 @@ class Movement:
         self.left_ps.enable(timestep)
         self.right_ps= robot.getDevice('right wheel sensor')
         self.right_ps.enable(timestep)
-        
-        
-        
+       
         #lidar
         self.lidar_front= robot.getDevice('lidar_front')
         self.lidar_front.enable(timestep)
@@ -52,9 +47,7 @@ class Movement:
         self.raggio_ruota=0.195/2
         
         self.dist_ruote=0.34215
-        self.d_mid=self.dist_ruote/2
-        
-        
+        self.d_mid=self.dist_ruote/2     
         
         self.circonf_ruota=self.raggio_ruota*2*math.pi #0.61 m
         self.enc_unit=self.circonf_ruota/6.29 #porzione di circonferenza per radiante
@@ -62,8 +55,6 @@ class Movement:
         self.robot_pose=[x_start,y_start,"North"]
         
         self.lidar_value=[[],[],[],[]]
-        
-   
         
 
     def lidarsensor(self):
@@ -94,7 +85,6 @@ class Movement:
         
     def robot_update(self,dist):
  
-    
         dir=self.direction()
         if (dist==0):  #il robot ha ruotato
         
@@ -120,23 +110,13 @@ class Movement:
                return False
                
            else:
-               return True
-            
-      
-               
-           
-           
-   
-    
-      
+               return True 
     
         
     def stop_motors(self):
         
         self.leftMotor.setVelocity(0)
         self.rightMotor.setVelocity(0)
-        
-        
 
         
     def move(self,dist):
@@ -144,9 +124,6 @@ class Movement:
        
         self.odo()
         start_dist=self.dist_values.copy()
-        
-        
-        
         
         while self.robot.step(self.timestep) != -1:
             
@@ -159,20 +136,14 @@ class Movement:
             else:
                 self.stop_motors()
                 break
-                
-       
         
         self.robot_update(round(self.dist_values[0]-start_dist[0]))
         
     def move_back(self,dist):
         maxspeed=-self.MAX_SPEED
-        
-        
+
         self.odo()
         start_dist=self.dist_values.copy()
-        
-        
-        
         
         while self.robot.step(self.timestep) != -1:
             self.odo()
@@ -184,12 +155,8 @@ class Movement:
             else:
                 self.stop_motors()
                 break
-                
-       
         
-        self.robot_update(-round(start_dist[0]-self.dist_values[0])) 
-                
-                
+        self.robot_update(-round(start_dist[0]-self.dist_values[0]))   
     
         
     def rotate(self,dir):
@@ -206,7 +173,6 @@ class Movement:
             if(last_dir=="West"):
                     left_speed=-0.5
                     right_speed=0.5
-        
             degree=-90
         elif(dir=="East"):
             if(last_dir=="South"):
@@ -225,7 +191,6 @@ class Movement:
             new_degree=round((self.imu.getRollPitchYaw()[2] * 180) / 3.14159)
             
             if(degree!=new_degree):
-                
                 self.leftMotor.setVelocity(left_speed)
                 self.rightMotor.setVelocity(right_speed)
             else:
@@ -254,8 +219,7 @@ class Movement:
               if(self.robot_pose[2]!="South"):
                   self.rotate("South")
               self.move(1)
-              
-              
+
               
     def obj_dir(self,x,y):
          x_robot=self.robot_pose[0]
@@ -268,7 +232,6 @@ class Movement:
              self.rotate("West")     
          elif(y>y_robot):
              self.rotate("East")
-             
              
                  
     def find_path_obj(self,map,x,y):
@@ -287,7 +250,6 @@ class Movement:
         path, runs = finder.find_path(start, end, grid)
         path = [(nodo.y, nodo.x) for nodo in path]
         
-       
         #grid.cleanup()
         return path[:-1]
     
@@ -300,8 +262,3 @@ class Movement:
             return "West"
         elif(dir=="West"):
             return"East"
-        
-        
-        
-        
-  
