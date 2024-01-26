@@ -153,7 +153,7 @@ class Mapping:
          
         if(self.stato=="Triste"):#permettiamo al robot di trovare ogetti più lontani
              if(oggetto=="umano"and dist>2 and self.map[x,y]==0 ):
-                 txt=f"Ho trovato un umano alla distanza di {dist}m"
+                 txt=f"Ho trovato un umano alla distanza di {round(dist, 2)} metri"
                  print(txt)
                  self.tts.text_to_speech(txt)
                  trovato=True
