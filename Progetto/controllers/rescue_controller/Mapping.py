@@ -1,6 +1,7 @@
 import math
 from Movement import Movement
 from Cam import Cam
+from TTS import TTS
 import numpy as np
 import random
 import os
@@ -10,7 +11,7 @@ from pathfinding.finder.a_star import AStarFinder
 
 class Mapping:
 
-    def __init__(self,movement,cam,width,length,x_start,y_start):
+    def __init__(self,movement,cam,width,length,x_start,y_start,tts):
         
         self.movement=movement
         self.cam=cam
@@ -21,7 +22,7 @@ class Mapping:
         self.stato="Triste"
         self.counter_state=0#numero di celle senza aver trovato ogetti
         self.far_human=[0," "]#distanza e direzione
-
+        self.tts=tts
     
     def mapping(self):
         self.visited[self.x_start][self.y_start]=True #posizione di partenza visitata
@@ -30,16 +31,16 @@ class Mapping:
         self.map[:, -1] = 4 #muro est
         self.map[0, :] = 4 #muro nord
         self.map[-1, :] = 4 #muro sud
-        
+        """
         self.map= np.array([[4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
                    [4, 3, 0, 4, 4, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 4],
-                   [4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 4, 0, 4],
-                   [4, 4, 3, 4, 4, 0, 0, 0, 0, 0, 4, 0, 4, 0, 0, 3, 4],
+                   [4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4],
+                   [4, 4, 3, 4, 4, 0, 0, 0, 0, 0, 0, 4, 4, 0, 4, 3, 4],
                    [4, 0, 4, 4, 0, 0, 4, 0, 4, 0, 0, 0, 4, 0, 0, 4, 4],
                    [4, 0, 0, 0, 0, 0, 0, 0, 4, 4, 0, 0, 3, 4, 0, 4, 4],
                    [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4]])
         self.visited=np.full((7, 17), True)
-        
+        """
        
         
         while(-1 in self.map):
@@ -124,7 +125,9 @@ class Mapping:
         lost_cells=np.argwhere(self.map == 1)          
         if(len(lost_cells)>0):
             
-            print(f"Ops! Quando ero felice mi sono fatto prendere dall'euforia e non ho scansionato {len(lost_cells)} celle")
+            txt=f"Ops! Quando ero felice mi sono fatto prendere dall'euforia e non ho scansionato {len(lost_cells)} celle"
+            print(txt)
+            self.tts.text_to_speech(txt)
             self.stato="Normale"
             for cell in lost_cells:
             
@@ -136,7 +139,9 @@ class Mapping:
                 
            
         
-        print("Ho trovato tutti gli oggetti e tutti gli umani sono salvi!!") 
+        txt="Ho trovato tutti gli oggetti e tutti gli umani sono salvi!!"
+        print(txt)
+        self.tts.text_to_speech(txt) 
         self.print_info() 
         return self.map
         
@@ -148,20 +153,26 @@ class Mapping:
          
         if(self.stato=="Triste"):#permettiamo al robot di trovare ogetti più lontani
              if(oggetto=="umano"and dist>2 and self.map[x,y]==0 ):
-                 print(f"Ho trovato un umano alla distanza di {dist}m")
+                 txt=f"Ho trovato un umano alla distanza di {dist}m"
+                 print(txt)
+                 self.tts.text_to_speech(txt)
                  trovato=True
                  self.far_human=[round(dist),self.movement.robot_pose[2]]
                  return trovato
                  
         if(oggetto=="umano" and dist<=2):
-             print(f"Ho trovato un umano! Venite a recuperarlo.")
+             txt=f"Ho trovato un umano! Venite a recuperarlo."
+             print(txt)
+             self.tts.text_to_speech(txt)
              trovato=True
              self.update_stato(trovato)
              self.rimuovi_umano(x,y)
              self.map[x,y]=0
         elif((oggetto=="box_gioielli"or oggetto=="box_soldi" or oggetto=="box_foto")and dist<1):
              self.map[x,y]=3
-             print(f"Ho trovato il seguente oggetto:{oggetto}")
+             txt=f"Ho trovato il seguente oggetto:{oggetto}"
+             print(txt)
+             self.tts.text_to_speech(txt)
              trovato=True
              self.update_stato(trovato)
         elif(self.map[x,y]==1):
@@ -174,12 +185,16 @@ class Mapping:
     def update_stato(self,f):
        
        if(f==True and self.stato=="Triste"):
-           print("Finalmente mi sento bene, effettuerò la scansione degli oggetti che rileverò in ogni casella")
+           txt="Finalmente mi sento bene, effettuerò la scansione degli oggetti che rileverò in ogni casella"
+           print(txt)
+           self.tts.text_to_speech(txt)
            self.print_info()  
            self.stato="Normale"
            self.counter_state=0
        elif(f==True and self.stato=="Normale"):
-           print("Sono Felice, ho trovato molti oggetti quindi andrò più velocemente")
+           txt="Sono Felice, ho trovato molti oggetti quindi andrò più velocemente"
+           print(txt)
+           self.tts.text_to_speech(txt)
            self.print_info()  
            self.stato="Felice"
            self.counter_state=0
@@ -188,7 +203,9 @@ class Mapping:
            self.print_info()  
            self.counter_state+=1
        elif(f==False and self.stato=="Felice"and self.counter_state>=3): 
-           print("Non sono più Felice,starò più attento nella scansione degli oggetti")
+           txt="Non sono più Felice,starò più attento nella scansione degli oggetti"
+           print(txt)
+           self.tts.text_to_speech(txt)
            self.print_info()  
            self.stato='Normale'
            self.counter_state=0
@@ -197,17 +214,23 @@ class Mapping:
            self.print_info()  
            self.counter_state+=1
        elif(f==False and self.stato=="Normale"and self.counter_state>=3):
-           print("Sono Triste, non ho trovato nessun oggetto, cercherò in tutte le direzioni")
+           txt="Sono Triste, non ho trovato nessun oggetto, cercherò in tutte le direzioni"
+           print(txt)
+           self.tts.text_to_speech(txt)
            self.print_info()    
            self.stato='Triste'
            self.counter_state=0
        elif(f==True and self.stato=="Felice"):
-           print("Mi sento ancora Felice, quindi continuerò ad andare veloce")
+           txt="Mi sento ancora Felice, quindi continuerò ad andare veloce"
+           print(txt)
+           self.tts.text_to_speech(txt)
            self.print_info()  
            self.counter_state=0
        elif(f==False and self.stato=="Triste"):
            self.counter_state+=1
-           print(f"Sono ancora Triste, non tovo oggetti o umani da {self.counter_state} celle")
+           txt=f"Sono ancora Triste, non tovo oggetti o umani da {self.counter_state} celle"
+           print(txt)
+           self.tts.text_to_speech(txt)
            self.print_info()  
        
            

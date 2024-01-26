@@ -25,7 +25,6 @@ def aggiungi_box(traslation,color_rec,robot,name,nameproto):
     chil.importMFNodeFromString(-1,'DEF '+name+nameproto)
     
     box=robot.getFromDef(name)
-    print(box)
     traslationField=box.getField('translation')
     traslationField.setSFVec3f(traslation)
     

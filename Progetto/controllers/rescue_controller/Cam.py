@@ -1,11 +1,8 @@
-from controller import  Camera, CameraRecognitionObject
-import cv2
+from controller import  Camera, CameraRecognitionObject, LightSensor
 import numpy as np
 import argparse
 
-#from keras.applications.vgg16 import VGG16
-#from keras.preprocessing import image
-#from keras.applications.vgg16 import preprocess_input, decode_predictions
+
 
  
 class Cam:
@@ -14,7 +11,12 @@ class Cam:
         self.camera = robot.getDevice('camera')
         self.camera.enable(timestep)
         self.camera.recognitionEnable(timestep)
-        #self.model=VGG16(weights='imagenet')
+        #self.lumos=robot.getDevice('light sensor')
+        #self.lumos.enable(timestep)
+       
+        #self.spotlight = robot.getDevice('light pioneer')
+        
+        
         
     def recognition(self):
         objs = self.camera.getRecognitionObjects()
@@ -37,24 +39,12 @@ class Cam:
                 elif(color[0]==0.0 and color[1]==1.0 and color[2]==0.0):
                     return"box_foto",min
         return " ",10        
+    """    
+    def sensorLight(self):
+    
+        if(self.lumos.getValue()<50):
+            self.spotlight.enable(32)
+        elif(self.lumos.getValue()<50):
+            self.spotlight.disable(32)
+      """      
         
-    def VGG(self):
-
-        # Caricamento del modello pre-addestrato VGG16
-        
-        
-        # Caricamento dell'immagine di input
-        img=self.camera.getImageArray()
-        
-        img =np.array(img)
-        print(img.shape)
-        
-        
-        x = np.expand_dims(img, axis=0)
-        x = preprocess_input(x)
-         
-        # Predizione dell'oggetto nell'immagine
-        preds = self.model.predict(x)
-         
-        # Stampa delle prime 3 classi predette
-        print('Predizioni:', decode_predictions(preds, top=3)[0])

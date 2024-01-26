@@ -19,7 +19,7 @@ class Collect:
         print("Inizio a raccogliere gli oggetti")
         objs_coord=np.argwhere(self.map == 3)
         for obj in objs_coord:
-        
+            
             path=self.movement.find_path_obj(self.map,obj[0],obj[1])
             self.movement.follow_path(path)
             self.movement.obj_dir(obj[0],obj[1])

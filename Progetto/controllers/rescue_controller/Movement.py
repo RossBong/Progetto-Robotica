@@ -4,6 +4,7 @@ from controller import Robot, DistanceSensor, Motor, Lidar
 from pathfinding.core.grid import Grid
 from pathfinding.finder.a_star import AStarFinder
 
+
 class Movement:
 
     
@@ -14,7 +15,7 @@ class Movement:
         self.timestep=timestep
         self.leftMotor = robot.getDevice('left wheel')
         self.rightMotor = robot.getDevice('right wheel')
-    
+        
     
         self.leftMotor.setPosition(float('inf'))
         self.rightMotor.setPosition(float('inf'))
@@ -148,6 +149,7 @@ class Movement:
         
         
         while self.robot.step(self.timestep) != -1:
+            
             self.odo()
             if self.dist_values[0]-start_dist[0]<=dist  and self.layer_reattivo():
                 

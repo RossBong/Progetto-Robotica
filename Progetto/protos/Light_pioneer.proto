@@ -1,0 +1,31 @@
+#VRML_SIM R2023b utf8
+PROTO Light_pioneer [
+  field SFVec3f    translation     0 0 0
+  field SFRotation   rotation      0 0 0 0
+  field SFString   name            "light pioneer"
+  field SFBool     on              FALSE  
+  field SFFloat    intensity       1.0                 
+]
+
+{
+  
+  Solid{
+    name IS name
+    translation IS translation
+    rotation IS rotation
+    children [
+        SpotLight {
+          
+          location 0.17 0 0.16
+          direction 1 0 0
+          on IS on
+          attenuation 0 0 1
+          intensity IS intensity
+        }
+       
+    ]
+    
+  }
+  
+  
+}

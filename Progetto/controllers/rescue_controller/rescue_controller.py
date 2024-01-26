@@ -5,6 +5,7 @@ from Movement import Movement
 from Mapping import Mapping
 from Cam import Cam
 from Collect import Collect
+from TTS import TTS
 TIME_STEP = 32
 
 
@@ -18,10 +19,10 @@ pos_start=[5,1]#posizione iniziale 5.1
 dim_map=[5,15]  #dimensioni mappa
                   
 def main():
-    
-    movement=Movement(robot,timestep,pos_start[0],pos_start[1])
+    tts=TTS(robot,'microsoft','it-IT')
     cam=Cam(robot,timestep)
-    mapping=Mapping(movement,cam,dim_map[0],dim_map[1],pos_start[0],pos_start[1])
+    movement=Movement(robot,timestep,pos_start[0],pos_start[1])
+    mapping=Mapping(movement,cam,dim_map[0],dim_map[1],pos_start[0],pos_start[1],tts)
     collect=Collect(movement,cam,robot,pos_start)
     while robot.step(TIME_STEP) != -1:
          
@@ -30,9 +31,9 @@ def main():
           map=mapping.mapping()
           collect.map=map
           collect.start_collect()
-          #collect.lift(-0.05)
-          #collect.aggancia()
           break
+     
+          
           
           
            
