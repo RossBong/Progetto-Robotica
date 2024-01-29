@@ -100,11 +100,11 @@ class Movement:
                 self.robot_pose[0]+=dist
         
     
-    def layer_reattivo(self):
+    def layer_reattivo(self,delta):
         
            
            self.lidarsensor()
-           delta=0.300
+           
            if(self.lidar_value[0]<delta):
                
                return False
@@ -128,7 +128,8 @@ class Movement:
         while self.robot.step(self.timestep) != -1:
             
             self.odo()
-            if self.dist_values[0]-start_dist[0]<=dist  and self.layer_reattivo():
+            layer_reattivo=self.layer_reattivo(0.3)
+            if self.dist_values[0]-start_dist[0]<=dist  and layer_reattivo:
                 
                 self.leftMotor.setVelocity(maxspeed)
                 self.rightMotor.setVelocity(maxspeed)
@@ -138,6 +139,9 @@ class Movement:
                 break
         
         self.robot_update(round(self.dist_values[0]-start_dist[0]))
+        
+        
+        
         
     def move_back(self,dist):
         maxspeed=-self.MAX_SPEED
@@ -201,24 +205,34 @@ class Movement:
         
     
     def follow_path(self,path):
-        
+        layer_reattivo=True
         for x,y in path[1:]:
           if((x-self.robot_pose[0])==0 and y>self.robot_pose[1] ):
               if(self.robot_pose[2]!="East"):
                   self.rotate("East")
+              if(self.layer_reattivo(1)==False):
+                  return False    
               self.move(1)
           elif((x-self.robot_pose[0])==0 and y<self.robot_pose[1] ):
               if(self.robot_pose[2]!="West"):
                   self.rotate("West")
+              if(self.layer_reattivo(1)==False):
+                  return False    
               self.move(1)
           elif((y-self.robot_pose[1])==0 and x<self.robot_pose[0] ):
               if(self.robot_pose[2]!="North"):
                   self.rotate("North")
+              if(self.layer_reattivo(1)==False):
+                  return False    
               self.move(1)
           elif((y-self.robot_pose[1])==0 and x>self.robot_pose[0] ):
               if(self.robot_pose[2]!="South"):
                   self.rotate("South")
+              if(self.layer_reattivo(1)==False):
+                  return False    
               self.move(1)
+          
+        return True
 
               
     def obj_dir(self,x,y):
@@ -233,6 +247,19 @@ class Movement:
          elif(y>y_robot):
              self.rotate("East")
              
+             
+    def obj_front_pose(self):
+        x_robot=self.robot_pose[0]
+        y_robot=self.robot_pose[1]
+        dir=self.robot_pose[2]
+        if(dir=="North"):
+            return x_robot+1,y_robot
+        elif(dir=="South"):
+            return x_robot-1,y_robot
+        elif(dir=="East"):
+            return x_robot,y_robot+1
+        elif(dir=="West"):
+            return x_robot,y_robot-1   
                  
     def find_path_obj(self,map,x,y):
        

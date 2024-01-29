@@ -26,17 +26,35 @@ class Collect:
         for obj in objs_coord:
             
             path=self.movement.find_path_obj(self.map,obj[0],obj[1])
-            self.movement.follow_path(path)
-            self.movement.obj_dir(obj[0],obj[1])
-            ogg, _=self.cam.recognition()
-            self.aggancia()
-            path_reverse=self.movement.find_path_obj(self.map,self.pos_start[0],self.pos_start[1])
-            self.movement.follow_path(path_reverse)
-            self.rilascia(ogg)
-            
+            fp=False
+            while(fp==False and len(path)>0):
+                  fp=self.movement.follow_path(path)
+                  if(fp==False):
+                      x_obj, y_obj=self.movement.obj_front_pose()
+                      self.map[x_obj,y_obj]=4
+                      path=self.movement.find_path_obj(self.map,obj[0],obj[1])
+              
+                     
+                  
+            if(len(path)==0):
+                txt="Oggetto non raggiungibile"
+                print(txt)
+                self.tts.text_to_speech(txt)
+            else:
+                      
+                self.movement.obj_dir(obj[0],obj[1])
+                ogg, _=self.cam.recognition()
+                self.aggancia()
+                self.map[obj[0],obj[1]]=0
+                print(self.map)
+                path_reverse=self.movement.find_path_obj(self.map,self.pos_start[0],self.pos_start[1])
+                self.movement.follow_path(path_reverse)
+                self.rilascia(ogg)
+              
+                  
              
     def lift(self,position):
-         end_time = 1 + self.robot.getTime()
+         end_time = 1.5 + self.robot.getTime()
          self.lift_motor.setPosition(position)
          while self.robot.step(32) != -1:
              if self.robot.getTime() < end_time:
@@ -46,49 +64,59 @@ class Collect:
            
         
     def move_fingers(self,position):
-        end_time = 1 + self.robot.getTime()
+        end_time = 1.5 + self.robot.getTime()
         self.finger_motor.setPosition(position)
         while self.robot.step(32) != -1:
             if self.robot.getTime() < end_time:
                 self.finger_motor.setVelocity(self.gripperMaxSpeed)
             else:
                 break
-           
+
+        
     
     def aggancia(self):
+        objs = self.cam.camera.getRecognitionObjects()
+        self.get_well(objs)
+        
         self.movement.lidarsensor()
         dist=self.movement.lidar_value[0]-0.05
+       
         objs = self.cam.camera.getRecognitionObjects()
         size=objs[0].getSize()[0]
-        self.get_well(objs)
         self.lift(0.02)
         self.move_fingers(0.1)
-        self.movement.move(dist-0.02)
-        self.move_fingers((size-0.05)/2)
-        self.lift(-0.04)
+        self.movement.move(dist)
+        self.move_fingers((size-0.04)/2)
+        self.lift(-0.03)
+ 
         self.movement.move_back(dist)
+        
         
     def get_well(self, objs):
     
         direction_now=self.movement.direction()
         aggiustamento=objs[0].getPosition()[1]
-        if objs[0].getPosition()[1]<-0.03:
+        
+        if objs[0].getPosition()[1]<-0.05:
+            print("riposizionamento")
             if direction_now=="West":
                 self.movement.rotate("North")
             elif direction_now=="South":
                 self.movement.rotate("West")
-            elif direction_now=="Nord":
+            elif direction_now=="North":
                 self.movement.rotate("East")
             elif direction_now=="East":
                 self.movement.rotate("South")
             self.movement.move(abs(aggiustamento))
             self.movement.rotate(direction_now)
-        elif objs[0].getPosition()[1]>0.03:
+            
+        elif objs[0].getPosition()[1]>0.05:
+            print("riposizionamento")
             if(direction_now=="West"):
                 self.movement.rotate("South")
             elif direction_now=="South":
                 self.movement.rotate("East")
-            elif direction_now=="Nord":
+            elif direction_now=="North":
                 self.movement.rotate("West")
             elif direction_now=="East":
                 self.movement.rotate("North")
