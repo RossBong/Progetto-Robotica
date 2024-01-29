@@ -56,6 +56,8 @@ class Movement:
         
         self.lidar_value=[[],[],[],[]]
         
+        
+        
 
     def lidarsensor(self):
        self.lidar_value[0]=min(self.lidar_front.getRangeImage())
@@ -289,3 +291,5 @@ class Movement:
             return "West"
         elif(dir=="West"):
             return"East"
+            
+      
