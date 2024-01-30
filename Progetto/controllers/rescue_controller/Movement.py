@@ -3,11 +3,11 @@ import numpy as np
 from controller import Robot, DistanceSensor, Motor, Lidar
 from pathfinding.core.grid import Grid
 from pathfinding.finder.a_star import AStarFinder
-
+from Particle_filter import Particle_filter
 
 class Movement:
     
-    def __init__(self,robot,timestep,x_start,y_start):
+    def __init__(self,robot,timestep,x_start,y_start,PF):
         self.robot=robot
         self.timestep=timestep
         self.leftMotor = robot.getDevice('left wheel')
@@ -55,6 +55,8 @@ class Movement:
         self.robot_pose=[x_start,y_start,"North"]
         
         self.lidar_value=[[],[],[],[]]
+        
+        self.PF=PF
         
         
         
@@ -292,4 +294,58 @@ class Movement:
         elif(dir=="West"):
             return"East"
             
-      
+    def follow_path_filtered(self,path,map):
+        layer_reattivo=True
+        
+       
+        self.PF.map=map
+        pos_est=[]
+        count_cells=0
+        for x,y in path[1:]:
+          self.lidarsensor()
+          sd=self.lidar_value
+          
+          if(count_cells>=5): # controllo ogni 5 celle se le ruote hanno slittato
+              self.robot_pose[:2]=pos_est
+              self.robot_pose[2]=self.direction()
+              return False,False  
+                
+          if((x-self.robot_pose[0])==0 and y>self.robot_pose[1] ):
+              if(self.robot_pose[2]!="East"):
+                  self.rotate("East")
+              if(self.layer_reattivo(1)==False):
+                  return False,True   
+              self.move(1)
+              count_cells+=1
+              pos_est=self.PF.particle_filter([0,1],sd,self.robot_pose)
+             
+          elif((x-self.robot_pose[0])==0 and y<self.robot_pose[1] ):
+              if(self.robot_pose[2]!="West"):
+                  self.rotate("West")
+              if(self.layer_reattivo(1)==False):
+                  return False,True   
+              self.move(1)
+              count_cells+=1
+              pos_est=self.PF.particle_filter([0,-1],sd,self.robot_pose)
+             
+          elif((y-self.robot_pose[1])==0 and x<self.robot_pose[0] ):
+              if(self.robot_pose[2]!="North"):
+                  self.rotate("North")
+              if(self.layer_reattivo(1)==False):
+                  return False,True   
+              self.move(1)
+              count_cells+=1
+              pos_est=self.PF.particle_filter([-1,0],sd,self.robot_pose)
+              
+          elif((y-self.robot_pose[1])==0 and x>self.robot_pose[0] ):
+              if(self.robot_pose[2]!="South"):
+                  self.rotate("South")
+              if(self.layer_reattivo(1)==False  ):
+                  return False,True   
+              self.move(1)
+              count_cells+=1
+              pos_est=self.PF.particle_filter([1,0],sd,self.robot_pose)
+              
+        
+              
+        return True,True

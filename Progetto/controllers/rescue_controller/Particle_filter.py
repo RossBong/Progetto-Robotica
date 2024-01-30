@@ -1,27 +1,38 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from controller import Robot
-from Movement import Movement 
+
 
 class Particle_filter:
 
-    def __init__(self,n_particles,movement):
+    def __init__(self):
     
         self.map=[]
-        self.movement=movement
-        self.robot_pose=self.movement.robot_pose
-        self.particles = np.random.normal(7, 3, (n_particles, 2))
-        self.n_particles=n_particles
-
-
-    def print_particles(self):
+        x, y = np.meshgrid(np.arange(0,5,0.25),np.arange(0,15,0.25))
+        self.particles = np.column_stack((x.ravel(), y.ravel()))
+        self.n_particles=len(self.particles)
         
-        plt.figure(figsize=(10, 6))
-        plt.scatter(self.particles[:, 0], self.particles[:, 1], alpha=0.5)
+        
+
+
+    def print_particles(self,particles):
+    
+        
+        num_rows = 5
+        num_columns = 15
+       
+        # Creare una figura e assi
+        fig, ax = plt.subplots()
+        
+        ax.imshow(self.map, cmap='Blues', origin='upper', extent=[0, num_columns+1, num_rows+1, 0], alpha=0.5)
+        
+        plt.scatter(particles[:, 1], particles[:,0], alpha=0.5)
         plt.title('Scatter plot delle particelle')
-        plt.xlabel('Coordinata X')
-        plt.ylabel('Coordinata Y')
+        plt.xlabel('Coordinata Y')
+        plt.ylabel('Coordinata X')
         plt.show()
+        
+       
       
     def real_state(self,cell):
         
@@ -59,11 +70,31 @@ class Particle_filter:
                 
         return mis_list   
     
-    def position_estimate(self):
-        self.movement.lidarsensor()
-        sd=self.movement.lidar_value      
-   
-        sd=self.evaluate_mis(sd)
+    def lidar_permutation(self,sd,dir):
+    
+        #self.movement.lidarsensor()
+        #sd=self.movement.lidar_value #North,South,East,West 
+        
+        #dir =self.robot_pose[2]
+        
+        if(dir=="North"):
+            return sd
+        elif(dir=="East"):
+            sd_p=[sd[3],sd[2],sd[0],sd[1]]
+            return sd_p
+        elif(dir=="South"):
+            sd_p=[sd[1],sd[0],sd[3],sd[2]]
+            return sd_p
+        elif(dir=="West"):
+            sd_p=[sd[2],sd[3],sd[1],sd[0]]
+            return sd_p
+    
+    
+    
+    def position_estimate(self,sd,dir):
+         
+        sd_p=self.lidar_permutation(sd,dir)
+        sd=self.evaluate_mis(sd_p)
         positions_estimated=[]
         for i in range(self.map.shape[0]-1):
             for j in range(self.map.shape[1]-1):
@@ -79,7 +110,9 @@ class Particle_filter:
     
     
     # Funzione per l'aggiornamento del filtro a particelle
-    def start_particle_filter(self, particelle,azione):    
+    def particle_filter(self, azione,sd,robot_pose):
+    
+        particelle=self.particles
         rumore_movimento = np.array([0.5, 0.5])**2
         rumore_misurazione = 0.1**2 
         
@@ -88,10 +121,10 @@ class Particle_filter:
             
         pesi = 1/len(particelle)
         
-        for pos in self.position_estimate():
-            print("posizione dentro for  "+str(pos)) 
+        for pos in self.position_estimate(sd,robot_pose[2]):
+            #print("posizione dentro for  "+str(pos)) 
             # Peso delle particelle basato sulla misurazione
-            sub=np.array(self.robot_pose[:2])-np.array( pos)
+            sub=np.array(robot_pose[:2])-np.array( pos)
              
             distanza_misurata = np.linalg.norm(sub)    
             pesi += np.exp(-((distanza_misurata - np.linalg.norm(pos - particelle, axis=1)) ** 2) / rumore_misurazione)
@@ -102,42 +135,23 @@ class Particle_filter:
         
         particelle_probabili = particelle[indici]# particelle più probabili
         position_estimated=np.mean(particelle_probabili, axis=0)
+        position_estimated[0]=int(round(position_estimated[0]))
+        position_estimated[1]=int(round(position_estimated[1]))
+    
         self.particles=particelle_probabili
-        self.print_particles()
-        return position_estimated,particelle_probabili
+        print(type(position_estimated[0]))
+        print("posizione stimata "+str(position_estimated))
+        #self.print_particles(particelle_probabili)
+      
         
-    def follow_path_filtered(self,path,parts):
-            layer_reattivo=True
-            particles = parts
-            pos_est=[]
-            for x,y in path[1:]:
-              if((x-self.robot_pose[0])==0 and y>self.robot_pose[1] ):
-                  if(self.robot_pose[2]!="East"):
-                      self.movement.rotate("East")
-                   
-                  self.movement.move(1)
-                  pos_est,particles=self.start_particle_filter(particles,[0,1])
+        return position_estimated
+        
+        
+        """
+    
                   
-              elif((x-self.robot_pose[0])==0 and y<self.robot_pose[1] ):
-                  if(self.robot_pose[2]!="West"):
-                      self.movement.rotate("West")
-                 
-                  self.movement.move(1)
-                  pos_est,particles=self.start_particle_filter(particles,[0,-1])
-              elif((y-self.robot_pose[1])==0 and x<self.robot_pose[0] ):
-                  if(self.robot_pose[2]!="North"):
-                      self.movement.rotate("North")
-                    
-                  self.movement.move(1)
-                  pos_est,particles=self.start_particle_filter(particles,[-1,0])
-              elif((y-self.robot_pose[1])==0 and x>self.robot_pose[0] ):
-                  if(self.robot_pose[2]!="South"):
-                      self.movement.rotate("South")
-                 
-                  self.movement.move(1)
-                  pos_est,particles=self.start_particle_filter(particles,[1,0])
-                  
-              print("posizione stimata "+str(pos_est))
-            return True
+                  """
+              
+            
         
    
