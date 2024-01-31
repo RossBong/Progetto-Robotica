@@ -260,31 +260,27 @@ class Movement:
         
     
     def follow_path(self,path):
-        layer_reattivo=True
+        
         for x,y in path[1:]:
           if((x-self.robot_pose[0])==0 and y>self.robot_pose[1] ):
               if(self.robot_pose[2]!="East"):
                   self.rotate("East")
-              if(self.layer_reattivo(1)==False):
-                  return False    
+                
               self.move(1)
           elif((x-self.robot_pose[0])==0 and y<self.robot_pose[1] ):
               if(self.robot_pose[2]!="West"):
                   self.rotate("West")
-              if(self.layer_reattivo(1)==False):
-                  return False    
+                 
               self.move(1)
           elif((y-self.robot_pose[1])==0 and x<self.robot_pose[0] ):
               if(self.robot_pose[2]!="North"):
                   self.rotate("North")
-              if(self.layer_reattivo(1)==False):
-                  return False    
+                  
               self.move(1)
           elif((y-self.robot_pose[1])==0 and x>self.robot_pose[0] ):
               if(self.robot_pose[2]!="South"):
                   self.rotate("South")
-              if(self.layer_reattivo(1)==False):
-                  return False    
+                 
               self.move(1)
           
         return True
@@ -336,7 +332,7 @@ class Movement:
         return min_path
         
     
-    def random_movement(self):
+    def position_recalculation(self):
         count=0
         pos_est=[]
         last_dir=self.direction()
@@ -387,7 +383,7 @@ class Movement:
           # ridistribuzione particelle
           self.PF.redistribution()
           # movimenti casuali di almeno 3 celle al fine di ottenere la posizione
-          pos_est=self.random_movement()
+          pos_est=self.position_recalculation()
           
           self.robot_pose[:2]=pos_est
           self.robot_pose[2]=self.direction()

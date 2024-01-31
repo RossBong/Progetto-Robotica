@@ -101,7 +101,7 @@ class Particle_filter:
         particelle=self.particles
         
         rumore_misurazione = 0.05
-        #0.1**2 
+         
         
         # incremento x ed y
         particelle += azione
@@ -130,12 +130,6 @@ class Particle_filter:
         
         return position_estimated
         
-        
-        """
-    
-                  
-                  """
-              
-            
+
         
    
