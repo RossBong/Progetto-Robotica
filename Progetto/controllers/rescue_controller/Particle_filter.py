@@ -12,6 +12,7 @@ class Particle_filter:
         self.particles = np.column_stack((x.ravel(), y.ravel()))
         self.n_particles=len(self.particles)
         
+        
     def redistribution(self):
         x, y = np.meshgrid(np.arange(0,5,0.25),np.arange(0,15,0.25))
         self.particles = np.column_stack((x.ravel(), y.ravel()))
@@ -37,7 +38,8 @@ class Particle_filter:
         
        
       
-    def real_state(self,cell):
+    def real_state(self,cell): #verifica se le celle poste ai 4 punti cardinali rispetto 
+                               #una data cella sono libere
         
         state=[]
         x_robot,y_robot=cell[0],cell[1]
@@ -63,7 +65,8 @@ class Particle_filter:
          
         return state
     
-    def evaluate_mis(self,misurations):
+    def evaluate_mis(self,misurations):     #date le misurazioni dei 4 sensori di distanza 
+                                            #restituisce 1 se è occupata e 0 se è libera
         mis_list=[]
         for mis in misurations:
             if mis>1:
@@ -73,28 +76,8 @@ class Particle_filter:
                 
         return mis_list   
     
-    def lidar_permutation(self,sd,dir):
     
-        #self.movement.lidarsensor()
-        #sd=self.movement.lidar_value #North,South,East,West 
-        
-        #dir =self.robot_pose[2]
-        
-        if(dir=="North"):
-            return sd
-        elif(dir=="East"):
-            sd_p=[sd[3],sd[2],sd[0],sd[1]]
-            return sd_p
-        elif(dir=="South"):
-            sd_p=[sd[1],sd[0],sd[3],sd[2]]
-            return sd_p
-        elif(dir=="West"):
-            sd_p=[sd[2],sd[3],sd[1],sd[0]]
-            return sd_p
-    
-    
-    
-    def position_estimate(self,sd,dir):
+    def position_estimate(self,sd,dir):#calcola le celle che rappresentano la posizione più probabile
          
        
         sd=self.evaluate_mis(sd)
@@ -116,7 +99,7 @@ class Particle_filter:
     def particle_filter(self, azione,sd,dir):
     
         particelle=self.particles
-        rumore_movimento = np.array([0.5, 0.5])**2
+        
         rumore_misurazione = 0.05
         #0.1**2 
         

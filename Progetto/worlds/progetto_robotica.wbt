@@ -35,10 +35,9 @@ WorldInfo {
 }
 Viewpoint {
   orientation -0.5773502691896258 0.5773502691896258 0.5773502691896258 2.0944
-  position 6.722914814891414 2.766089064676317 19.87478570583989
+  position 6.722920437654514 2.766094687455317 21.863292649449903
 }
 TexturedBackground {
-  luminosity 4
 }
 TexturedBackgroundLight {
   texture "entrance_hall"

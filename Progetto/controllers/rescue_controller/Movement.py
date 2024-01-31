@@ -45,10 +45,7 @@ class Movement:
         self.dist_values=[0,0] #distanza percorsa misurata con l'odometria
         
         self.raggio_ruota=0.195/2
-        
-        self.dist_ruote=0.34215
-        self.d_mid=self.dist_ruote/2     
-        
+
         self.circonf_ruota=self.raggio_ruota*2*math.pi #0.61 m
         self.enc_unit=self.circonf_ruota/6.29 #porzione di circonferenza per radiante
         
@@ -85,8 +82,46 @@ class Movement:
         elif 45 <= q <= 135:
             return "North"
         elif (-45 < q <= 0) or (0 <= q < 45):
-            return "East" 
-        
+            return "East"
+            
+            
+    def obj_dir(self,x,y):
+         x_robot=self.robot_pose[0]
+         y_robot=self.robot_pose[1]
+         if(x<x_robot):
+             self.rotate("North")
+         elif(x>x_robot):
+             self.rotate("South")
+         elif(y<y_robot):
+             self.rotate("West")     
+         elif(y>y_robot):
+             self.rotate("East")
+             
+             
+    def obj_front_pose(self):
+        x_robot=self.robot_pose[0]
+        y_robot=self.robot_pose[1]
+        dir=self.robot_pose[2]
+        if(dir=="North"):
+            return x_robot+1,y_robot
+        elif(dir=="South"):
+            return x_robot-1,y_robot
+        elif(dir=="East"):
+            return x_robot,y_robot+1
+        elif(dir=="West"):
+            return x_robot,y_robot-1 
+            
+    def get_opposite_dir(self, dir):
+        if(dir=="North"):
+            return"South"
+        elif(dir=="South"):
+            return"North"
+        elif(dir=="East"):
+            return "West"
+        elif(dir=="West"):
+            return"East"
+            
+                   
     def robot_update(self,dist):
  
         dir=self.direction()
@@ -107,11 +142,6 @@ class Movement:
     
         self.lidarsensor()
         sd=self.lidar_value
-        #self.movement.lidarsensor()
-        #sd=self.movement.lidar_value #North,South,East,West 
-        
-        #dir =self.robot_pose[2]
-        
         if(dir=="North"):
             return sd
         elif(dir=="East"):
@@ -260,31 +290,7 @@ class Movement:
         return True
 
               
-    def obj_dir(self,x,y):
-         x_robot=self.robot_pose[0]
-         y_robot=self.robot_pose[1]
-         if(x<x_robot):
-             self.rotate("North")
-         elif(x>x_robot):
-             self.rotate("South")
-         elif(y<y_robot):
-             self.rotate("West")     
-         elif(y>y_robot):
-             self.rotate("East")
-             
-             
-    def obj_front_pose(self):
-        x_robot=self.robot_pose[0]
-        y_robot=self.robot_pose[1]
-        dir=self.robot_pose[2]
-        if(dir=="North"):
-            return x_robot+1,y_robot
-        elif(dir=="South"):
-            return x_robot-1,y_robot
-        elif(dir=="East"):
-            return x_robot,y_robot+1
-        elif(dir=="West"):
-            return x_robot,y_robot-1   
+  
                  
     def find_path_obj(self,map,x,y):
        
@@ -304,16 +310,31 @@ class Movement:
         
         #grid.cleanup()
         return path[:-1]
-    
-    def get_opposite_dir(self, dir):
-        if(dir=="North"):
-            return"South"
-        elif(dir=="South"):
-            return"North"
-        elif(dir=="East"):
-            return "West"
-        elif(dir=="West"):
-            return"East"
+        
+    def find_path_min(self,free_cells,x,y,map):
+        min=100
+        length=0
+        paths=[]
+        for cell in free_cells:
+            grid = Grid(matrix=~abs(map).astype(bool))
+            start = grid.node(y,x)
+            end = grid.node(cell[1],cell[0])
+            
+            # Usa l'algoritmo A* per trovare il percorso
+            finder = AStarFinder()
+            path, runs = finder.find_path(start, end, grid)
+            path = [(nodo.y, nodo.x) for nodo in path]
+            paths.append(path)
+            
+        
+        #calcolo percorso minimo
+        for path in paths:
+            length=len(path)
+            if length<min:
+                min=length
+                min_path=path
+        return min_path
+        
     
     def random_movement(self):
         count=0
@@ -362,7 +383,7 @@ class Movement:
         return pos_est    
     
     def agg_filtro(self):
-          print("aggiornamento filtro ")
+          print("Rilevata posizione non corretta, effettuo una localizzazione")
           # ridistribuzione particelle
           self.PF.redistribution()
           # movimenti casuali di almeno 3 celle al fine di ottenere la posizione
@@ -383,21 +404,13 @@ class Movement:
           self.lidarsensor()
           sd=self.lidar_value
           sd_p=self.lidar_permutation(self.direction())
-          if(count_cells >5): # controllo ogni 5 celle se le ruote hanno slittato
+          if(count_cells >5): # controllo dopo le prime 5 celle se le ruote hanno slittato
               
-              if(self.robot_pose[:2] in self.PF.position_estimate(sd_p,self.direction())):
-                  
-                  print("uguali")
-              else:
-                  #slittamento
-              
+              if(self.robot_pose[:2] not in self.PF.position_estimate(sd_p,self.direction())):
                   
                   self.agg_filtro()
                   return False  
-                  
-             
-              
-                
+      
           if((x-self.robot_pose[0])==0 and y>self.robot_pose[1] ):
               if(self.robot_pose[2]!="East"):
                   self.rotate("East")

@@ -48,10 +48,7 @@ class Mapping:
             y=self.movement.robot_pose[1]
             
             self.visited[x,y]=True 
-            """
-            if(self.movement.direction()!="North"):
-                self.movement.rotate("North")"""
-            #self.movement.sensordistance()
+
             self.movement.lidarsensor()
             sd=self.movement.lidar_value
             sd=self.movement.lidar_permutation(self.movement.direction())
@@ -88,7 +85,7 @@ class Mapping:
                 
                  
             
-            #print(self.visited)
+            
             self.ricerca_ogg(x,y)
             
             if(self.far_human[0]>0):
@@ -115,9 +112,11 @@ class Mapping:
                 free_cells=self.find_free_novisited()
                 if(len(free_cells)==0):
                    print("Imposto i punti non raggiungibili a 4")
-                   self.map=np.where(self.map == -1, 4, self.map) 
+                   
+                   self.map=np.where(self.map == -1, 4, self.map)
+                   self.print_info()  
                 else:
-                    path=self.find_path_min(free_cells,x,y)
+                    path=self.movement.find_path_min(free_cells,x,y,self.map)
                     self.movement.follow_path(path)
                     
         lost_cells=np.argwhere(self.map == 1)          
@@ -130,17 +129,16 @@ class Mapping:
             for cell in lost_cells:
             
                 path=self.movement.find_path_obj(self.map,cell[0],cell[1])
-               
                 self.movement.follow_path(path)
                 self.movement.obj_dir(cell[0],cell[1])
                 self.scansione(cell[0],cell[1])
-                
+                self.print_info() 
            
         
         txt="Ho trovato tutti gli oggetti e tutti gli umani sono salvi!!"
         print(txt)
         self.tts.text_to_speech(txt) 
-        self.print_info() 
+        
         return self.map
         
 
@@ -173,7 +171,7 @@ class Mapping:
              self.tts.text_to_speech(txt)
              trovato=True
              self.update_stato(trovato)
-        elif(self.map[x,y]==1):
+        elif(self.map[x,y]==1):#oggetto non riconosciuto es.roccia
              self.map[x,y]=4
                
              
@@ -298,29 +296,7 @@ class Mapping:
         free_cells=np.argwhere(a)
         return free_cells
     
-    def find_path_min(self,free_cells,x,y):
-        min=100
-        length=0
-        paths=[]
-        for cell in free_cells:
-            grid = Grid(matrix=~abs(self.map).astype(bool))
-            start = grid.node(y,x)
-            end = grid.node(cell[1],cell[0])
-            
-            # Usa l'algoritmo A* per trovare il percorso
-            finder = AStarFinder()
-            path, runs = finder.find_path(start, end, grid)
-            path = [(nodo.y, nodo.x) for nodo in path]
-            paths.append(path)
-            
-        
-        #calcolo percorso minimo
-        for path in paths:
-            length=len(path)
-            if length<min:
-                min=length
-                min_path=path
-        return min_path
+    
             
         
     def print_info(self):

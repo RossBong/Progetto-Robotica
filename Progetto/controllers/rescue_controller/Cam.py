@@ -8,10 +8,7 @@ class Cam:
         self.camera = robot.getDevice('camera')
         self.camera.enable(timestep)
         self.camera.recognitionEnable(timestep)
-        #self.lumos=robot.getDevice('light sensor')
-        #self.lumos.enable(timestep)
-       
-        #self.spotlight = robot.getDevice('light pioneer')
+        
        
     def recognition(self):
         objs = self.camera.getRecognitionObjects()
@@ -24,6 +21,7 @@ class Cam:
                    
                     index=i
             color= objs[index].getColors()
+            
             if(y>-0.3 and y<0.3):#imponiamo di vedere esclusivamente l'oggetto davanti al robot
                 if(color[0]==1.0 and color[1]==1.0 and color[2]==0.0):
                     return"box_gioielli", min 
@@ -34,12 +32,5 @@ class Cam:
                 elif(color[0]==0.0 and color[1]==1.0 and color[2]==0.0):
                     return"box_foto",min
         return " ",10        
-    """    
-    def sensorLight(self):
-    
-        if(self.lumos.getValue()<50):
-            self.spotlight.enable(32)
-        elif(self.lumos.getValue()<50):
-            self.spotlight.disable(32)
-      """      
+   
         

@@ -24,18 +24,19 @@ class Collect:
         self.tts.text_to_speech(txt)
         objs_coord=np.argwhere(self.map == 3)
         for obj in objs_coord:
-            print(f"OGG:{obj}")
+            
             path=self.movement.find_path_obj(self.map,obj[0],obj[1])
-            print(path)
+            
             fp=False
           
             while(fp==False ):
                   fp=self.movement.follow_path_filtered(path,self.map)
                   if(fp==False):
-                      print("ricalcolo percorso") 
-     
+                      txt="Posizione trovata, ricalcolo il percorso"
+                      print(txt)
+                      self.tts.text_to_speech(txt)
                       path=self.movement.find_path_obj(self.map,obj[0],obj[1])
-                      print(path)
+                      
                      
                   
             
