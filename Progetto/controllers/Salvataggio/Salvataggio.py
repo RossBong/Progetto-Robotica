@@ -75,7 +75,7 @@ while robot.step(timestep) != -1:
         print("Umano 2 salvato")
         customDataField.setSFString(" ")
         
-    
+   
     for obj in objs:
         
         if(obj.getPosition()[0]<1 and obj.getPosition()[1]<1 and obj.getPosition()[2]<=0.075):
@@ -84,10 +84,11 @@ while robot.step(timestep) != -1:
             
             obj.remove()
             objs.remove(obj)
+            """
             if(rock_falling):
                 aggiungi_rock([3,3,0.4],robot,'rock_falling')
                 rock_falling=False   
-
+            """
 
 
     

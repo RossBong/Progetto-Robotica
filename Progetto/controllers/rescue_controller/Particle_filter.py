@@ -12,6 +12,9 @@ class Particle_filter:
         self.particles = np.column_stack((x.ravel(), y.ravel()))
         self.n_particles=len(self.particles)
         
+    def redistribution(self):
+        x, y = np.meshgrid(np.arange(0,5,0.25),np.arange(0,15,0.25))
+        self.particles = np.column_stack((x.ravel(), y.ravel()))
         
 
 
@@ -110,24 +113,21 @@ class Particle_filter:
     
     
     # Funzione per l'aggiornamento del filtro a particelle
-    def particle_filter(self, azione,sd,robot_pose):
+    def particle_filter(self, azione,sd,dir):
     
         particelle=self.particles
         rumore_movimento = np.array([0.5, 0.5])**2
-        rumore_misurazione = 0.1**2 
+        rumore_misurazione = 0.05
+        #0.1**2 
         
         # incremento x ed y
         particelle += azione
             
         pesi = 1/len(particelle)
         
-        for pos in self.position_estimate(sd,robot_pose[2]):
-            #print("posizione dentro for  "+str(pos)) 
-            # Peso delle particelle basato sulla misurazione
-            sub=np.array(robot_pose[:2])-np.array( pos)
-             
-            distanza_misurata = np.linalg.norm(sub)    
-            pesi += np.exp(-((distanza_misurata - np.linalg.norm(pos - particelle, axis=1)) ** 2) / rumore_misurazione)
+        for pos in self.position_estimate(sd,dir):
+            nb=(np.linalg.norm(pos - particelle, axis=1)) ** 2
+            pesi += np.exp(-(nb) / rumore_misurazione)
             pesi /= np.sum(pesi)
             
         # Resampling con copia di elementi più probabili   
@@ -135,11 +135,12 @@ class Particle_filter:
         
         particelle_probabili = particelle[indici]# particelle più probabili
         position_estimated=np.mean(particelle_probabili, axis=0)
-        position_estimated[0]=int(round(position_estimated[0]))
-        position_estimated[1]=int(round(position_estimated[1]))
-    
+        position_estimated[0]=round(position_estimated[0])
+        position_estimated[1]=round(position_estimated[1])
+        position_estimated=position_estimated.astype(int)
+        position_estimated=[position_estimated[0],position_estimated[1]]
         self.particles=particelle_probabili
-        print(type(position_estimated[0]))
+      
         print("posizione stimata "+str(position_estimated))
         #self.print_particles(particelle_probabili)
       

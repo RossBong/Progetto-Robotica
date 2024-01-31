@@ -29,31 +29,26 @@ class Collect:
             fp=False
             # fp=False pf_flag=True -> caduta roccia improvvisa
             # fp=False pf_flag=False -> aggiornamento posizione
-            while(fp==False and len(path)>0):
-                  fp,pf_flag=self.movement.follow_path_filtered(path,self.map)
-                  if(fp==False and pf_flag==True):
-                      x_obj, y_obj=self.movement.obj_front_pose()
-                      self.map[x_obj,y_obj]=4
+            while(fp==False ):
+                  fp=self.movement.follow_path_filtered(path,self.map)
+                  if(fp==False):
+                      print("ricalcolo percorso") 
+     
                       path=self.movement.find_path_obj(self.map,obj[0],obj[1])
-                  elif(fp==False and pf_flag==False):
-                      path=self.movement.find_path_obj(self.map,obj[0],obj[1])
+                      print(path)
                      
                   
-            if(len(path)==0):
-                txt="Oggetto non raggiungibile"
-                print(txt)
-                self.tts.text_to_speech(txt)
-            else:
+            
                       
-                self.movement.obj_dir(obj[0],obj[1])
-                ogg, _=self.cam.recognition()
-                self.aggancia()
-                self.map[obj[0],obj[1]]=0
-                print(self.map)
-                path_reverse=self.movement.find_path_obj(self.map,self.pos_start[0],self.pos_start[1])
-                self.movement.follow_path_filtered(path_reverse,self.map)
-                self.rilascia(ogg)
-              
+            self.movement.obj_dir(obj[0],obj[1])
+            ogg, _=self.cam.recognition()
+            self.aggancia()
+            self.map[obj[0],obj[1]]=0
+            print(self.map)
+            path_reverse=self.movement.find_path_obj(self.map,self.pos_start[0],self.pos_start[1])
+            self.movement.follow_path_filtered(path_reverse,self.map)
+            self.rilascia(ogg)
+          
                   
              
     def lift(self,position):

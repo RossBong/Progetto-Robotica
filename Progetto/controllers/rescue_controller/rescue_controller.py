@@ -16,7 +16,7 @@ TIME_STEP = 32
 robot = Robot()
 # get the time step of the current world.
 timestep=TIME_STEP
-#timestep = int(robot.getBasicTimeStep())
+
 pos_start=[5,1]#posizione iniziale 5.1
 dim_map=[5,15]  #dimensioni mappa
 
@@ -34,7 +34,6 @@ def main():
           
           
           map=mapping.mapping()
-          
           collect.map=map
           collect.start_collect()
           

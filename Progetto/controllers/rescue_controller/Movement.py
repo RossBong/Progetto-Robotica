@@ -171,23 +171,23 @@ class Movement:
         last_dir=self.direction()
         left_speed=0.5
         right_speed=-0.5
-        
-        if(dir=="North"):
+        degree=999
+        if(dir=="North" and last_dir!="North"):
             if(last_dir=="East"):
                 left_speed=-0.5
                 right_speed=0.5
             degree=90
-        elif(dir=="South"):
+        elif(dir=="South"and last_dir!="South"):
             if(last_dir=="West"):
                     left_speed=-0.5
                     right_speed=0.5
             degree=-90
-        elif(dir=="East"):
+        elif(dir=="East" and last_dir!="East"):
             if(last_dir=="South"):
                     left_speed=-0.5
                     right_speed=0.5
             degree=0
-        elif(dir=="West"):
+        elif(dir=="West" and last_dir!="West"):
             if(last_dir=="North"):
                     left_speed=-0.5
                     right_speed=0.5
@@ -197,7 +197,8 @@ class Movement:
         while self.robot.step(self.timestep) != -1:
             
             new_degree=round((self.imu.getRollPitchYaw()[2] * 180) / 3.14159)
-            
+            if(degree==999):
+                break
             if(degree!=new_degree):
                 self.leftMotor.setVelocity(left_speed)
                 self.rightMotor.setVelocity(right_speed)
@@ -293,6 +294,44 @@ class Movement:
             return "West"
         elif(dir=="West"):
             return"East"
+    
+    def random_movement(self):
+        count=0
+        pos_est=[]
+        last_dir=self.direction()
+        while(count<6):
+            self.rotate("North")
+            self.lidarsensor()
+            sd=self.lidar_value
+               
+            if(sd[0]>1 and last_dir!="South"):
+                self.move(1)
+                pos_est=self.PF.particle_filter([-1,0],sd,self.direction())
+                
+                count+=1
+            elif(sd[2]>1 and last_dir!="West"):
+                self.rotate("East")
+                self.move(1)
+                pos_est=self.PF.particle_filter([0,1],sd,self.direction())
+              
+                count+=1
+            elif(sd[3]>1 and last_dir!="East"):
+                self.rotate("West")
+                self.move(1)
+                pos_est=self.PF.particle_filter([0,-1],sd,self.direction())
+              
+                count+=1
+            elif(sd[1]>1 ):
+                self.rotate("South")
+                self.move(1)
+                pos_est=self.PF.particle_filter([1,0],sd,self.direction())
+               
+                count+=1
+                
+            last_dir=self.direction()
+           
+        return pos_est    
+    
             
     def follow_path_filtered(self,path,map):
         layer_reattivo=True
@@ -305,47 +344,60 @@ class Movement:
           self.lidarsensor()
           sd=self.lidar_value
           
-          if(count_cells>=5): # controllo ogni 5 celle se le ruote hanno slittato
-              self.robot_pose[:2]=pos_est
-              self.robot_pose[2]=self.direction()
-              return False,False  
+          if(count_cells >5): # controllo ogni 5 celle se le ruote hanno slittato
+              
+              if(self.robot_pose[:2] in self.PF.position_estimate(sd,self.direction())):
+                  
+                  print("uguali")
+              else:
+                  #slittamento
+              
+                  count_cells=0
+                  print("aggiornamento filtro ")
+                  # ridistribuzione particelle
+                  self.PF.redistribution()
+                  # movimenti casuali di almeno 3 celle al fine di ottenere la posizione
+                  pos_est=self.random_movement()
+                  
+                  self.robot_pose[:2]=pos_est
+                  self.robot_pose[2]=self.direction()
+                  return False  
+                  
+             
+              
                 
           if((x-self.robot_pose[0])==0 and y>self.robot_pose[1] ):
               if(self.robot_pose[2]!="East"):
                   self.rotate("East")
-              if(self.layer_reattivo(1)==False):
-                  return False,True   
+              
               self.move(1)
               count_cells+=1
-              pos_est=self.PF.particle_filter([0,1],sd,self.robot_pose)
+              pos_est=self.PF.particle_filter([0,1],sd,self.direction())
              
           elif((x-self.robot_pose[0])==0 and y<self.robot_pose[1] ):
               if(self.robot_pose[2]!="West"):
                   self.rotate("West")
-              if(self.layer_reattivo(1)==False):
-                  return False,True   
+            
               self.move(1)
               count_cells+=1
-              pos_est=self.PF.particle_filter([0,-1],sd,self.robot_pose)
+              pos_est=self.PF.particle_filter([0,-1],sd,self.direction())
              
           elif((y-self.robot_pose[1])==0 and x<self.robot_pose[0] ):
               if(self.robot_pose[2]!="North"):
                   self.rotate("North")
-              if(self.layer_reattivo(1)==False):
-                  return False,True   
+                
               self.move(1)
               count_cells+=1
-              pos_est=self.PF.particle_filter([-1,0],sd,self.robot_pose)
+              pos_est=self.PF.particle_filter([-1,0],sd,self.direction())
               
           elif((y-self.robot_pose[1])==0 and x>self.robot_pose[0] ):
               if(self.robot_pose[2]!="South"):
                   self.rotate("South")
-              if(self.layer_reattivo(1)==False  ):
-                  return False,True   
+              
               self.move(1)
               count_cells+=1
-              pos_est=self.PF.particle_filter([1,0],sd,self.robot_pose)
+              pos_est=self.PF.particle_filter([1,0],sd,self.direction())
               
         
               
-        return True,True
+        return True
