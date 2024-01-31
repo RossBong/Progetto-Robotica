@@ -102,7 +102,27 @@ class Movement:
                 self.robot_pose[1]+= dist
             elif(dir=="South"):
                 self.robot_pose[0]+=dist
+                
+    def lidar_permutation(self,dir):
+    
+        self.lidarsensor()
+        sd=self.lidar_value
+        #self.movement.lidarsensor()
+        #sd=self.movement.lidar_value #North,South,East,West 
         
+        #dir =self.robot_pose[2]
+        
+        if(dir=="North"):
+            return sd
+        elif(dir=="East"):
+            sd_p=[sd[3],sd[2],sd[0],sd[1]]
+            return sd_p
+        elif(dir=="South"):
+            sd_p=[sd[1],sd[0],sd[3],sd[2]]
+            return sd_p
+        elif(dir=="West"):
+            sd_p=[sd[2],sd[3],sd[1],sd[0]]
+            return sd_p    
     
     def layer_reattivo(self,delta):
         
@@ -299,40 +319,59 @@ class Movement:
         count=0
         pos_est=[]
         last_dir=self.direction()
-        while(count<6):
-            self.rotate("North")
-            self.lidarsensor()
-            sd=self.lidar_value
+        rb_list=[self.robot_pose[:2]]
+        while(len(rb_list)<6):#il robot esce dal while quando avrà visitato 5 celle diverse
+            
+            print(rb_list)
+            
+            sd=self.lidar_permutation(self.direction())
+            
                
-            if(sd[0]>1 and last_dir!="South"):
+            if(sd[0]>1 and ((self.robot_pose[:2]+[-1,0]) not in rb_list)):
+                self.rotate("North")
                 self.move(1)
-                pos_est=self.PF.particle_filter([-1,0],sd,self.direction())
+                pos_est=self.PF.particle_filter([-1,0],self.lidar_permutation(self.direction()),self.direction())
+                rb_list.append(self.robot_pose[:2])
                 
-                count+=1
-            elif(sd[2]>1 and last_dir!="West"):
+            elif(sd[2]>1 and ((self.robot_pose[:2]+[0,1]) not in rb_list)):
                 self.rotate("East")
                 self.move(1)
-                pos_est=self.PF.particle_filter([0,1],sd,self.direction())
-              
-                count+=1
-            elif(sd[3]>1 and last_dir!="East"):
+                pos_est=self.PF.particle_filter([0,1],self.lidar_permutation(self.direction()),self.direction())
+                rb_list.append(self.robot_pose[:2])
+                
+            elif(sd[3]>1 and ((self.robot_pose[:2]+[0,-1]) not in rb_list)):
                 self.rotate("West")
+                
                 self.move(1)
-                pos_est=self.PF.particle_filter([0,-1],sd,self.direction())
-              
-                count+=1
-            elif(sd[1]>1 ):
+                pos_est=self.PF.particle_filter([0,-1],self.lidar_permutation(self.direction()),self.direction())
+                rb_list.append(self.robot_pose[:2])
+                
+            elif(sd[1]>1  and ((self.robot_pose[:2]+[1,0]) not in rb_list)):
+            
                 self.rotate("South")
                 self.move(1)
-                pos_est=self.PF.particle_filter([1,0],sd,self.direction())
-               
-                count+=1
+                pos_est=self.PF.particle_filter([1,0],self.lidar_permutation(self.direction()),self.direction())
+                rb_list.append(self.robot_pose[:2])
+            
+            else:
+                self.rotate(self.get_opposite_dir(last_dir))
+                self.move(1)
                 
             last_dir=self.direction()
            
         return pos_est    
     
-            
+    def agg_filtro(self):
+          print("aggiornamento filtro ")
+          # ridistribuzione particelle
+          self.PF.redistribution()
+          # movimenti casuali di almeno 3 celle al fine di ottenere la posizione
+          pos_est=self.random_movement()
+          
+          self.robot_pose[:2]=pos_est
+          self.robot_pose[2]=self.direction()
+                  
+                        
     def follow_path_filtered(self,path,map):
         layer_reattivo=True
         
@@ -343,24 +382,17 @@ class Movement:
         for x,y in path[1:]:
           self.lidarsensor()
           sd=self.lidar_value
-          
+          sd_p=self.lidar_permutation(self.direction())
           if(count_cells >5): # controllo ogni 5 celle se le ruote hanno slittato
               
-              if(self.robot_pose[:2] in self.PF.position_estimate(sd,self.direction())):
+              if(self.robot_pose[:2] in self.PF.position_estimate(sd_p,self.direction())):
                   
                   print("uguali")
               else:
                   #slittamento
               
-                  count_cells=0
-                  print("aggiornamento filtro ")
-                  # ridistribuzione particelle
-                  self.PF.redistribution()
-                  # movimenti casuali di almeno 3 celle al fine di ottenere la posizione
-                  pos_est=self.random_movement()
                   
-                  self.robot_pose[:2]=pos_est
-                  self.robot_pose[2]=self.direction()
+                  self.agg_filtro()
                   return False  
                   
              
@@ -369,34 +401,50 @@ class Movement:
           if((x-self.robot_pose[0])==0 and y>self.robot_pose[1] ):
               if(self.robot_pose[2]!="East"):
                   self.rotate("East")
-              
+              if(self.layer_reattivo(0.5)==False):
+                  
+                  
+                  self.agg_filtro()
+                  return False  
+                     
               self.move(1)
               count_cells+=1
-              pos_est=self.PF.particle_filter([0,1],sd,self.direction())
+              
+              sd_p=self.lidar_permutation(self.direction())
+              pos_est=self.PF.particle_filter([0,1],sd_p,self.direction())
              
           elif((x-self.robot_pose[0])==0 and y<self.robot_pose[1] ):
               if(self.robot_pose[2]!="West"):
                   self.rotate("West")
-            
+              if(self.layer_reattivo(0.5)==False):
+                  self.agg_filtro()
+                  return False  
               self.move(1)
               count_cells+=1
-              pos_est=self.PF.particle_filter([0,-1],sd,self.direction())
+              sd_p=self.lidar_permutation(self.direction())
+              pos_est=self.PF.particle_filter([0,-1],sd_p,self.direction())
              
           elif((y-self.robot_pose[1])==0 and x<self.robot_pose[0] ):
               if(self.robot_pose[2]!="North"):
                   self.rotate("North")
-                
+              if(self.layer_reattivo(0.5)==False):
+                  self.agg_filtro()
+                  return False     
               self.move(1)
               count_cells+=1
-              pos_est=self.PF.particle_filter([-1,0],sd,self.direction())
+              sd_p=self.lidar_permutation(self.direction())
+              pos_est=self.PF.particle_filter([-1,0],sd_p,self.direction())
               
           elif((y-self.robot_pose[1])==0 and x>self.robot_pose[0] ):
               if(self.robot_pose[2]!="South"):
                   self.rotate("South")
-              
+              if(self.layer_reattivo(0.5)==False):
+                  self.agg_filtro()
+                  return False   
               self.move(1)
               count_cells+=1
-              pos_est=self.PF.particle_filter([1,0],sd,self.direction())
+              sd_p=self.lidar_permutation(self.direction())
+              pos_est=self.PF.particle_filter([1,0],sd_p,self.direction())
               
         
               

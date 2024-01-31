@@ -27,20 +27,18 @@ class Mapping:
     def mapping(self):
         self.visited[self.x_start][self.y_start]=True #posizione di partenza visitata
         self.map[self.x_start][self.y_start]=0 #posizione di partenza libera
-        self.map[:, 0] = 4 #muro ovest
-        self.map[:, -1] = 4 #muro est
-        self.map[0, :] = 4 #muro nord
         
         
+        """
         self.map= np.array([[4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-                   [4, 0, 3, 4, 4, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 4],
-                   [4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4],
-                   [4, 4, 3, 4, 4, 0, 0, 0, 0, 0, 0, 4, 4, 0, 4, 3, 4],
-                   [4, 0, 4, 4, 0, 0, 4, 0, 4, 0, 0, 0, 4, 0, 0, 4, 4],
-                   [4, 0, 0, 0, 0, 0, 0, 0, 4, 4, 0, 0, 3, 4, 0, 4, 4],
-                   [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4]])
-        self.visited=np.full((7, 17), True)    
-        
+                               [4, 0, 3, 4, 4, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 4],
+                               [4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4],
+                               [4, 4, 3, 4, 4, 0, 0, 0, 0, 0, 0, 4, 4, 0, 4, 3, 4],
+                               [4, 0, 4, 4, 0, 0, 4, 0, 4, 0, 0, 0, 4, 0, 0, 4, 4],
+                               [4, 0, 0, 0, 0, 0, 0, 0, 4, 4, 0, 0, 3, 4, 0, 4, 4],
+                               [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4]])
+        self.visited=np.full((7, 17), True)   """ 
+       
         
         while(-1 in self.map):
             
@@ -50,12 +48,13 @@ class Mapping:
             y=self.movement.robot_pose[1]
             
             self.visited[x,y]=True 
+            """
             if(self.movement.direction()!="North"):
-                self.movement.rotate("North")
+                self.movement.rotate("North")"""
             #self.movement.sensordistance()
             self.movement.lidarsensor()
             sd=self.movement.lidar_value
-            
+            sd=self.movement.lidar_permutation(self.movement.direction())
             
             
            

@@ -96,8 +96,8 @@ class Particle_filter:
     
     def position_estimate(self,sd,dir):
          
-        sd_p=self.lidar_permutation(sd,dir)
-        sd=self.evaluate_mis(sd_p)
+       
+        sd=self.evaluate_mis(sd)
         positions_estimated=[]
         for i in range(self.map.shape[0]-1):
             for j in range(self.map.shape[1]-1):
@@ -106,7 +106,7 @@ class Particle_filter:
                 if(cell_state==sd):
                     # celle più probabili
                     positions_estimated.append([i,j])
-                    
+                 
         return positions_estimated
                     
                     
