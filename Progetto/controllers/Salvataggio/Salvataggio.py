@@ -27,23 +27,30 @@ def aggiungi_box(traslation,color_rec,robot,name,nameproto):
     box=robot.getFromDef(name)
     traslationField=box.getField('translation')
     traslationField.setSFVec3f(traslation)
+
+def recupera_oggetti(objs) :
     
-def aggiungi_rock(traslation,robot,name):
-    root=robot.getRoot()
-    chil=root.getField('children')
-    chil.importMFNodeFromString(-1,'DEF '+name+' Rock {}')
-    
-    rock=robot.getFromDef(name)
-    traslationField=rock.getField('translation')
-    traslationField.setSFVec3f(traslation)
-    
-    
-    scaleField=rock.getField('scale')
-    scaleField.setSFFloat(6.0)
-    
+    for obj in objs:
+        
+        if(obj.getPosition()[0]<1 and obj.getPosition()[1]<1 and obj.getPosition()[2]<=0.075):
+            
+
+            obj.remove()
+            objs.remove(obj)
+             
+def salvataggio_umano(rescuer):    
+    customDataField=rescuer.getField('customData')
+    customData=customDataField.getSFString()
     
     
-    
+    if(customData=="5,5" or customData=="5,6"):
+        robot.getFromDef('umano1').remove()
+        print("Umano 1 salvato")
+        customDataField.setSFString(" ")
+    elif(customData=="3,13" or customData=="4,13"):
+        robot.getFromDef('umano2').remove()
+        print("Umano 2 salvato")
+        customDataField.setSFString(" ")
     
     
 rescuer = robot.getFromDef('rescuer')
@@ -60,35 +67,11 @@ aggiungi_box([11,0,0.1],[0,1,0],robot,'box_foto',' Box_foto {}')
 aggiungi_box([14,2,0.1],[0,1,0.5],robot,'box_soldi2',' Box_soldi {}')
 
 objs=[robot.getFromDef('box_gioielli'),robot.getFromDef('box_soldi1'),robot.getFromDef('box_soldi2'),robot.getFromDef('box_foto')]
-rock_falling=True    
-while robot.step(timestep) != -1:
-    customDataField=rescuer.getField('customData')
-    customData=customDataField.getSFString()
-    
-    
-    if(customData=="5,5" or customData=="5,6"):
-        robot.getFromDef('umano1').remove()
-        print("Umano 1 salvato")
-        customDataField.setSFString(" ")
-    elif(customData=="3,13" or customData=="4,13"):
-        robot.getFromDef('umano2').remove()
-        print("Umano 2 salvato")
-        customDataField.setSFString(" ")
-        
    
-    for obj in objs:
-        
-        if(obj.getPosition()[0]<1 and obj.getPosition()[1]<1 and obj.getPosition()[2]<=0.075):
-            
-            
-            
-            obj.remove()
-            objs.remove(obj)
-            """
-            if(rock_falling):
-                aggiungi_rock([3,3,0.4],robot,'rock_falling')
-                rock_falling=False   
-            """
+while robot.step(timestep) != -1:
+
+    salvataggio_umano(rescuer)    
+    recupera_oggetti(objs)
 
 
     
