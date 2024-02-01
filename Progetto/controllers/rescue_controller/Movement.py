@@ -12,7 +12,7 @@ class Movement:
         self.timestep=timestep
         self.leftMotor = robot.getDevice('left wheel')
         self.rightMotor = robot.getDevice('right wheel')
-        
+        self.PF=PF
     
         self.leftMotor.setPosition(float('inf'))
         self.rightMotor.setPosition(float('inf'))
@@ -53,7 +53,7 @@ class Movement:
         
         self.lidar_value=[[],[],[],[]]
         
-        self.PF=PF
+        
         
         
         
