@@ -18,25 +18,19 @@ class Particle_filter:
         self.particles = np.column_stack((x.ravel(), y.ravel()))
         
 
-
     def print_particles(self,particles):
-    
-        
+
         num_rows = 5
         num_columns = 15
        
-        # Creare una figura e assi
         fig, ax = plt.subplots()
-        
         ax.imshow(self.map, cmap='Blues', origin='upper', extent=[0, num_columns+1, num_rows+1, 0], alpha=0.5)
-        
         plt.scatter(particles[:, 1], particles[:,0], alpha=0.5)
         plt.title('Scatter plot delle particelle')
         plt.xlabel('Coordinata Y')
         plt.ylabel('Coordinata X')
         plt.show()
-        
-       
+
       
     def real_state(self,cell): #verifica se le celle poste ai 4 punti cardinali rispetto 
                                #una data cella sono libere
@@ -64,6 +58,7 @@ class Particle_filter:
             state.append(0)
          
         return state
+        
     
     def evaluate_mis(self,misurations):     #date le misurazioni dei 4 sensori di distanza 
                                             #restituisce 1 se è occupata e 0 se è libera
@@ -79,7 +74,6 @@ class Particle_filter:
     
     def position_estimate(self,sd,dir):#calcola le celle che rappresentano la posizione più probabile
          
-       
         sd=self.evaluate_mis(sd)
         positions_estimated=[]
         for i in range(self.map.shape[0]-1):
@@ -91,17 +85,13 @@ class Particle_filter:
                     positions_estimated.append([i,j])
                  
         return positions_estimated
-                    
-                    
-    
-    
+
+
     # Funzione per l'aggiornamento del filtro a particelle
     def particle_filter(self, azione,sd,dir):
     
         particelle=self.particles
-        
         rumore_misurazione = 0.05
-         
         
         # incremento x ed y
         particelle += azione
@@ -115,7 +105,7 @@ class Particle_filter:
             
         # Resampling con copia di elementi più probabili   
         indici = np.random.choice(range(self.n_particles), self.n_particles, p=pesi)
-        
+
         particelle_probabili = particelle[indici]# particelle più probabili
         position_estimated=np.mean(particelle_probabili, axis=0)
         position_estimated[0]=round(position_estimated[0])
@@ -126,10 +116,5 @@ class Particle_filter:
       
         print("posizione stimata "+str(position_estimated))
         #self.print_particles(particelle_probabili)
-      
-        
-        return position_estimated
-        
 
-        
-   
+        return position_estimated

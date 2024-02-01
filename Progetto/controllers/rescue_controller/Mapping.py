@@ -16,19 +16,17 @@ class Mapping:
         self.movement=movement
         self.cam=cam
         self.map= -1 * np.ones((width+2, length+2))
-        self.visited= False * np.ones((width+2, length+2))#True quando la cella è libera ed è stata visitata
+        self.visited= False * np.ones((width+2, length+2)) #True quando la cella è libera ed è stata visitata
         self.x_start=x_start
         self.y_start=y_start
         self.stato="Triste"
-        self.counter_state=0#numero di celle senza aver trovato ogetti
-        self.far_human=[0," "]#distanza e direzione
+        self.counter_state=0 #numero di celle senza aver trovato ogetti
+        self.far_human=[0," "] #distanza e direzione
         self.tts=tts
     
     def mapping(self):
         self.visited[self.x_start][self.y_start]=True #posizione di partenza visitata
         self.map[self.x_start][self.y_start]=0 #posizione di partenza libera
-        
-        
         """
         self.map= np.array([[4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
                                [4, 0, 3, 4, 4, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 4],
@@ -38,11 +36,8 @@ class Mapping:
                                [4, 0, 0, 0, 0, 0, 0, 0, 4, 4, 0, 0, 3, 4, 0, 4, 4],
                                [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4]])
         self.visited=np.full((7, 17), True)   """ 
-       
-        
+
         while(-1 in self.map):
-            
-            
             
             x=self.movement.robot_pose[0]
             y=self.movement.robot_pose[1]
@@ -53,39 +48,31 @@ class Mapping:
             sd=self.movement.lidar_value
             sd=self.movement.lidar_permutation(self.movement.direction())
             
-            
-           
             #North
             if(sd[0]>1):
                 self.map[x-1,y]=0
                 
             elif(sd[0]<1 and self.map[x-1,y]!=4 and self.map[x-1,y]!=3):
-                    self.map[x-1,y]=1
-                
+                    self.map[x-1,y]=1          
             
             #East
             if(sd[2]>1):
                 self.map[x,y+1]=0
             elif(sd[2]<1 and self.map[x,y+1]!=4 and self.map[x,y+1]!=3):
                 self.map[x,y+1]=1
-                
             
             #South
             if(sd[1]>1):
                 self.map[x+1,y]=0
             elif(sd[1]<1 and self.map[x+1,y]!=4 and self.map[x+1,y]!=3):
                 self.map[x+1,y]=1
-                
             
             #West
             if(sd[3]>1):
                 self.map[x,y-1]=0
             elif(sd[3]<1 and self.map[x,y-1]!=4 and self.map[x,y-1]!=3):
                 self.map[x,y-1]=1
-                
-                 
-            
-            
+
             self.ricerca_ogg(x,y)
             
             if(self.far_human[0]>0):
@@ -141,7 +128,6 @@ class Mapping:
         
         return self.map
         
-
           
     def scansione(self,x,y):
         trovato=False
@@ -173,7 +159,6 @@ class Mapping:
              self.update_stato(trovato)
         elif(self.map[x,y]==1):#oggetto non riconosciuto es.roccia
              self.map[x,y]=4
-               
              
         return trovato
              
@@ -228,8 +213,6 @@ class Mapping:
            print(txt)
            self.tts.text_to_speech(txt)
            self.print_info()  
-       
-           
              
                      
     def ricerca_ogg(self,x,y):
@@ -285,19 +268,7 @@ class Mapping:
                      
     def rimuovi_umano(self,x,y):
         self.movement.robot.setCustomData(f"{x},{y}")
-        
-        
-       
-                 
-    def find_free_novisited(self):
-        #funzione che restuisce una lista di coordinate delle celle
-        #libere e non visitate
-        a=self.map==self.visited
-        free_cells=np.argwhere(a)
-        return free_cells
-    
-    
-            
+
         
     def print_info(self):
        
@@ -308,5 +279,3 @@ class Mapping:
        print(" ")
        print(" ")
        print(" ")
-      
-        

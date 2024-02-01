@@ -53,10 +53,6 @@ class Movement:
         
         self.lidar_value=[[],[],[],[]]
         
-        
-        
-        
-        
 
     def lidarsensor(self):
        self.lidar_value[0]=min(self.lidar_front.getRangeImage())
@@ -159,10 +155,8 @@ class Movement:
            
            self.lidarsensor()
            
-           if(self.lidar_value[0]<delta):
-               
-               return False
-               
+           if(self.lidar_value[0]<delta): 
+               return False  
            else:
                return True 
     
@@ -174,8 +168,8 @@ class Movement:
 
         
     def move(self,dist):
+        
         maxspeed=self.MAX_SPEED
-       
         self.odo()
         start_dist=self.dist_values.copy()
         
@@ -194,12 +188,10 @@ class Movement:
         
         self.robot_update(round(self.dist_values[0]-start_dist[0]))
         
-        
-        
-        
-    def move_back(self,dist):
-        maxspeed=-self.MAX_SPEED
 
+    def move_back(self,dist):
+    
+        maxspeed=-self.MAX_SPEED
         self.odo()
         start_dist=self.dist_values.copy()
         
@@ -218,6 +210,7 @@ class Movement:
     
         
     def rotate(self,dir):
+    
         last_dir=self.direction()
         left_speed=0.5
         right_speed=-0.5
@@ -256,7 +249,7 @@ class Movement:
                 self.stop_motors()
                 break
              
-        self.robot_update(0)#aggiornamernto direzione
+        self.robot_update(0) #aggiornamernto direzione
         
     
     def follow_path(self,path):
@@ -283,9 +276,7 @@ class Movement:
                  
               self.move(1)
           
-        return True
-
-              
+        return True     
   
                  
     def find_path_obj(self,map,x,y):
@@ -304,10 +295,10 @@ class Movement:
         path, runs = finder.find_path(start, end, grid)
         path = [(nodo.y, nodo.x) for nodo in path]
         
-        #grid.cleanup()
         return path[:-1]
         
     def find_path_min(self,free_cells,x,y,map):
+    
         min=100
         length=0
         paths=[]
@@ -321,7 +312,6 @@ class Movement:
             path, runs = finder.find_path(start, end, grid)
             path = [(nodo.y, nodo.x) for nodo in path]
             paths.append(path)
-            
         
         #calcolo percorso minimo
         for path in paths:
@@ -340,9 +330,7 @@ class Movement:
         while(len(rb_list)<6):#il robot esce dal while quando avrà visitato 5 celle diverse
             
             print(rb_list)
-            
             sd=self.lidar_permutation(self.direction())
-            
                
             if(sd[0]>1 and ((self.robot_pose[:2]+[-1,0]) not in rb_list)):
                 self.rotate("North")
@@ -358,7 +346,6 @@ class Movement:
                 
             elif(sd[3]>1 and ((self.robot_pose[:2]+[0,-1]) not in rb_list)):
                 self.rotate("West")
-                
                 self.move(1)
                 pos_est=self.PF.particle_filter([0,-1],self.lidar_permutation(self.direction()),self.direction())
                 rb_list.append(self.robot_pose[:2])
@@ -380,19 +367,19 @@ class Movement:
     
     def agg_filtro(self):
           print("Rilevata posizione non corretta, effettuo una localizzazione")
+          
           # ridistribuzione particelle
           self.PF.redistribution()
-          # movimenti casuali di almeno 3 celle al fine di ottenere la posizione
-          pos_est=self.position_recalculation()
           
+          # movimenti casuali di almeno 3 celle al fine di ottenere la posizione
+          pos_est=self.position_recalculation() 
           self.robot_pose[:2]=pos_est
           self.robot_pose[2]=self.direction()
                   
                         
     def follow_path_filtered(self,path,map):
+    
         layer_reattivo=True
-        
-       
         self.PF.map=map
         pos_est=[]
         count_cells=0
@@ -401,7 +388,6 @@ class Movement:
           sd=self.lidar_value
           sd_p=self.lidar_permutation(self.direction())
           if(count_cells >5): # controllo dopo le prime 5 celle se le ruote hanno slittato
-              
               if(self.robot_pose[:2] not in self.PF.position_estimate(sd_p,self.direction())):
                   
                   self.agg_filtro()
@@ -411,8 +397,7 @@ class Movement:
               if(self.robot_pose[2]!="East"):
                   self.rotate("East")
               if(self.layer_reattivo(0.5)==False):
-                  
-                  
+ 
                   self.agg_filtro()
                   return False  
                      
@@ -454,7 +439,5 @@ class Movement:
               count_cells+=1
               sd_p=self.lidar_permutation(self.direction())
               pos_est=self.PF.particle_filter([1,0],sd_p,self.direction())
-              
-        
               
         return True

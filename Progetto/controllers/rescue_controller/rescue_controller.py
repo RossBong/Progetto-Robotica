@@ -1,4 +1,3 @@
-
 from controller import Robot, DistanceSensor, Motor
 import math
 from Movement import Movement
@@ -12,8 +11,8 @@ TIME_STEP = 32
 
 
 # create the Robot instance.
-
 robot = Robot()
+
 # get the time step of the current world.
 timestep=TIME_STEP
 
@@ -30,20 +29,13 @@ def main():
     collect=Collect(movement,cam,robot,pos_start,tts)
     
     while robot.step(TIME_STEP) != -1:
-         
-          
           
           map=mapping.mapping()
           collect.map=map
           collect.start_collect()
           
           break
-     
           
-          
-          
-           
-
 
 if __name__ == "__main__":
     main()

@@ -16,8 +16,6 @@ class Collect:
         self.finger_motor=robot.getDevice("finger motor::left")
         self.gripperMaxSpeed=0.1
         self.tts=tts
-        
-     
                   
              
     def lift(self,position):
@@ -69,16 +67,13 @@ class Collect:
                 self.movement.rotate("North")
             self.movement.move(aggiustamento)
             self.movement.rotate(direction_now)
-        
             
     
     def aggancia(self):
         objs = self.cam.camera.getRecognitionObjects()
         self.get_well(objs)
-        
         self.movement.lidarsensor()
         dist=self.movement.lidar_value[0]-0.05
-       
         objs = self.cam.camera.getRecognitionObjects()
         size=objs[0].getSize()[0]
         self.lift(0.02)
@@ -86,9 +81,7 @@ class Collect:
         self.movement.move(dist)
         self.move_fingers((size-0.04)/2)
         self.lift(-0.03)
- 
         self.movement.move_back(dist)
-        
         
     
     def rilascia(self, ogg):
@@ -116,7 +109,6 @@ class Collect:
         for obj in objs_coord:
             
             path=self.movement.find_path_obj(self.map,obj[0],obj[1])
-            
             fp=False
           
             while(fp==False ):
@@ -126,11 +118,7 @@ class Collect:
                       print(txt)
                       self.tts.text_to_speech(txt)
                       path=self.movement.find_path_obj(self.map,obj[0],obj[1])
-                      
-                     
-                  
-            
-                      
+                          
             self.movement.obj_dir(obj[0],obj[1])
             ogg, _=self.cam.recognition()
             self.aggancia()
@@ -139,4 +127,3 @@ class Collect:
             path_reverse=self.movement.find_path_obj(self.map,self.pos_start[0],self.pos_start[1])
             self.movement.follow_path_filtered(path_reverse,self.map)
             self.rilascia(ogg)
-          

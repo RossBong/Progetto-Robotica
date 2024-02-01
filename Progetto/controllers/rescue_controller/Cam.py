@@ -1,4 +1,4 @@
-from controller import  Camera, CameraRecognitionObject, LightSensor
+from controller import  Camera, CameraRecognitionObject
 import numpy as np
 import argparse
  
@@ -17,8 +17,7 @@ class Cam:
             for i in range(len(objs)):
                 if objs[i].getPosition()[0]<min:
                     min=objs[i].getPosition()[0]
-                    y=objs[i].getPosition()[1]
-                   
+                    y=objs[i].getPosition()[1]  
                     index=i
             color= objs[index].getColors()
             
