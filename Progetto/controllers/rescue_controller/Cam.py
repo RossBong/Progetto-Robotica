@@ -1,7 +1,6 @@
 from controller import  Camera, CameraRecognitionObject
 import numpy as np
-import argparse
- 
+
 class Cam:
 
     def __init__(self,robot,timestep):

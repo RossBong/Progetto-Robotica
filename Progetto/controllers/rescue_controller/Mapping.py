@@ -4,7 +4,6 @@ from Cam import Cam
 from TTS import TTS
 import numpy as np
 import random
-import os
 from pathfinding.core.grid import Grid
 from pathfinding.finder.a_star import AStarFinder
 

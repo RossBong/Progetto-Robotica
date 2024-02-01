@@ -3,7 +3,7 @@ from Cam import Cam
 import numpy as np
 from TTS import TTS
 from controller import Robot, Motor, Camera, CameraRecognitionObject
-import time
+
 class Collect:
     
     def __init__(self,movement,cam,robot,pos_start, tts):
