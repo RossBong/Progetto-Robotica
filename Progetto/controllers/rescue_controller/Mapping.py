@@ -267,6 +267,13 @@ class Mapping:
                      
     def rimuovi_umano(self,x,y):
         self.movement.robot.setCustomData(f"{x},{y}")
+        
+    def find_free_novisited(self):
+        #funzione che restuisce una lista di coordinate delle celle
+        #libere e non visitate
+        a=self.map==self.visited
+        free_cells=np.argwhere(a)
+        return free_cells
 
         
     def print_info(self):

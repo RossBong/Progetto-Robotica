@@ -38,6 +38,7 @@ Viewpoint {
   position 3.592189083051578 1.8357473064228595 12.338119910078614
 }
 TexturedBackground {
+  luminosity 6
 }
 TexturedBackgroundLight {
   texture "entrance_hall"
