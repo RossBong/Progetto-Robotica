@@ -108,22 +108,31 @@ class Collect:
         objs_coord=np.argwhere(self.map == 3)
         for obj in objs_coord:
             
+            
+            
             path=self.movement.find_path_obj(self.map,obj[0],obj[1])
-            fp=False
-          
+            fp=self.movement.follow_path_filtered(path,self.map)
             while(fp==False ):
-                  fp=self.movement.follow_path_filtered(path,self.map)
-                  if(fp==False):
-                      txt="Posizione trovata, ricalcolo il percorso"
-                      print(txt)
-                      self.tts.text_to_speech(txt)
-                      path=self.movement.find_path_obj(self.map,obj[0],obj[1])
+
+                txt="Ricalcolo il percorso"
+                print(txt)
+                self.tts.text_to_speech(txt)
+                path=self.movement.find_path_obj(self.map,obj[0],obj[1])
+                fp=self.movement.follow_path_filtered(path,self.map)
                           
             self.movement.obj_dir(obj[0],obj[1])
             ogg, _=self.cam.recognition()
             self.aggancia()
             self.map[obj[0],obj[1]]=0
             print(self.map)
+            
             path_reverse=self.movement.find_path_obj(self.map,self.pos_start[0],self.pos_start[1])
-            self.movement.follow_path_filtered(path_reverse,self.map)
+            fp=self.movement.follow_path_filtered(path_reverse,self.map)
+            while(fp==False ):
+
+                txt="Ricalcolo il percorso"
+                print(txt)
+                self.tts.text_to_speech(txt)
+                path=self.movement.find_path_obj(self.map,obj[0],obj[1])
+                fp=self.movement.follow_path_filtered(path,self.map)
             self.rilascia(ogg)

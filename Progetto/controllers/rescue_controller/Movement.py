@@ -396,7 +396,7 @@ class Movement:
           if((x-self.robot_pose[0])==0 and y>self.robot_pose[1] ):
               if(self.robot_pose[2]!="East"):
                   self.rotate("East")
-              if(self.layer_reattivo(0.5)==False):
+              if(self.layer_reattivo(1)==False):
  
                   self.agg_filtro()
                   return False  
@@ -410,7 +410,7 @@ class Movement:
           elif((x-self.robot_pose[0])==0 and y<self.robot_pose[1] ):
               if(self.robot_pose[2]!="West"):
                   self.rotate("West")
-              if(self.layer_reattivo(0.5)==False):
+              if(self.layer_reattivo(1)==False):
                   self.agg_filtro()
                   return False  
               self.move(1)
@@ -421,7 +421,7 @@ class Movement:
           elif((y-self.robot_pose[1])==0 and x<self.robot_pose[0] ):
               if(self.robot_pose[2]!="North"):
                   self.rotate("North")
-              if(self.layer_reattivo(0.5)==False):
+              if(self.layer_reattivo(1)==False):
                   self.agg_filtro()
                   return False     
               self.move(1)
@@ -432,7 +432,7 @@ class Movement:
           elif((y-self.robot_pose[1])==0 and x>self.robot_pose[0] ):
               if(self.robot_pose[2]!="South"):
                   self.rotate("South")
-              if(self.layer_reattivo(0.5)==False):
+              if(self.layer_reattivo(1)==False):
                   self.agg_filtro()
                   return False   
               self.move(1)
