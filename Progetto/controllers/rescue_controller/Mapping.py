@@ -22,112 +22,27 @@ class Mapping:
         self.counter_state=0 #numero di celle senza aver trovato ogetti
         self.far_human=[0," "] #distanza e direzione
         self.tts=tts
-    
-    def mapping(self):
-        self.visited[self.x_start][self.y_start]=True #posizione di partenza visitata
-        self.map[self.x_start][self.y_start]=0 #posizione di partenza libera
-        """
-        self.map= np.array([[4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-                               [4, 0, 3, 4, 4, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 4],
-                               [4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4],
-                               [4, 4, 3, 4, 4, 0, 0, 0, 0, 0, 0, 4, 4, 0, 4, 3, 4],
-                               [4, 0, 4, 4, 0, 0, 4, 0, 4, 0, 0, 0, 4, 0, 0, 4, 4],
-                               [4, 0, 0, 0, 0, 0, 0, 0, 4, 4, 0, 0, 3, 4, 0, 4, 4],
-                               [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4]])
-        self.visited=np.full((7, 17), True)   """ 
-
-        while(-1 in self.map):
-            
-            x=self.movement.robot_pose[0]
-            y=self.movement.robot_pose[1]
-            
-            self.visited[x,y]=True 
-
-            self.movement.lidarsensor()
-            sd=self.movement.lidar_value
-            sd=self.movement.lidar_permutation(self.movement.direction())
-            
-            #North
-            if(sd[0]>1):
-                self.map[x-1,y]=0
-                
-            elif(sd[0]<1 and self.map[x-1,y]!=4 and self.map[x-1,y]!=3):
-                    self.map[x-1,y]=1          
-            
-            #East
-            if(sd[2]>1):
-                self.map[x,y+1]=0
-            elif(sd[2]<1 and self.map[x,y+1]!=4 and self.map[x,y+1]!=3):
-                self.map[x,y+1]=1
-            
-            #South
-            if(sd[1]>1):
-                self.map[x+1,y]=0
-            elif(sd[1]<1 and self.map[x+1,y]!=4 and self.map[x+1,y]!=3):
-                self.map[x+1,y]=1
-            
-            #West
-            if(sd[3]>1):
-                self.map[x,y-1]=0
-            elif(sd[3]<1 and self.map[x,y-1]!=4 and self.map[x,y-1]!=3):
-                self.map[x,y-1]=1
-
-            self.ricerca_ogg(x,y)
-            
-            if(self.far_human[0]>0):
-                self.movement.rotate(self.far_human[1])
-                self.movement.move(self.far_human[0])
-                self.far_human=[0," "]
-            elif(self.map[x-1,y]==0 and self.visited[x-1,y]==False):
-                self.movement.rotate("North")
-                self.movement.move(1)
-                
-            elif(self.map[x,y+1]==0 and self.visited[x,y+1]==False):
-                self.movement.rotate("East")
-                self.movement.move(1)
-                
-            elif(self.map[x+1,y]==0 and self.visited[x+1,y]==False):
-                self.movement.rotate("South")
-                self.movement.move(1)
-                
-            elif(self.map[x,y-1]==0 and self.visited[x,y-1]==False):
-                self.movement.rotate("West")
-                self.movement.move(1)
-                
-            else:
-                free_cells=self.find_free_novisited()
-                if(len(free_cells)==0):
-                   print("Imposto i punti non raggiungibili a 4")
-                   
-                   self.map=np.where(self.map == -1, 4, self.map)
-                   self.print_info()  
-                else:
-                    path=self.movement.find_path_min(free_cells,x,y,self.map)
-                    self.movement.follow_path(path)
-                    
-        lost_cells=np.argwhere(self.map == 1)          
-        if(len(lost_cells)>0):
-            
-            txt=f"Ops! Quando ero felice mi sono fatto prendere dall'euforia e non ho scansionato {len(lost_cells)} celle"
-            print(txt)
-            self.tts.text_to_speech(txt)
-            self.stato="Normale"
-            for cell in lost_cells:
-            
-                path=self.movement.find_path_obj(self.map,cell[0],cell[1])
-                self.movement.follow_path(path)
-                self.movement.obj_dir(cell[0],cell[1])
-                self.scansione(cell[0],cell[1])
-                self.print_info() 
-           
+    def rimuovi_umano(self,x,y):
+        self.movement.robot.setCustomData(f"{x},{y}")
         
-        txt="Ho trovato tutti gli oggetti e tutti gli umani sono salvi!!"
-        print(txt)
-        self.tts.text_to_speech(txt) 
+    def find_free_novisited(self):
+        #funzione che restuisce una lista di coordinate delle celle
+        #libere e non visitate
+        a=self.map==self.visited
+        free_cells=np.argwhere(a)
+        return free_cells
+
         
-        return self.map
-        
-          
+    def print_info(self):
+       
+       print(f"posizione:({self.movement.robot_pose[0]},{self.movement.robot_pose[1]}), direzione:{self.movement.robot_pose[2]}")
+       print("Mappa:")
+       print(self.map)
+       print(" ")
+       print(" ")
+       print(" ")
+       print(" ")
+
     def scansione(self,x,y):
         trovato=False
         oggetto,dist=self.cam.recognition()
@@ -265,23 +180,110 @@ class Mapping:
              self.update_stato(False)
          
                      
-    def rimuovi_umano(self,x,y):
-        self.movement.robot.setCustomData(f"{x},{y}")
-        
-    def find_free_novisited(self):
-        #funzione che restuisce una lista di coordinate delle celle
-        #libere e non visitate
-        a=self.map==self.visited
-        free_cells=np.argwhere(a)
-        return free_cells
+    def mapping(self):
+        self.visited[self.x_start][self.y_start]=True #posizione di partenza visitata
+        self.map[self.x_start][self.y_start]=0 #posizione di partenza libera
+        """
+        self.map= np.array([[4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+                               [4, 0, 3, 4, 4, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 4],
+                               [4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4],
+                               [4, 4, 3, 4, 4, 0, 0, 0, 0, 0, 0, 4, 4, 0, 4, 3, 4],
+                               [4, 0, 4, 4, 0, 0, 4, 0, 4, 0, 0, 0, 4, 0, 0, 4, 4],
+                               [4, 0, 0, 0, 0, 0, 0, 0, 4, 4, 0, 0, 3, 4, 0, 4, 4],
+                               [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4]])
+        self.visited=np.full((7, 17), True)   """ 
 
+        while(-1 in self.map):
+            
+            x=self.movement.robot_pose[0]
+            y=self.movement.robot_pose[1]
+            
+            self.visited[x,y]=True 
+
+            self.movement.lidarsensor()
+            sd=self.movement.lidar_value
+            sd=self.movement.lidar_permutation(self.movement.direction())
+            
+            #North
+            if(sd[0]>1):
+                self.map[x-1,y]=0
+                
+            elif(sd[0]<1 and self.map[x-1,y]!=4 and self.map[x-1,y]!=3):
+                    self.map[x-1,y]=1          
+            
+            #East
+            if(sd[2]>1):
+                self.map[x,y+1]=0
+            elif(sd[2]<1 and self.map[x,y+1]!=4 and self.map[x,y+1]!=3):
+                self.map[x,y+1]=1
+            
+            #South
+            if(sd[1]>1):
+                self.map[x+1,y]=0
+            elif(sd[1]<1 and self.map[x+1,y]!=4 and self.map[x+1,y]!=3):
+                self.map[x+1,y]=1
+            
+            #West
+            if(sd[3]>1):
+                self.map[x,y-1]=0
+            elif(sd[3]<1 and self.map[x,y-1]!=4 and self.map[x,y-1]!=3):
+                self.map[x,y-1]=1
+
+            self.ricerca_ogg(x,y)
+            
+            if(self.far_human[0]>0):
+                self.movement.rotate(self.far_human[1])
+                self.movement.move(self.far_human[0])
+                self.far_human=[0," "]
+            elif(self.map[x-1,y]==0 and self.visited[x-1,y]==False):
+                self.movement.rotate("North")
+                self.movement.move(1)
+                
+            elif(self.map[x,y+1]==0 and self.visited[x,y+1]==False):
+                self.movement.rotate("East")
+                self.movement.move(1)
+                
+            elif(self.map[x+1,y]==0 and self.visited[x+1,y]==False):
+                self.movement.rotate("South")
+                self.movement.move(1)
+                
+            elif(self.map[x,y-1]==0 and self.visited[x,y-1]==False):
+                self.movement.rotate("West")
+                self.movement.move(1)
+                
+            else:
+                free_cells=self.find_free_novisited()
+                if(len(free_cells)==0):
+                   print("Imposto i punti non raggiungibili a 4")
+                   
+                   self.map=np.where(self.map == -1, 4, self.map)
+                   self.print_info()  
+                else:
+                    path=self.movement.find_path_min(free_cells,x,y,self.map)
+                    self.movement.follow_path(path)
+                    
+        lost_cells=np.argwhere(self.map == 1)          
+        if(len(lost_cells)>0):
+            
+            txt=f"Ops! Quando ero felice mi sono fatto prendere dall'euforia e non ho scansionato {len(lost_cells)} celle"
+            print(txt)
+            self.tts.text_to_speech(txt)
+            self.stato="Normale"
+            for cell in lost_cells:
+            
+                path=self.movement.find_path_obj(self.map,cell[0],cell[1])
+                self.movement.follow_path(path)
+                self.movement.obj_dir(cell[0],cell[1])
+                self.scansione(cell[0],cell[1])
+                self.print_info() 
+           
         
-    def print_info(self):
-       
-       print(f"posizione:({self.movement.robot_pose[0]},{self.movement.robot_pose[1]}), direzione:{self.movement.robot_pose[2]}")
-       print("Mappa:")
-       print(self.map)
-       print(" ")
-       print(" ")
-       print(" ")
-       print(" ")
+        txt="Ho trovato tutti gli oggetti e tutti gli umani sono salvi!!"
+        print(txt)
+        self.tts.text_to_speech(txt) 
+        
+        return self.map
+        
+          
+    
+    
