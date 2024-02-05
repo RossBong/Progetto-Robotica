@@ -8,15 +8,16 @@ class Particle_filter:
     def __init__(self):
     
         self.map=[]
-        x, y = np.meshgrid(np.arange(0,5,0.25),np.arange(0,15,0.25))
+        x, y = np.meshgrid(np.arange(0,6,0.25),np.arange(0,16,0.25))
         self.particles = np.column_stack((x.ravel(), y.ravel()))
         self.n_particles=len(self.particles)
         
         
     def redistribution(self):
-        x, y = np.meshgrid(np.arange(0,5,0.25),np.arange(0,15,0.25))
-        self.particles = np.column_stack((x.ravel(), y.ravel()))
         
+        x, y = np.meshgrid(np.arange(0,6,0.25),np.arange(0,16,0.25))
+        self.particles = np.column_stack((x.ravel(), y.ravel()))
+        self.print_particles(self.particles)
 
     def print_particles(self,particles):
 
@@ -115,6 +116,28 @@ class Particle_filter:
         self.particles=particelle_probabili
       
         print("posizione stimata "+str(position_estimated))
-        #self.print_particles(particelle_probabili)
+        self.print_particles(particelle_probabili)
 
         return position_estimated
+        
+    def isLocalizated(self, raggio):
+    
+        # Calcola il centroide delle coordinate
+        centroide = np.mean(self.particles, axis=0)
+        print(centroide)
+        # Calcola la distanza euclidea tra ciascuna coordinata e il centroide
+        distanze = np.linalg.norm(self.particles - centroide, axis=1)
+        
+        # Verifica se tutte le distanze sono inferiori al raggio
+        #condensate = np.all(distanze <= raggio)
+        
+        
+        # Calcola la percentuale di punti entro la soglia
+        percentuale = np.sum(distanze < raggio) / distanze.size
+        print(percentuale)
+        if percentuale<=0.9:
+            return True
+        else:
+            return False
+
+        

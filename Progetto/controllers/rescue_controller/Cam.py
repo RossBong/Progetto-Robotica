@@ -10,17 +10,20 @@ class Cam:
         
        
     def recognition(self):
-        objs = self.camera.getRecognitionObjects()
+        objs = self.camera.getRecognitionObjects()#riconoscimento oggetti
         if(len(objs)>0):
             min=100
             for i in range(len(objs)):
+                #consideriamo esclusivamente l'oggetto più vicino
                 if objs[i].getPosition()[0]<min:
                     min=objs[i].getPosition()[0]
-                    y=objs[i].getPosition()[1]  
+                    dist_o=objs[i].getPosition()[1]#distaza lungo l'asse orizzontale dal centro della camera 
                     index=i
             color= objs[index].getColors()
             
-            if(y>-0.3 and y<0.3):#imponiamo di vedere esclusivamente l'oggetto davanti al robot
+            if( dist_o>-0.3 and  dist_o<0.3):#riconoscumento oggetto frontale 
+            
+                #in base al colore di recognition restituiamo in output il tipo di oggetto e la distanza da esso
                 if(color[0]==1.0 and color[1]==1.0 and color[2]==0.0):
                     return"box_gioielli", min 
                 elif(color[0]==1.0 and color[1]==0.0 and color[2]==0.0):
