@@ -117,9 +117,13 @@ class Collect:
                     continue
             fp,rock=self.movement.follow_path_filtered(path,self.map)#movimento lungo il percorso
             if(rock!=[]):
+                txt="Rilevata roccia caduta in posizione: "+str(rock)
+                print(txt)
+                self.tts.text_to_speech(txt)
                 self.map[rock[0],rock[1]]=4
-                print("mappa aggiornata")
+                print("Mappa aggiornata:")
                 print(self.map)
+                
             while(fp==False ):#posizione persa e rilocalizzata
 
                 txt="Ricalcolo il percorso"
@@ -129,13 +133,18 @@ class Collect:
                 print(path)
                 if(path==[]):
                     
-                    print("oggetto non raggiungibile")
+                    txt="Oggetto non raggiungibile"
+                    print(txt)
+                    self.tts.text_to_speech(txt)
                     break
                 fp,rock=self.movement.follow_path_filtered(path,self.map)
                 
                 if(rock!=[]):
+                    txt="Rilevata roccia caduta in posizione: "+str(rock)
+                    print(txt)
+                    self.tts.text_to_speech(txt)
                     self.map[rock[0],rock[1]]=4
-                    print("mappa aggiornata")
+                    print("Mappa aggiornata:")
                     print(self.map)
                 
             if(path!=[]):             
@@ -148,8 +157,11 @@ class Collect:
                 path_reverse=self.movement.find_path_obj(self.map,self.pos_start[0],self.pos_start[1])#calcolo percorso di consegnaq
                 fp,rock=self.movement.follow_path_filtered(path_reverse,self.map)#movimento lungo il percorso
                 if(rock!=[]):
+                    txt="Rilevata roccia caduta in posizione: "+str(rock)
+                    print(txt)
+                    self.tts.text_to_speech(txt)
                     self.map[rock[0],rock[1]]=4
-                    print("mappa aggiornata")
+                    print("Mappa aggiornata")
                     print(self.map)
                 while(fp==False ):#posizione persa e rilocalizzata
     
@@ -159,7 +171,10 @@ class Collect:
                     path=self.movement.find_path_obj(self.map,obj[0],obj[1])#ricalcolo percorso
                     fp,rock=self.movement.follow_path_filtered(path,self.map)
                     if(rock!=[]):
+                        txt="Rilevata roccia caduta in posizione: "+str(rock)
+                        print(txt)
+                        self.tts.text_to_speech(txt)
                         self.map[rock[0],rock[1]]=4
-                        print("mappa aggiornata")
+                        print("Mappa aggiornata:")
                         print(self.map)
                 self.rilascia(ogg)

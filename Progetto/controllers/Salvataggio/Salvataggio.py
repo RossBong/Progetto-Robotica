@@ -4,6 +4,7 @@ from controller import Supervisor
 # create the Robot instance.
 robot = Supervisor() 
 
+rock_falling=True
 
 timestep = 32
 def aggiungi_rock(traslation,robot,name):
@@ -37,8 +38,8 @@ def aggiungi_box(traslation,color_rec,robot,name,nameproto):
     traslationField=box.getField('translation')
     traslationField.setSFVec3f(traslation)
 
-def recupera_oggetti(objs,rock_falling) :
-    
+def recupera_oggetti(objs ):
+    global rock_falling
     for obj in objs:
         
         if(obj.getPosition()[0]<1 and obj.getPosition()[1]<1 and obj.getPosition()[2]<=0.075):
@@ -46,9 +47,12 @@ def recupera_oggetti(objs,rock_falling) :
 
             obj.remove()
             objs.remove(obj)
+            
             if(rock_falling):
 
-                aggiungi_rock([3,3,0.4],robot,'rock_falling')
+                aggiungi_rock([3,3,0.4],robot,'rock_falling1')
+                aggiungi_rock([8,3,0.4],robot,'rock_falling2')
+                
 
                 rock_falling=False
              
@@ -82,10 +86,10 @@ aggiungi_box([14,2,0.1],[0,1,0.5],robot,'box_soldi2',' Box_soldi {}')
 
 objs=[robot.getFromDef('box_gioielli'),robot.getFromDef('box_soldi1'),robot.getFromDef('box_soldi2'),robot.getFromDef('box_foto')]
 
-rock_falling=True  
+
 while robot.step(timestep) != -1:
 
     salvataggio_umano(rescuer)    
-    recupera_oggetti(objs,rock_falling)
+    recupera_oggetti(objs)
 
     

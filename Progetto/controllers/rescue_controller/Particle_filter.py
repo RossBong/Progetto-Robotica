@@ -92,17 +92,20 @@ class Particle_filter:
     def particle_filter(self, azione,sd,dir):
     
         particelle=self.particles
-        rumore_misurazione = 0.05
+        rumore_misurazione = 0.001
         
         # incremento x ed y
         particelle += azione
             
-        pesi = 1/len(particelle)
+        pesi = np.ones(len(particelle))*1/len(particelle)
         
         for pos in self.position_estimate(sd,dir):
-            nb=(np.linalg.norm(pos - particelle, axis=1)) ** 2
-            pesi += np.exp(-(nb) / rumore_misurazione)
-            pesi /= np.sum(pesi)
+            
+            dist=(np.linalg.norm(pos - particelle, axis=1))+0.0000001
+            
+            nb=dist[dist <= 1]
+            pesi[dist <= 1] +=1/nb
+        pesi /= np.sum(pesi)
             
         # Resampling con copia di elementi più probabili   
         indici = np.random.choice(range(self.n_particles), self.n_particles, p=pesi)
@@ -115,7 +118,7 @@ class Particle_filter:
         position_estimated=[position_estimated[0],position_estimated[1]]
         self.particles=particelle_probabili
       
-        print("posizione stimata "+str(position_estimated))
+        print("Posizione stimata: "+str(position_estimated))
         self.print_particles(particelle_probabili)
 
         return position_estimated
@@ -124,18 +127,15 @@ class Particle_filter:
     
         # Calcola il centroide delle coordinate
         centroide = np.mean(self.particles, axis=0)
-        print(centroide)
+        
         # Calcola la distanza euclidea tra ciascuna coordinata e il centroide
         distanze = np.linalg.norm(self.particles - centroide, axis=1)
-        
-        # Verifica se tutte le distanze sono inferiori al raggio
-        #condensate = np.all(distanze <= raggio)
         
         
         # Calcola la percentuale di punti entro la soglia
         percentuale = np.sum(distanze < raggio) / distanze.size
-        print(percentuale)
-        if percentuale<=0.9:
+        
+        if percentuale<=0.99:
             return True
         else:
             return False

@@ -334,8 +334,9 @@ class Movement:
             
             
             sd=self.lidar_permutation(self.direction())
+            
             #il robot si muove verso la prima cella adiacente libera non già visitata in senso orario
-            if(sd[0]>1 and ([self.robot_pose[0]+(-1),self.robot_pose[1]] not in rb_list)):
+            if(sd[0]>1 and ([self.robot_pose[0]-1,self.robot_pose[1]] not in rb_list)):
                
                 count=2
                 self.rotate("North")
@@ -353,7 +354,7 @@ class Movement:
                 pos_est=self.PF.particle_filter([0,1],self.lidar_permutation(self.direction()),self.direction())
                 rb_list.append(self.robot_pose[:2])#aggiungiamo la cella visitata alla lista
                 
-            elif(sd[3]>1 and ([self.robot_pose[0],self.robot_pose[1]+(-1)] not in rb_list)):
+            elif(sd[3]>1 and ([self.robot_pose[0],self.robot_pose[1]-1] not in rb_list)):
                 
                 count=2
                 self.rotate("West")
@@ -372,6 +373,7 @@ class Movement:
                 rb_list.append(self.robot_pose[:2])#aggiungiamo la cella visitata alla lista
             
             else:
+               
                 #se le celle adiacenti sono già state visitate ci muoviamo verso la cella precedente
                 self.obj_dir(rb_list[-count][0],rb_list[-count][1])#direzionamento verso la l'ultima cella visitata
                 azione=[rb_list[-count][0]-self.robot_pose[0],rb_list[-count][1]-self.robot_pose[1]]#calcolo azione di movimento
@@ -396,7 +398,10 @@ class Movement:
           self.robot_pose[2]=self.direction()
     
     def rock_falling(self):
+    
+        rb_list=[self.robot_pose[:2]]
         obj=[]
+        count=2
         sd_p=self.lidar_permutation(self.direction())
         sd_state=self.PF.evaluate_mis(sd_p)
         map_state=self.PF.real_state(self.robot_pose[:2])
@@ -415,27 +420,45 @@ class Movement:
             elif(pos_errate[0]==3):
                 obj=[x_robot,y_robot-1] 
               
-            for i in range(2):
-                if(sd_state.index(0)==0):
+            for i in range(3):
+                
+                if(sd_state[0]==0 and ([self.robot_pose[0]-1,self.robot_pose[1]] not in rb_list)):
+                    
                     self.rotate("North")
                     self.move(1)
-                elif(sd_state.index(0)==1):
+                    rb_list.append(self.robot_pose[:2])
+                    count=2
+                elif(sd_state[1]==0 and ([self.robot_pose[0]+1,self.robot_pose[1]] not in rb_list)):
                     self.rotate("South")
                     self.move(1)
-                elif(sd_state.index(0)==2):
+                    rb_list.append(self.robot_pose[:2])
+                    count=2
+                elif(sd_state[2]==0 and ([self.robot_pose[0],self.robot_pose[1]+1] not in rb_list)):
                     self.rotate("East")
                     self.move(1)
-                elif(sd_state.index(0)==3):
+                    rb_list.append(self.robot_pose[:2])
+                    count=2
+                elif(sd_state[3]==0 and ([self.robot_pose[0],self.robot_pose[1]-1] not in rb_list)):
                     self.rotate("West")
                     self.move(1)
+                    rb_list.append(self.robot_pose[:2])
+                    count=2
+                else:
                     
+                    self.obj_dir(rb_list[-count][0],rb_list[-count][1])#direzionamento verso la l'ultima cella visitata
+                    
+                    self.move(1)
+                    
+                    count+=1
                 sd_p=self.lidar_permutation(self.direction())
-                sd_state=self.PF.evaluate_mis(sd_p)
-                map_state=self.PF.real_state(self.robot_pose[:2])
-                pos_errate = [i for i, (elem1, elem2) in enumerate(zip(sd_state, map_state)) if elem1 != elem2]
-                if(len(pos_errate)>0):#più posizioni non conguenti => Traslazione
-                    return [] 
-                #inserire robot list
+                sd_state=self.PF.evaluate_mis(sd_p)    
+                if count==2:    
+                    
+                    map_state=self.PF.real_state(self.robot_pose[:2])
+                    pos_errate = [i for i, (elem1, elem2) in enumerate(zip(sd_state, map_state)) if elem1 != elem2]
+                    if(len(pos_errate)>0):#più posizioni non conguenti => Traslazione
+                        return [] 
+                    
 
             
             return obj
@@ -458,8 +481,8 @@ class Movement:
                      self.agg_filtro()#viene applicato il filtro particellare per la rilocalizzazione
                      return False, []
                   else:
-                      print("rilevata roccia caduta")
-                      print(obj)
+                      
+                      
                       return False, obj 
       
           if((x-self.robot_pose[0])==0 and y>self.robot_pose[1] ):
