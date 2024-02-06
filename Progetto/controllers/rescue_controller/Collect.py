@@ -111,29 +111,55 @@ class Collect:
             
             
             path=self.movement.find_path_obj(self.map,obj[0],obj[1])#calcolo percorso verso l'oggetto
-            fp=self.movement.follow_path_filtered(path,self.map)#movimento lungo il percorso
+            if(path==[]):
+                    
+                    print("oggetto non raggiungibile")
+                    continue
+            fp,rock=self.movement.follow_path_filtered(path,self.map)#movimento lungo il percorso
+            if(rock!=[]):
+                self.map[rock[0],rock[1]]=4
+                print("mappa aggiornata")
+                print(self.map)
             while(fp==False ):#posizione persa e rilocalizzata
 
                 txt="Ricalcolo il percorso"
                 print(txt)
                 self.tts.text_to_speech(txt)
                 path=self.movement.find_path_obj(self.map,obj[0],obj[1])#ricalcolo percorso
-                fp=self.movement.follow_path_filtered(path,self.map)
-                          
-            self.movement.obj_dir(obj[0],obj[1])#rotazione verso l'oggetto
-            ogg, _=self.cam.recognition()#riconoscimento
-            self.aggancia()
-            self.map[obj[0],obj[1]]=0#aggiornamento mappa
-            print(self.map)
-            
-            path_reverse=self.movement.find_path_obj(self.map,self.pos_start[0],self.pos_start[1])#calcolo percorso di consegnaq
-            fp=self.movement.follow_path_filtered(path_reverse,self.map)#movimento lungo il percorso
-            while(fp==False ):#posizione persa e rilocalizzata
-
-                txt="Ricalcolo il percorso"
-                print(txt)
-                self.tts.text_to_speech(txt)
-                path=self.movement.find_path_obj(self.map,obj[0],obj[1])#ricalcolo percorso
-                fp=self.movement.follow_path_filtered(path,self.map)
+                print(path)
+                if(path==[]):
+                    
+                    print("oggetto non raggiungibile")
+                    break
+                fp,rock=self.movement.follow_path_filtered(path,self.map)
                 
-            self.rilascia(ogg)
+                if(rock!=[]):
+                    self.map[rock[0],rock[1]]=4
+                    print("mappa aggiornata")
+                    print(self.map)
+                
+            if(path!=[]):             
+                self.movement.obj_dir(obj[0],obj[1])#rotazione verso l'oggetto
+                ogg, _=self.cam.recognition()#riconoscimento
+                self.aggancia()
+                self.map[obj[0],obj[1]]=0#aggiornamento mappa
+                print(self.map)
+                
+                path_reverse=self.movement.find_path_obj(self.map,self.pos_start[0],self.pos_start[1])#calcolo percorso di consegnaq
+                fp,rock=self.movement.follow_path_filtered(path_reverse,self.map)#movimento lungo il percorso
+                if(rock!=[]):
+                    self.map[rock[0],rock[1]]=4
+                    print("mappa aggiornata")
+                    print(self.map)
+                while(fp==False ):#posizione persa e rilocalizzata
+    
+                    txt="Ricalcolo il percorso"
+                    print(txt)
+                    self.tts.text_to_speech(txt)
+                    path=self.movement.find_path_obj(self.map,obj[0],obj[1])#ricalcolo percorso
+                    fp,rock=self.movement.follow_path_filtered(path,self.map)
+                    if(rock!=[]):
+                        self.map[rock[0],rock[1]]=4
+                        print("mappa aggiornata")
+                        print(self.map)
+                self.rilascia(ogg)
