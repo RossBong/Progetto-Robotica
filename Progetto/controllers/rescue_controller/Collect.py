@@ -106,28 +106,12 @@ class Collect:
         print(txt+'\n')
         self.tts.text_to_speech(txt)
         objs_coord=np.argwhere(self.map == 3)#coordinate degli oggetti individuati in mapping
+        
         for obj in objs_coord:
-            
-            path=self.movement.find_path_obj(self.map,obj[0],obj[1])#calcolo percorso verso l'oggetto
-            if(path==[]):
-                    
-                    print("oggetto non raggiungibile\n")
-                    continue
-            fp,rock=self.movement.follow_path_filtered(path,self.map)#movimento lungo il percorso
-            if(rock!=[]):
-                txt="Rilevata roccia caduta in posizione: "+str(rock)
-                print(txt)
-                self.tts.text_to_speech(txt)
-                self.map[rock[0],rock[1]]=4
-                print("Mappa aggiornata:")
-                print(self.map)
-                print(' ')
-                
+            fp=False    
             while(fp==False ):#posizione persa e rilocalizzata
 
-                txt="Ricalcolo il percorso"
-                print(txt+'\n')
-                self.tts.text_to_speech(txt)
+                
                 path=self.movement.find_path_obj(self.map,obj[0],obj[1])#ricalcolo percorso
               
                 if(path==[]):
@@ -136,7 +120,9 @@ class Collect:
                     print(txt+'\n')
                     self.tts.text_to_speech(txt)
                     break
+                    
                 fp,rock=self.movement.follow_path_filtered(path,self.map)
+                
                 
                 if(rock!=[]):
                     txt="Rilevata roccia caduta in posizione: "+str(rock)
@@ -146,6 +132,11 @@ class Collect:
                     print("Mappa aggiornata:")
                     print(self.map)
                     print(' ')
+                    
+                if(fp==False):
+                    txt="Ricalcolo il percorso"
+                    print(txt+'\n')
+                    self.tts.text_to_speech(txt)
                 
             if(path!=[]):             
                 self.movement.obj_dir(obj[0],obj[1])#rotazione verso l'oggetto
@@ -154,22 +145,15 @@ class Collect:
                 self.map[obj[0],obj[1]]=0#aggiornamento mappa
                 print(self.map)
                 print(' ')
-                path_reverse=self.movement.find_path_obj(self.map,self.pos_start[0],self.pos_start[1])#calcolo percorso di consegnaq
-                fp,rock=self.movement.follow_path_filtered(path_reverse,self.map)#movimento lungo il percorso
-                if(rock!=[]):
-                    txt="Rilevata roccia caduta in posizione: "+str(rock)
-                    print(txt+'\n')
-                    self.tts.text_to_speech(txt)
-                    self.map[rock[0],rock[1]]=4
-                    print("Mappa aggiornata")
-                    print(self.map)
-                    print(' ')
-                while(fp==False ):#posizione persa e rilocalizzata
+                
+                fp=False
+                print(str(fp)+'fuori')
+                while(fp==False):#posizione persa e rilocalizzata
+                    print(fp)
     
-                    txt="Ricalcolo il percorso"
-                    print(txt+'\n')
-                    self.tts.text_to_speech(txt)
-                    path=self.movement.find_path_obj(self.map,obj[0],obj[1])#ricalcolo percorso
+                    
+                    path=self.movement.find_path_obj(self.map,self.pos_start[0],self.pos_start[1])#ricalcolo percorso
+                    print(path)
                     fp,rock=self.movement.follow_path_filtered(path,self.map)
                     if(rock!=[]):
                         txt="Rilevata roccia caduta in posizione: "+str(rock)
@@ -179,4 +163,10 @@ class Collect:
                         print("Mappa aggiornata:")
                         print(self.map)
                         print(' ')
+                        
+                    if(fp==False):
+                        txt="Ricalcolo il percorso"
+                        print(txt+'\n')
+                        self.tts.text_to_speech(txt) 
+                        
                 self.rilascia(ogg)
