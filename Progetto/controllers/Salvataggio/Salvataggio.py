@@ -1,7 +1,7 @@
 
 from controller import Supervisor
 
-# create the Robot instance.
+
 robot = Supervisor() 
 
 rock_falling=True

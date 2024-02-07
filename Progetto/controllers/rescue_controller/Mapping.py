@@ -12,16 +12,16 @@ class Mapping:
 
     def __init__(self,movement,cam,width,length,x_start,y_start,tts):
         
-        self.movement=movement
-        self.cam=cam
-        self.map= -1 * np.ones((width+2, length+2))#imposto tutte le posizioni a -1
-        self.visited= False * np.ones((width+2, length+2)) #Imposto tutte le posizioni a False
+        self.movement=movement #istanza oggetto della classe Movement
+        self.cam=cam #istanza oggetto della classe Cam
+        self.map= -1 * np.ones((width+2, length+2))#inizializziamo le posizioni a -1
+        self.visited= False * np.ones((width+2, length+2)) #Inizializziamo le posizioni a False
         self.x_start=x_start#posizione di partenza
         self.y_start=y_start#posizione di partenza
-        self.stato="Triste"
+        self.stato="Triste" #stato emotivo iniziale
         self.counter_state=0 #numero di celle senza aver trovato ogetti
         self.far_human=[0," "] #distanza e direzione umano individuato a distanza >1m
-        self.tts=tts
+        self.tts=tts #istanza oggetto della classe TTS
     
 
            
@@ -30,9 +30,9 @@ class Mapping:
                 
     def find_free_novisited(self):
         #funzione che restuisce una lista di coordinate delle celle
-        #libere e non visitaten adiacenti
-        a=self.map==self.visited
-        free_cells=np.argwhere(a)
+        #libere e non visitate adiacenti
+        free_visited_mask=self.map==self.visited
+        free_cells=np.argwhere(free_visited_mask)
         return free_cells
 
         
@@ -47,15 +47,16 @@ class Mapping:
        print(" ")
 
     def scansione(self,x,y):
-        trovato=False
-        oggetto,dist=self.cam.recognition()
+        trovato=False #oggetto o umano non trovato
+        oggetto,dist=self.cam.recognition()#riconoscimento oggetto dalla camera
          
         if(self.stato=="Triste"):#permettiamo al robot di trovare umani più lontani
              if(oggetto=="umano"and dist>2 and self.map[x,y]==0 ):
-                 txt=f"Ho trovato un umano alla distanza di {round(dist, 2)} metri"
+                 txt=f"Ho trovato un umano alla distanza di {round(dist, 2)} metri, avvicinamento"
                  print(txt)
                  self.tts.text_to_speech(txt)
                  trovato=True
+                 #aggiornamento posizione umano individuato
                  self.far_human=[round(dist),self.movement.robot_pose[2]]
                  return trovato
                  
@@ -81,7 +82,7 @@ class Mapping:
         return trovato
              
              
-    def update_stato(self,f):
+    def update_stato(self,f):# aggiornamento stato emotivo
        
        if(f==True and self.stato=="Triste"):#oggetto trovato e stato Triste
            txt="Finalmente mi sento bene, effettuerò la scansione degli oggetti che rileverò in ogni casella"
@@ -134,7 +135,9 @@ class Mapping:
              
                      
     def ricerca_ogg(self,x,y):#effettuo le scansioni in base allo stato
-        s1,s2,s3,s4 =False,False,False,False#oggetti trovati per ogni scasione
+    
+        s1,s2,s3,s4 =False,False,False,False#oggetti trovati per ogni scansione
+        
         if self.stato=="Normale":#scansioni in direzione degli oggetti individuati
             
             if(self.map[x-1,y]==1):#North 
@@ -150,7 +153,7 @@ class Mapping:
                  s3=self.scansione(x+1,y)
                                  
             if(self.map[x,y-1]==1):#West
-                 self.movement.rotate("West")
+                 self.movement.rotate("Weast")
                  s4=self.scansione(x,y-1)
             
         elif self.stato=="Triste":#scansione in tutte le direzioni
@@ -160,10 +163,10 @@ class Mapping:
                  s2=self.scansione(x,y+1)
                  self.movement.rotate("South")
                  s3=self.scansione(x+1,y)
-                 self.movement.rotate("West")
+                 self.movement.rotate("Weast")
                  s4=self.scansione(x,y-1)
                  
-        elif self.stato=="Felice":#scansioni in una porzione casuale di direzioni dove ho individuato oggetti
+        elif self.stato=="Felice":#scansioni in una porzione casuale di direzioni dove abbiamo individuato oggetti
                 
                 if(self.map[x-1,y]==1 and random.choice([0, 1])==1):#North    
                      s1=self.scansione(x-1,y)  
@@ -176,11 +179,11 @@ class Mapping:
                      self.movement.rotate("South")
                      s3=self.scansione(x+1,y)
                                      
-                if(self.map[x,y-1]==1 and random.choice([0, 1])==1):#West
-                     self.movement.rotate("West")
+                if(self.map[x,y-1]==1 and random.choice([0, 1])==1):#Weast
+                     self.movement.rotate("Weast")
                      s4=self.scansione(x,y-1)
                  
-        if(s1==False and s2==False and s3==False and s4==False):#se non trovo oggetti in nessuna scansione
+        if(s1==False and s2==False and s3==False and s4==False):#se non troviamo oggetti in nessuna scansione
              self.update_stato(False)
              
              
@@ -188,6 +191,7 @@ class Mapping:
     def mapping(self):
         self.visited[self.x_start][self.y_start]=True #posizione di partenza visitata
         self.map[self.x_start][self.y_start]=0 #posizione di partenza libera
+       
        
         self.map= np.array([   [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
                                [4, 0, 3, 4, 4, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 4],
@@ -227,7 +231,7 @@ class Mapping:
             elif(sd[1]<1 and self.map[x+1,y]!=4 and self.map[x+1,y]!=3):
                 self.map[x+1,y]=1#cella occupata ma non identificata  
             
-            #West
+            #Weast
             if(sd[3]>1):
                 self.map[x,y-1]=0#cella libera
             elif(sd[3]<1 and self.map[x,y-1]!=4 and self.map[x,y-1]!=3):
@@ -239,6 +243,7 @@ class Mapping:
                 self.movement.rotate(self.far_human[1])#rotazione verso l'umano
                 self.movement.move(self.far_human[0])#movimento verso l'umano
                 self.far_human=[0," "]
+                
             #movimenti verso cella libera non visitata adiacente
             elif(self.map[x-1,y]==0 and self.visited[x-1,y]==False):
                 self.movement.rotate("North")
@@ -253,18 +258,19 @@ class Mapping:
                 self.movement.move(1)
                 
             elif(self.map[x,y-1]==0 and self.visited[x,y-1]==False):
-                self.movement.rotate("West")
+                self.movement.rotate("Weast")
                 self.movement.move(1)
             
             #ricerca celle libere non visitate non adiacenti    
             else:
                 free_cells=self.find_free_novisited()
-                if(len(free_cells)==0):
+                if(len(free_cells)==0): # celle libere visitate
                    print("Imposto i punti non raggiungibili a 4")
                    
                    self.map=np.where(self.map == -1, 4, self.map)#imposto le posizioni non raggiungibili a 4
                    self.print_info()  
                 else:
+                    # celle libere non ancora visitate
                     path=self.movement.find_path_min(free_cells,x,y,self.map)#calcolo percorso verso la più vicina cella libera
                     self.movement.follow_path(path)#movimento verso cella libera
                     
@@ -275,7 +281,7 @@ class Mapping:
             print(txt)
             self.tts.text_to_speech(txt)
             self.stato="Normale"
-            for cell in lost_cells:
+            for cell in lost_cells:# visita celle non analizzate
             
                 path=self.movement.find_path_obj(self.map,cell[0],cell[1])
                 self.movement.follow_path(path)

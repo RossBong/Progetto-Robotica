@@ -73,7 +73,7 @@ class Movement:
     def direction(self):#direzione robot
         q=(self.imu.getRollPitchYaw()[2] * 180) / 3.14159
         if (q<= -135 and q >= -180) or (135 <= q <= 180):
-            return "West"
+            return "Weast"
         elif q <= -45 and q > -135:
             return "South"
         elif 45 <= q <= 135:
@@ -90,7 +90,7 @@ class Movement:
          elif(x>x_robot):
              self.rotate("South")
          elif(y<y_robot):
-             self.rotate("West")     
+             self.rotate("Weast")     
          elif(y>y_robot):
              self.rotate("East")
              
@@ -105,7 +105,7 @@ class Movement:
             return x_robot-1,y_robot
         elif(dir=="East"):
             return x_robot,y_robot+1
-        elif(dir=="West"):
+        elif(dir=="Weast"):
             return x_robot,y_robot-1 
             
     def get_opposite_dir(self, dir):
@@ -114,8 +114,8 @@ class Movement:
         elif(dir=="South"):
             return"North"
         elif(dir=="East"):
-            return "West"
-        elif(dir=="West"):
+            return "Weast"
+        elif(dir=="Weast"):
             return"East"
             
                    
@@ -128,7 +128,7 @@ class Movement:
         else:  #il robot si muove 
             if(dir=="North"):
                 self.robot_pose[0]-=dist
-            elif(dir=="West"):
+            elif(dir=="Weast"):
                 self.robot_pose[1]-=dist
             elif(dir=="East"):
                 self.robot_pose[1]+= dist
@@ -147,7 +147,7 @@ class Movement:
         elif(dir=="South"):
             sd_p=[sd[1],sd[0],sd[3],sd[2]]
             return sd_p
-        elif(dir=="West"):
+        elif(dir=="Weast"):
             sd_p=[sd[2],sd[3],sd[1],sd[0]]
             return sd_p    
     
@@ -224,7 +224,7 @@ class Movement:
                 right_speed=0.5
             degree=90
         elif(dir=="South"and last_dir!="South"):
-            if(last_dir=="West"):
+            if(last_dir=="Weast"):
                     left_speed=-0.5
                     right_speed=0.5
             degree=-90
@@ -233,7 +233,7 @@ class Movement:
                     left_speed=-0.5
                     right_speed=0.5
             degree=0
-        elif(dir=="West" and last_dir!="West"):
+        elif(dir=="Weast" and last_dir!="Weast"):
             if(last_dir=="North"):
                     left_speed=-0.5
                     right_speed=0.5
@@ -264,8 +264,8 @@ class Movement:
                 
               self.move(1)
           elif((x-self.robot_pose[0])==0 and y<self.robot_pose[1] ):
-              if(self.robot_pose[2]!="West"):
-                  self.rotate("West")
+              if(self.robot_pose[2]!="Weast"):
+                  self.rotate("Weast")
                  
               self.move(1)
           elif((y-self.robot_pose[1])==0 and x<self.robot_pose[0] ):
@@ -293,12 +293,12 @@ class Movement:
         start = grid.node(y_robot,x_robot)
         end = grid.node(y,x)
         
-        # Usa l'algoritmo A* per trovare il percorso
+        # algoritmo A* per trovare il percorso verso l'oggetto
         finder = AStarFinder()
         path, runs = finder.find_path(start, end, grid)
         path = [(nodo.y, nodo.x) for nodo in path]
         
-        return path[:-1]#percorso fino alla cella prima dell'ggetto
+        return path[:-1]#percorso fino alla cella prima dell'oggetto
         
     def find_path_min(self,free_cells,x,y,map):
         
@@ -310,7 +310,7 @@ class Movement:
             start = grid.node(y,x)
             end = grid.node(cell[1],cell[0])
             
-            # Usa l'algoritmo A* per trovare il percorso
+            #algoritmo A* per trovare il percorso
             finder = AStarFinder()
             path, runs = finder.find_path(start, end, grid)
             path = [(nodo.y, nodo.x) for nodo in path]
@@ -330,12 +330,13 @@ class Movement:
         pos_est=[]#posizione stimata
         rb_list=[self.robot_pose[:2]]#lista delle posizioni visitate
         count=2#penultima cella di rb_list
-        while(self.PF.isLocalizated(0.5)):#il robot esce dal while quando le particelle si saranno concentrate in un punto
+        while(self.PF.isLocalizated(0.5)):
+        #il robot esce dal while quando le particelle si saranno concentrate in un punto
             
             
             sd=self.lidar_permutation(self.direction())
             
-            #il robot si muove verso la prima cella adiacente libera non già visitata in senso orario
+            #il robot si muove verso la prima cella adiacente libera non  visitata 
             if(sd[0]>1 and ([self.robot_pose[0]-1,self.robot_pose[1]] not in rb_list)):
                
                 count=2
@@ -357,7 +358,7 @@ class Movement:
             elif(sd[3]>1 and ([self.robot_pose[0],self.robot_pose[1]-1] not in rb_list)):
                 
                 count=2
-                self.rotate("West")
+                self.rotate("Weast")
                 self.move(1)
                 #viene applicata l'azione al filtro particellare
                 pos_est=self.PF.particle_filter([0,-1],self.lidar_permutation(self.direction()),self.direction())
@@ -375,12 +376,13 @@ class Movement:
             else:
                
                 #se le celle adiacenti sono già state visitate ci muoviamo verso la cella precedente
-                self.obj_dir(rb_list[-count][0],rb_list[-count][1])#direzionamento verso la l'ultima cella visitata
-                azione=[rb_list[-count][0]-self.robot_pose[0],rb_list[-count][1]-self.robot_pose[1]]#calcolo azione di movimento
+                self.obj_dir(rb_list[-count][0],rb_list[-count][1])#direzionamento verso  l'ultima cella visitata
+                #calcolo azione di movimento
+                azione=[rb_list[-count][0]-self.robot_pose[0],rb_list[-count][1]-self.robot_pose[1]]
                 self.move(1)
                 #viene applicata l'azione al filtro particellare
                 pos_est=self.PF.particle_filter(azione,self.lidar_permutation(self.direction()),self.direction())
-                count+=1#incresemtiamo il contatore per accedere alle celle precedenti
+                count+=1#incrementiamo il contatore per accedere alle celle precedenti
                 
            
            
@@ -399,18 +401,25 @@ class Movement:
     
     def rock_falling(self):
     
-        rb_list=[self.robot_pose[:2]]
-        obj=[]
-        count=2
+        rb_list=[self.robot_pose[:2]]#lista delle posizioni visitate
+        obj=[]#posizione roccia individuata 
+        count=2#penultima cella di rb_list
         sd_p=self.lidar_permutation(self.direction())
-        sd_state=self.PF.evaluate_mis(sd_p)
-        map_state=self.PF.real_state(self.robot_pose[:2])
+        sd_state=self.PF.evaluate_mis(sd_p)#stato cella attuale del robot rispetto i sensori
+        map_state=self.PF.real_state(self.robot_pose[:2])# stato cella attuale rispetto la mappa
+        
+        # valutazione celle adiacenti a quella attuale uguagliando sensori e valori della mappa
+        # restituisce punti cardinali adiacenti non corrispondenti tra valori dei sensori e della mappa
         pos_errate = [i for i, (elem1, elem2) in enumerate(zip(sd_state, map_state)) if elem1 != elem2]
-        if(len(pos_errate)>1):#più posizioni non conguenti => Traslazione
+        
+        if(len(pos_errate)>1):#più posizioni non congruenti => Traslazione
             return []
-        else:
+            
+        else:# probabile roccia individuata
+            
             x_robot=self.robot_pose[0]
             y_robot=self.robot_pose[1]
+            # individuiamo la probabile  posizione della roccia caduta
             if(pos_errate[0]==0):
                 obj=[x_robot-1,y_robot]
             elif(pos_errate[0]==1):
@@ -421,7 +430,9 @@ class Movement:
                 obj=[x_robot,y_robot-1] 
               
             for i in range(3):
-                
+            # effettuiamo 3 passi in celle non visitate per differenziare ulteriormente
+            # la possibile individuazione  della roccia  oppure una possibile traslazione causata da scosse  
+            
                 if(sd_state[0]==0 and ([self.robot_pose[0]-1,self.robot_pose[1]] not in rb_list)):
                     
                     self.rotate("North")
@@ -439,24 +450,26 @@ class Movement:
                     rb_list.append(self.robot_pose[:2])
                     count=2
                 elif(sd_state[3]==0 and ([self.robot_pose[0],self.robot_pose[1]-1] not in rb_list)):
-                    self.rotate("West")
+                    self.rotate("Weast")
                     self.move(1)
                     rb_list.append(self.robot_pose[:2])
                     count=2
                 else:
                     
-                    self.obj_dir(rb_list[-count][0],rb_list[-count][1])#direzionamento verso la l'ultima cella visitata
+                    self.obj_dir(rb_list[-count][0],rb_list[-count][1])#direzionamento verso  l'ultima cella visitata
                     
                     self.move(1)
                     
                     count+=1
+                    
                 sd_p=self.lidar_permutation(self.direction())
                 sd_state=self.PF.evaluate_mis(sd_p)    
-                if count==2:    
-                    
+                if count==2: 
+                #se il robot si trova in una cella non visitata effettuiamo i confronti  
+                #tra valori sensoristici ed associati alla mappa    
                     map_state=self.PF.real_state(self.robot_pose[:2])
                     pos_errate = [i for i, (elem1, elem2) in enumerate(zip(sd_state, map_state)) if elem1 != elem2]
-                    if(len(pos_errate)>0):#più posizioni non conguenti => Traslazione
+                    if(len(pos_errate)>0):#più posizioni non congruenti => Traslazione
                         return [] 
                     
 
@@ -468,23 +481,23 @@ class Movement:
                         
     def follow_path_filtered(self,path,map):
     
-        layer_reattivo=True
         self.PF.map=map#passiamo la mappa al filtro particellare
       
         for x,y in path[1:]:
         
           sd_p=self.lidar_permutation(self.direction())
           
-          if(self.robot_pose[:2] not in self.PF.position_estimate(sd_p,self.direction())):#viene rilevata la posizione non corretta
-                  obj=self.rock_falling()
-                  if(obj==[]):
+          #viene rilevata la posizione non corretta     
+          if(self.robot_pose[:2] not in self.PF.position_estimate(sd_p,self.direction())):
+                  obj=self.rock_falling()#possibile posizione roccia caduta
+                  if(obj==[]):# non viene individuata alcuna roccia caduta
                      self.agg_filtro()#viene applicato il filtro particellare per la rilocalizzazione
-                     return False, []
+                     return False, []# False-> Ricalcolo percorso 
                   else:
+                      # roccia caduta rilevata
+                      return False, obj # False-> Ricalcolo percorso
                       
-                      
-                      return False, obj 
-      
+          #movimento lungo il percorso
           if((x-self.robot_pose[0])==0 and y>self.robot_pose[1] ):
               if(self.robot_pose[2]!="East"):
                   self.rotate("East")
@@ -493,8 +506,8 @@ class Movement:
               self.move(1)
              
           elif((x-self.robot_pose[0])==0 and y<self.robot_pose[1] ):
-              if(self.robot_pose[2]!="West"):
-                  self.rotate("West")
+              if(self.robot_pose[2]!="Weast"):
+                  self.rotate("Weast")
               
               self.move(1)
              
@@ -513,4 +526,4 @@ class Movement:
               self.move(1)
              
               
-        return True,[]
+        return True,[]#True-> Nessun ricalcolo percorso necessario
