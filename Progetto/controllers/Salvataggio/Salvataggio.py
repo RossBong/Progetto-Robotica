@@ -44,7 +44,6 @@ def recupera_oggetti(objs ):
         
         if(obj.getPosition()[0]<1 and obj.getPosition()[1]<1 and obj.getPosition()[2]<=0.075):
             
-
             obj.remove()
             objs.remove(obj)
             
@@ -52,14 +51,12 @@ def recupera_oggetti(objs ):
 
                 aggiungi_rock([3,3,0.4],robot,'rock_falling1')
                 aggiungi_rock([8,3,0.4],robot,'rock_falling2')
-                
 
                 rock_falling=False
              
 def salvataggio_umano(rescuer):    
     customDataField=rescuer.getField('customData')
     customData=customDataField.getSFString()
-    
     
     if(customData=="5,5" or customData=="5,6"):
         robot.getFromDef('umano1').remove()

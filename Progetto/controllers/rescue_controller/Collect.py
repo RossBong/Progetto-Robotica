@@ -108,8 +108,6 @@ class Collect:
         objs_coord=np.argwhere(self.map == 3)#coordinate degli oggetti individuati in mapping
         for obj in objs_coord:
             
-            
-            
             path=self.movement.find_path_obj(self.map,obj[0],obj[1])#calcolo percorso verso l'oggetto
             if(path==[]):
                     

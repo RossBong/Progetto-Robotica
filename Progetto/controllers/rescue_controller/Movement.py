@@ -333,7 +333,6 @@ class Movement:
         while(self.PF.isLocalizated(0.5)):
         #il robot esce dal while quando le particelle si saranno concentrate in un punto
             
-            
             sd=self.lidar_permutation(self.direction())
             
             #il robot si muove verso la prima cella adiacente libera non  visitata 
@@ -434,7 +433,6 @@ class Movement:
             # la possibile individuazione  della roccia  oppure una possibile traslazione causata da scosse  
             
                 if(sd_state[0]==0 and ([self.robot_pose[0]-1,self.robot_pose[1]] not in rb_list)):
-                    
                     self.rotate("North")
                     self.move(1)
                     rb_list.append(self.robot_pose[:2])
@@ -457,9 +455,7 @@ class Movement:
                 else:
                     
                     self.obj_dir(rb_list[-count][0],rb_list[-count][1])#direzionamento verso  l'ultima cella visitata
-                    
                     self.move(1)
-                    
                     count+=1
                     
                 sd_p=self.lidar_permutation(self.direction())
@@ -470,14 +466,11 @@ class Movement:
                     map_state=self.PF.real_state(self.robot_pose[:2])
                     pos_errate = [i for i, (elem1, elem2) in enumerate(zip(sd_state, map_state)) if elem1 != elem2]
                     if(len(pos_errate)>0):#più posizioni non congruenti => Traslazione
-                        return [] 
-                    
-
+                        return []
             
             return obj
         
         
-              
                         
     def follow_path_filtered(self,path,map):
     
@@ -500,30 +493,22 @@ class Movement:
           #movimento lungo il percorso
           if((x-self.robot_pose[0])==0 and y>self.robot_pose[1] ):
               if(self.robot_pose[2]!="East"):
-                  self.rotate("East")
-              
-                     
+                  self.rotate("East")    
               self.move(1)
              
           elif((x-self.robot_pose[0])==0 and y<self.robot_pose[1] ):
               if(self.robot_pose[2]!="Weast"):
                   self.rotate("Weast")
-              
               self.move(1)
-             
              
           elif((y-self.robot_pose[1])==0 and x<self.robot_pose[0] ):
               if(self.robot_pose[2]!="North"):
                   self.rotate("North")
-                 
               self.move(1)
-           
               
           elif((y-self.robot_pose[1])==0 and x>self.robot_pose[0] ):
               if(self.robot_pose[2]!="South"):
                   self.rotate("South")
-             
               self.move(1)
-             
               
         return True,[]#True-> Nessun ricalcolo percorso necessario

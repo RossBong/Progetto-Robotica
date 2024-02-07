@@ -7,8 +7,6 @@ from Collect import Collect
 from TTS import TTS
 from Particle_filter import Particle_filter
 
-
-
 robot = Robot() # istanza Rescuerbot
 
 timestep=32
@@ -36,6 +34,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-

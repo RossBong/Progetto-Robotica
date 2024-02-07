@@ -75,7 +75,8 @@ class Particle_filter:
         return mis_list   
     
     
-    def position_estimate(self,sd,dir):#calcola le celle che rappresentano la posizione più probabile
+    def position_estimate(self,sd,dir):
+    #calcola le celle che rappresentano la posizione più probabile
          
         sd=self.evaluate_mis(sd)# stato cella attuale rispetto i sensori lidar
         positions_estimated=[]# posizione stimata
@@ -107,9 +108,11 @@ class Particle_filter:
         #calcolo pesi rispetto posizioni probabili
         #associando pesi maggiori a particelle vicine ad esse
         eps=0.0000001
+        
         for pos in self.position_estimate(sd,dir):
            
             dist=(np.linalg.norm(pos - particelle, axis=1))+eps
+            
             # maschera per selezionare particelle a distanza minore di 1m
             #dalla posizione probabile
             nb=dist[dist <= 1]
@@ -133,8 +136,7 @@ class Particle_filter:
         
         self.particles=particelle_probabili# aggiornamento particelle
       
-        print("Posizione stimata: "+str(position_estimated))
-        
+        print("Posizione stimata: "+str(position_estimated))     
         self.print_particles(particelle_probabili)
 
         return position_estimated
@@ -156,6 +158,3 @@ class Particle_filter:
             return True #localizzazione non ancora precisa
         else:
             return False #localizzazione effettuata
-            
-
-        

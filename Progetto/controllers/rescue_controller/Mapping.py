@@ -293,10 +293,4 @@ class Mapping:
         print(txt)
         self.tts.text_to_speech(txt) 
         
-        return self.map     
-                     
-    
-        
-          
-    
-    
+        return self.map
