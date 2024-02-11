@@ -158,6 +158,7 @@ class Mapping:
             
         elif self.stato=="Triste":#scansione in tutte le direzioni
                  
+                 self.movement.rotate("North")
                  s1=self.scansione(x-1,y)
                  self.movement.rotate("East")
                  s2=self.scansione(x,y+1)
@@ -168,7 +169,8 @@ class Mapping:
                  
         elif self.stato=="Felice":#scansioni in una porzione casuale di direzioni dove abbiamo individuato oggetti
                 
-                if(self.map[x-1,y]==1 and random.choice([0, 1])==1):#North    
+                if(self.map[x-1,y]==1 and random.choice([0, 1])==1):#North 
+                     self.movement.rotate("North")   
                      s1=self.scansione(x-1,y)  
                      
                 if(self.map[x,y+1]==1 and random.choice([0, 1])==1):#East
@@ -191,7 +193,7 @@ class Mapping:
     def mapping(self):
         self.visited[self.x_start][self.y_start]=True #posizione di partenza visitata
         self.map[self.x_start][self.y_start]=0 #posizione di partenza libera
-       
+        
        
         self.map= np.array([   [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
                                [4, 0, 3, 4, 4, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 4],

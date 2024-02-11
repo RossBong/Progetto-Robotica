@@ -147,13 +147,11 @@ class Collect:
                 print(' ')
                 
                 fp=False
-                print(str(fp)+'fuori')
+                
                 while(fp==False):#posizione persa e rilocalizzata
-                    print(fp)
     
                     
                     path=self.movement.find_path_obj(self.map,self.pos_start[0],self.pos_start[1])#ricalcolo percorso
-                    print(path)
                     fp,rock=self.movement.follow_path_filtered(path,self.map)
                     if(rock!=[]):
                         txt="Rilevata roccia caduta in posizione: "+str(rock)

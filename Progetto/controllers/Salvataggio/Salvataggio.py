@@ -72,10 +72,10 @@ rescuer = robot.getFromDef('rescuer')
 customDataField=rescuer.getField('customData')
 customData=customDataField.getSFString()
 customDataField.setSFString(" ")
-"""
+
 aggiungi_umano([4,0,0.13],[0,1,0,-1.57],robot,'umano1')
 aggiungi_umano([12,1.19,0.18],[-0.577,0.577,-0.577,-2.09],robot,'umano2')
-"""
+
 aggiungi_box([1,2,0.1],[1,1,0],robot,'box_gioielli',' Box_gioielli {}')
 aggiungi_box([1,4,0.1],[0,1,0.5],robot,'box_soldi1',' Box_soldi {}')
 aggiungi_box([11,0,0.1],[0,1,0],robot,'box_foto',' Box_foto {}')
